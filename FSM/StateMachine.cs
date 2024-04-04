@@ -80,7 +80,7 @@ namespace CustomFSM.StateMachine
             if (statenode == null)
             {
                 statenode = new StateNode(state);
-                _stateDic.Add(statenode.GetType(), statenode);
+                _stateDic.Add(statenode.GetType(), state);
             }
 
             return statenode;
