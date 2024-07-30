@@ -22,5 +22,14 @@ namespace Extensions
             
             return false;
         }
+
+        public static T GetOrAdd<T>(this GameObject go) where T : Component
+        {
+            if (go.TryGetComponent(out T comp))
+                return comp;
+
+            return go.AddComponent<T>();
+        }
+        
     }
 }
