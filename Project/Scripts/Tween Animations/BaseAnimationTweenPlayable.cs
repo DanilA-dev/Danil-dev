@@ -1,6 +1,8 @@
 ﻿#if DOTWEEN
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace TweenAnimations
 {
@@ -8,11 +10,15 @@ namespace TweenAnimations
     {
         [SerializeReference] protected BaseAnimationTween[] _tweens;
         [Space]
-        
         [PropertyOrder(-100)]
         [SerializeField] protected bool _playOnEnable;
         [PropertyOrder(-100)]
         [SerializeField] protected bool _playOnStart;
+        [PropertySpace(20)]
+        [FoldoutGroup("Events")]
+        public UnityEvent OnStart;
+        [FoldoutGroup("Events")]
+        public UnityEvent OnComplete;
       
         protected void OnEnable()
         {
@@ -27,9 +33,23 @@ namespace TweenAnimations
         }
 
         public bool HasTweensInArray() => _tweens != null || _tweens.Length > 0;
+
+
+        private void Play()
+        {
+            OnStart?.Invoke();
+            OnPlay();
+            
+            var lastTween = _tweens.Last();
+            lastTween.OnComplete.AddListener((() =>
+            {
+                OnComplete?.Invoke();
+                lastTween.OnComplete.RemoveAllListeners();
+            }));
+        }
         
+        public abstract void OnPlay();
         
-        public abstract void Play();
         public virtual void Pause() {}
         
     }

@@ -5,7 +5,7 @@ namespace TweenAnimations
 {
     public class AnimationTweenSequencer : BaseAnimationTweenPlayable
     {
-        public override void Play()
+        public override void OnPlay()
         {
             if(!HasTweensInArray())
                 return;

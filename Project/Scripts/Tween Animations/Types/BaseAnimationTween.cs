@@ -20,10 +20,10 @@ namespace TweenAnimations
         [PropertySpace(10)] 
         [PropertyOrder(100)] 
         [FoldoutGroup("Events")] 
-        [SerializeField] protected UnityEvent OnStart;
+        public UnityEvent OnStart;
         [PropertyOrder(100)] 
         [FoldoutGroup("Events")]
-        [SerializeField] protected UnityEvent OnComplete;
+        public UnityEvent OnComplete;
 
         private Tween _tween;
         
