@@ -82,10 +82,6 @@ namespace UI
                 _negativeDirectionArrow.onClick.RemoveListener((() => ArrowScroll(1)));
         }
 
-        #endregion
-
-        #region Event Systems
-        
         public void OnBeginDrag(PointerEventData eventData)
         {
             _startContentPos = _contentRect.anchoredPosition;
