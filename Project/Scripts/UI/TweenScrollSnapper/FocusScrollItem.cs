@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace _Assets.Scripts.Game.UI
+namespace UI
 {
     public class FocusScrollItem : MonoBehaviour
     {
