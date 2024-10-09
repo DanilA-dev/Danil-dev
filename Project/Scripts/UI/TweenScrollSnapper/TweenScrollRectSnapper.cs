@@ -7,7 +7,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace _Assets.Scripts.Game.UI
+namespace UI
 {
     [RequireComponent(typeof(ScrollRect))]
     public class TweenScrollRectSnapper : MonoBehaviour, IEndDragHandler, IBeginDragHandler, IDragHandler
@@ -18,8 +18,6 @@ namespace _Assets.Scripts.Game.UI
             Vertical
         }
         
-        #region Fields
-
         [SerializeField] private bool _autoFindFocusScrollItem;
         [SerializeField] private bool _enableArrows;
         [ShowIf(nameof(_enableArrows))]
@@ -54,10 +52,6 @@ namespace _Assets.Scripts.Game.UI
         private FocusScrollItem _prevFocusScrollItem;
         private FocusScrollItem[] _focusScrollItems;
         private ScrollRect _scrollRect;
-
-        #endregion
-
-        #region MonoBehaviour
 
         private void Awake()
         {
@@ -119,9 +113,6 @@ namespace _Assets.Scripts.Game.UI
             _scrollDelta = Vector2.zero;
             _scrollRect.enabled = true;
         }
-        #endregion
-
-        #region Public
 
         public void ScrollAndFocus(RectTransform rectTransform, float scrollTime = 0)
         {
@@ -135,11 +126,6 @@ namespace _Assets.Scripts.Game.UI
             SetFocusScrollRect(focusSettings);
         }
         
-
-        #endregion
-        
-        #region Private
-
         private void InitScrollItems()
         {
             TryFindFocusElementsFromContent();
@@ -257,10 +243,6 @@ namespace _Assets.Scripts.Game.UI
             _currentFocusScrollItem.SetFocus(true);
             OnElementFocus?.Invoke();
         }
-        
-        #endregion
-
-        #region Editor
 
         [Button]
         private void MoveToElementIndex(int index)
@@ -279,15 +261,11 @@ namespace _Assets.Scripts.Game.UI
             foreach (var focusRectSettings in _focusRectSettings)
                 focusRectSettings.ToggleAutoFindItem();
         }
-
-        #endregion
     }
 
     [System.Serializable]
     public class FocusRectSettings
     {
-        #region Fields
-        
         [SerializeField, ReadOnly] private Vector2 _relativePosition;
         [ShowIf(nameof(_autoFindFocusScrollItem))]
         [SerializeField] private FocusScrollItem _focusScrollItem;
@@ -296,10 +274,7 @@ namespace _Assets.Scripts.Game.UI
         private RectTransform _elementRect;
         private int _index;
         private float _orientation;
-        
-        #endregion
 
-        #region Properties
         public FocusScrollItem FocusScrollItem
         {
             get => _focusScrollItem;
@@ -311,9 +286,6 @@ namespace _Assets.Scripts.Game.UI
 
         public RectTransform ElementRect => _elementRect;
 
-        #endregion
-
-        #region Public
 
         public void ToggleAutoFindItem() => _autoFindFocusScrollItem = !_autoFindFocusScrollItem;
 
@@ -335,8 +307,6 @@ namespace _Assets.Scripts.Game.UI
         {
             return _relativePosition == new Vector2(Mathf.Abs(pos.x), Mathf.Abs(pos.y));
         }
-
-        #endregion
     }
 
 }
