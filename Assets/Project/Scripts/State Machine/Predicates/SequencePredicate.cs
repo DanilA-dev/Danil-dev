@@ -16,7 +16,6 @@ namespace  CustomFSM.Preicate
             _predicates = predicates;
         }
 
-
         public bool Evaluate()
         {
             if (!_isReset)

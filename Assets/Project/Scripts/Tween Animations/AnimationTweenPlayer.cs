@@ -1,6 +1,6 @@
-﻿using DG.Tweening;
+﻿#if DOTWEEN
+using DG.Tweening;
 
-#if DOTWEEN
 namespace TweenAnimations
 {
     public class AnimationTweenPlayer : BaseAnimationTweenPlayable

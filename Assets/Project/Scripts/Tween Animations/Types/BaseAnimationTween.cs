@@ -26,7 +26,6 @@ namespace TweenAnimations
         public UnityEvent OnComplete;
 
         private Tween _tween;
-        
         protected Tween Tween
         {
             get => _tween;
@@ -44,10 +43,13 @@ namespace TweenAnimations
                 _tween.OnComplete((() => OnComplete?.Invoke()));
             }
         }
-
+        
         public abstract Tween Play();
-
         public virtual void Pause() {}
+        
+        [FoldoutGroup("Debug")]
+        [Button]
+        public void DebugPlay() => Play();
     }
 }
 #endif

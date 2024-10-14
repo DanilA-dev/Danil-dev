@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if DOTWEEN
+using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using Sirenix.OdinInspector;
@@ -39,7 +40,7 @@ namespace UI
         [SerializeField, ReadOnly] private Vector2 _scrollDelta;
         [Space]
         [PropertyOrder(100)]
-        [SerializeField] private List<FocusRectSettings> _focusRectSettings = new List<FocusRectSettings>();
+        [SerializeField] private List<FocusRectSettings> _focusRectSettings = new();
 
         private bool _isContentMoving;
         private Vector2 _startContentPos;
@@ -306,3 +307,4 @@ namespace UI
     }
 
 }
+#endif

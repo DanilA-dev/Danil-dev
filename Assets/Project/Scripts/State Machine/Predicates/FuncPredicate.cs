@@ -11,6 +11,7 @@ namespace CustomFSM.Preicate
             _func = func;
         }
 
+        public bool CanBeUpdated { get; set; } = true;
         public bool Evaluate() => _func.Invoke();
     }
 }

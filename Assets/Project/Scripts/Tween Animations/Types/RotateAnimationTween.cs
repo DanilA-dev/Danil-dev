@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿#if DOTWEEN
+using DG.Tweening;
 using UnityEngine;
 
 namespace TweenAnimations
@@ -16,3 +17,4 @@ namespace TweenAnimations
         }
     }
 }
+#endif
