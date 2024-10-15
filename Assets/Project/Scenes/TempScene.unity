@@ -542,6 +542,7 @@ GameObject:
   - component: {fileID: 843044237}
   - component: {fileID: 843044239}
   - component: {fileID: 843044238}
+  - component: {fileID: 843044240}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -609,6 +610,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 843044236}
   m_CullTransparentMesh: 1
+--- !u!225 &843044240
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 843044236}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &888125700
 GameObject:
   m_ObjectHideFlags: 0
@@ -737,58 +750,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a63ad461c4f94c6d8d15eab59e6d8947, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isOpen: 0
   _hasOpenAnimation: 1
-  _openAnimations:
-  - rid: 3005185516001820672
   _hasCloseAniation: 1
   _disableObjectOnComplete: 1
-  _closeAnimations:
-  - rid: 3005185516001820677
+  _openAnimations: []
+  _closeAnimations: []
   references:
     version: 2
-    RefIds:
-    - rid: 3005185516001820672
-      type: {class: MoveAnimationTween, ns: TweenAnimations, asm: Project.TweenAnimations}
-      data:
-        _duration: 1
-        _ease: 1
-        _ignoreTimeScale: 0
-        _loop: 0
-        _loopType: 0
-        OnStart:
-          m_PersistentCalls:
-            m_Calls: []
-        OnComplete:
-          m_PersistentCalls:
-            m_Calls: []
-        _moveType: 2
-        _movedObject: {fileID: 843044237}
-        _useInitialPositionAsStart: 1
-        _moveStart: {fileID: 0}
-        _moveEnd: {fileID: 0}
-        _positionStart: {x: 0, y: 950, z: 0}
-        _positionEnd: {x: 0, y: 44, z: 0}
-    - rid: 3005185516001820677
-      type: {class: MoveAnimationTween, ns: TweenAnimations, asm: Project.TweenAnimations}
-      data:
-        _duration: 1
-        _ease: 0
-        _ignoreTimeScale: 1
-        _loop: 0
-        _loopType: 0
-        OnStart:
-          m_PersistentCalls:
-            m_Calls: []
-        OnComplete:
-          m_PersistentCalls:
-            m_Calls: []
-        _moveType: 2
-        _movedObject: {fileID: 843044237}
-        _useInitialPositionAsStart: 1
-        _moveStart: {fileID: 0}
-        _moveEnd: {fileID: 0}
-        _positionStart: {x: 0, y: 0, z: 0}
-        _positionEnd: {x: -2000, y: 0, z: 0}
+    RefIds: []
 --- !u!1 &1557903351
 GameObject:
   m_ObjectHideFlags: 0

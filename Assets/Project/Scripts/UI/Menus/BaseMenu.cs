@@ -9,18 +9,20 @@ namespace UI
 {
     public abstract class BaseMenu : MonoBehaviour
     {
-        [FormerlySerializedAs("_hasOpenAniation")]
+        [OnValueChanged(nameof(ActiveColor))]
+        [GUIColor(nameof(ActiveColor))]
+        [SerializeField, ReadOnly] private bool _isOpen;
         [Title("Animations")] 
         [SerializeField] private bool _hasOpenAnimation;
-        [ShowIf(nameof(_hasOpenAnimation))]
-        [SerializeReference] private BaseAnimationTween[] _openAnimations;
         [SerializeField] private bool _hasCloseAniation;
         [ShowIf(nameof(_hasCloseAniation))]
         [SerializeField] private bool _disableObjectOnComplete;
+        [ShowIf(nameof(_hasOpenAnimation))]
+        [SerializeReference] private BaseAnimationTween[] _openAnimations;
         [ShowIf(nameof(_hasCloseAniation))]
         [SerializeReference] private BaseAnimationTween[] _closeAnimations;
-        
-        public bool IsOpen { get; private set; }
+
+        public bool IsOpen => _isOpen;
 
         protected void Awake()
         {
@@ -44,10 +46,10 @@ namespace UI
                     seq.Append(openAnimation.Play());
 
                 await seq.AsyncWaitForCompletion().AsUniTask();
-                IsOpen = true;
+                _isOpen = true;
             }
             else
-                IsOpen = true;
+                _isOpen = true;
            
         }
 
@@ -67,7 +69,7 @@ namespace UI
                     seq.Append(closeAnimation.Play());
 
                 await seq.AsyncWaitForCompletion().AsUniTask();
-                IsOpen = false;
+                _isOpen = false;
                 gameObject.SetActive(!_disableObjectOnComplete);
             }
             else
@@ -76,18 +78,20 @@ namespace UI
 
         public void ForceOpen()
         {
-            IsOpen = true;
+            _isOpen = true;
             gameObject.SetActive(IsOpen);
         }
 
         public void ForceClose()
         {
-            IsOpen = false;
+            _isOpen = false;
             gameObject.SetActive(IsOpen);
         }
         
         protected virtual void OnOpen() {}
         protected virtual void OnClose() {}
+
+        private Color ActiveColor() => _isOpen ? Color.green : Color.red;
 
     }
 }

@@ -4,6 +4,7 @@ using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace TweenAnimations
 {
@@ -13,8 +14,8 @@ namespace TweenAnimations
         [SerializeField] protected float _duration;
         [SerializeField] protected Ease _ease;
         [SerializeField] protected bool _ignoreTimeScale;
-        [SerializeField] protected bool _loop;
-        [ShowIf(nameof(_loop))]
+        [SerializeField] protected int _loops;
+        [ShowIf("@this._loops != 0")]
         [SerializeField] protected LoopType _loopType;
 
         [PropertySpace(10)] 
@@ -37,7 +38,7 @@ namespace TweenAnimations
                 
                 _tween.OnStart((() => OnStart?.Invoke()));
                 _tween.SetEase(_ease)
-                    .SetLoops(_loop ? Int32.MaxValue : 0, _loopType)
+                    .SetLoops(_loops, _loopType)
                     .SetUpdate(_ignoreTimeScale)
                     .SetAutoKill();
                 _tween.OnComplete((() => OnComplete?.Invoke()));
