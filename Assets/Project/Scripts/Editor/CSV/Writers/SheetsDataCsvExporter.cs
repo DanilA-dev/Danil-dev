@@ -2,21 +2,21 @@
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using _Assets.Scripts.Utils.SheetsLoadable;
+using SheetsLoadable;
 using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 using UnityEditor;
 using UnityEngine;
 
-namespace SheetsData
+namespace CSV
 {
     [CreateAssetMenu(menuName = "Editor/Sheets/Data Exporter")]
-    public class SheetsDataCsvExporter : SerializedScriptableObject
+    public class SheetsDataCsvExporter : ScriptableObject
     {
         [SerializeField] private string _path;
-        [OdinSerialize] private List<ISheetsLoadable> _dataToExport = new();
-        private string Path => _path + ".csv";
+        [SerializeField] private bool _clearOnExport;
+        [SerializeField] private List<ScriptableObject> _dataToExport = new();
 
+        private string Path => _path + ".csv";
 
         [Button]
         public void ExportData()
@@ -34,8 +34,8 @@ namespace SheetsData
 
             foreach (var data in _dataToExport)
             {
-                var ser = data.Serialize();
-                foreach (var header in ser.Keys)
+                var dataDictionary = data.GetData();
+                foreach (var header in dataDictionary.Keys)
                     allHeaders.Add(header);
             }
             
@@ -45,7 +45,7 @@ namespace SheetsData
     
                 foreach (var data in _dataToExport)
                 {
-                    var ser = data.Serialize();
+                    var ser = data.GetData();
                     var values = allHeaders.Select(header =>
                     {
                         if (ser.TryGetValue(header, out var value))
@@ -81,6 +81,23 @@ namespace SheetsData
             Debug.Log($"<color=yellow> Data write to file path {Path} </color>");
             AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
             AssetDatabase.SaveAssets();
+            if (_clearOnExport)
+            {
+                _path = "";
+                _dataToExport.Clear();
+            }
+        }
+
+        [MenuItem("Tools/CSV/Export")]
+        public static void OpenExportMenu()
+        {
+            SheetsDataCsvExporter exporter = Resources.LoadAll<SheetsDataCsvExporter>("")[0];
+            if (null == exporter)
+            {
+                Debug.LogError($"{exporter.name} can't be found!");
+                return;
+            }
+            EditorUtility.OpenPropertyEditor(exporter);
         }
     }
 }

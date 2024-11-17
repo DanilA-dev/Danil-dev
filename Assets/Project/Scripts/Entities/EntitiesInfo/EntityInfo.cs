@@ -1,10 +1,10 @@
-﻿using Sirenix.OdinInspector;
-using Sirenix.Serialization;
+﻿using UnityEngine;
 
 namespace Entities.EntitiesInfo
 {
-    public class EntityInfo : SerializedScriptableObject
+    [CreateAssetMenu(menuName = "Project/EntityInfo")]
+    public class EntityInfo : ScriptableObject
     {
-        [OdinSerialize] public IEntity EntityPrefab { get; private set; }
+        [field: SerializeField] public GameObject EntityPrefab { get; private set; }
     }
 }

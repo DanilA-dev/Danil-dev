@@ -320,5 +320,4 @@ MonoBehaviour:
   _createMenusOnEnable: 0
   _overlayCanvas: {fileID: 3820115167156015393}
   _cameraCanvas: {fileID: 7325336165401828619}
-  _menuInfos:
-  - {fileID: 11400000, guid: acae47bd5fef7f6489fd5c787607c906, type: 2}
+  _menuInfos: []
