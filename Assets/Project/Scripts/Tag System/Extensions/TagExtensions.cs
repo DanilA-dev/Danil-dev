@@ -9,5 +9,11 @@ namespace Tag_System
             return gameObject.TryGetComponent(out TagComponent tagComponent) 
                    && tagComponent.HasAnyTag(tag);
         }
+        
+        public static bool HasTags(this GameObject gameObject, Tag[] tags)
+        {
+            return gameObject.TryGetComponent(out TagComponent tagComponent)
+                   && tagComponent.HasAnyTags(tags);
+        }
     }
 }
