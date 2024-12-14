@@ -1,12 +1,10 @@
 ﻿#if DOTWEEN
-using System;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 
-namespace TweenAnimations
+namespace Project.Scripts.Tween_Animations.Types
 {
     [System.Serializable]
     public abstract class BaseAnimationTween
@@ -44,7 +42,38 @@ namespace TweenAnimations
                 _tween.OnComplete((() => OnComplete?.Invoke()));
             }
         }
-        
+
+        public float Duration
+        {
+            get => _duration;
+            set => _duration = value;
+        }
+
+        public Ease Ease
+        {
+            get => _ease;
+            set => _ease = value;
+        }
+
+        public bool IgnoreTimeScale
+        {
+            get => _ignoreTimeScale;
+            set => _ignoreTimeScale = value;
+        }
+
+        public int Loops
+        {
+            get => _loops;
+            set => _loops = value;
+        }
+
+        public LoopType LoopType
+        {
+            get => _loopType;
+            set => _loopType = value;
+        }
+
+
         public abstract Tween Play();
         public virtual void Pause() {}
         

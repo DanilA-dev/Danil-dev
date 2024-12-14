@@ -1,9 +1,7 @@
 {
-    "name": "Project.CSV",
+    "name": "Project.Extensions",
     "rootNamespace": "",
-    "references": [
-        "GUID:74cacc66adaa63e41931e373163dfd62"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

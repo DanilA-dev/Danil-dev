@@ -3,53 +3,93 @@ using System;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace TweenAnimations
+namespace Project.Scripts.Tween_Animations.Types
 {
     [Serializable]
     public class ColorTween : BaseAnimationTween
     {
-        private enum ColorObject
+        public enum ColorObjectType
         {
             Image,
             Material,
             SpriteRenderer
         }
         
-        [SerializeField] private ColorObject _colorObject;
+        [SerializeField] private ColorObjectType _colorObjectType;
         [ShowIf("@this._colorObject == ColorObject.Image")]
         [SerializeField] private Image _image;
-        [FormerlySerializedAs("_material")]
         [ShowIf("@this._colorObject == ColorObject.Material")]
         [SerializeField] private MeshRenderer _meshMaterial;
         [ShowIf("@this._colorObject == ColorObject.SpriteRenderer")]
         [SerializeField] private SpriteRenderer _spriteRenderer;
-        [SerializeField] private bool _useInitilColorAsStart;
-        [HideIf(nameof(_useInitilColorAsStart))]
+        [SerializeField] private bool _useInitialColorAsStart;
+        [HideIf(nameof(_useInitialColorAsStart))]
         [SerializeField] private Color _startValue;
         [SerializeField] private Color _endValue;
-        
+
+        public ColorObjectType ColorType
+        {
+            get => _colorObjectType;
+            set => _colorObjectType = value;
+        }
+
+        public Image Image
+        {
+            get => _image;
+            set => _image = value;
+        }
+
+        public MeshRenderer MeshMaterial
+        {
+            get => _meshMaterial;
+            set => _meshMaterial = value;
+        }
+
+        public SpriteRenderer SpriteRenderer
+        {
+            get => _spriteRenderer;
+            set => _spriteRenderer = value;
+        }
+
+        public Color StartValue
+        {
+            get => _startValue;
+            set => _startValue = value;
+        }
+
+        public Color EndValue
+        {
+            get => _endValue;
+            set => _endValue = value;
+        }
+
+        public bool UseInitialColorAsStart
+        {
+            get => _useInitialColorAsStart;
+            set => _useInitialColorAsStart = value;
+        }
+
         public override Tween Play()
         {
-            switch (_colorObject)
+            switch (_colorObjectType)
             {
-                case ColorObject.Image:
+                case ColorObjectType.Image:
                 {
-                    var startColor = _useInitilColorAsStart ? _image.color : _startValue;
-                    return Tween = _image.DOColor(_endValue, _duration).From(startColor);
+                    var startColor = _useInitialColorAsStart ? _image.color : _startValue;
+                    return Tween = _image.DOColor(_endValue, Duration).From(startColor);
                 }
-                case ColorObject.Material:
+                case ColorObjectType.Material:
                 {
                     var material = _meshMaterial.sharedMaterial;
-                    var startColor = _useInitilColorAsStart ? material.color : _startValue;
-                    return Tween = material.DOColor(_endValue, _duration).From(startColor);
+                    var startColor = _useInitialColorAsStart ? material.color : _startValue;
+                    return Tween = material.DOColor(_endValue, Duration).From(startColor);
                 }
-                case ColorObject.SpriteRenderer:
+                case ColorObjectType.SpriteRenderer:
                 {
-                    var startColor = _useInitilColorAsStart ? _spriteRenderer.color : _startValue;
-                    return Tween = _spriteRenderer.DOColor(_endValue, _duration).From(startColor);
+                    var startColor = _useInitialColorAsStart ? _spriteRenderer.color : _startValue;
+                    return Tween = _spriteRenderer.DOColor(_endValue, Duration).From(startColor);
                 }
                 default:
                     throw new ArgumentOutOfRangeException();

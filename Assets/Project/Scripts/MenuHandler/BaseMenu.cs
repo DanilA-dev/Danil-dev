@@ -1,9 +1,9 @@
-﻿using Cysharp.Threading.Tasks;
+﻿#if DOTWEEN
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Project.Scripts.Tween_Animations.Types;
 using Sirenix.OdinInspector;
-using TweenAnimations;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace UI
 {
@@ -95,3 +95,4 @@ namespace UI
 
     }
 }
+#endif

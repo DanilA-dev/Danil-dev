@@ -6,12 +6,12 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace TweenAnimations
+namespace Project.Scripts.Tween_Animations.Types
 {
     [Serializable]
     public class FadeTween : BaseAnimationTween
     {
-        private enum FadeObject
+        public enum FadeObject
         {
             Image,
             CanvasGroup,
@@ -29,24 +29,67 @@ namespace TweenAnimations
         [SerializeField] private CanvasGroup _canvasGroup;
         [ShowIf("@this._fadeObject == FadeObject.SpriteRenderer")]
         [SerializeField] private SpriteRenderer _spriteRenderer;
+        [Space]
         [SerializeField] private float _startValue;
         [SerializeField] private float _endValue;
-        
+
+        public FadeObject Fade
+        {
+            get => _fadeObject;
+            set => _fadeObject = value;
+        }
+
+        public Image Image
+        {
+            get => _image;
+            set => _image = value;
+        }
+
+        public MeshRenderer MeshMaterial
+        {
+            get => _meshMaterial;
+            set => _meshMaterial = value;
+        }
+
+        public CanvasGroup Group
+        {
+            get => _canvasGroup;
+            set => _canvasGroup = value;
+        }
+
+        public SpriteRenderer SpriteRenderer
+        {
+            get => _spriteRenderer;
+            set => _spriteRenderer = value;
+        }
+
+        public float StartValue
+        {
+            get => _startValue;
+            set => _startValue = value;
+        }
+
+        public float EndValue
+        {
+            get => _endValue;
+            set => _endValue = value;
+        }
+
         public override Tween Play()
         {
             switch (_fadeObject)
             {
                 case FadeObject.Image:
-                    return Tween = _image.DOFade(_endValue, _duration).From(_startValue);
+                    return Tween = _image.DOFade(_endValue, Duration).From(_startValue);
                 case FadeObject.CanvasGroup:
-                    return Tween = _canvasGroup.DOFade(_endValue, _duration).From(_startValue);
+                    return Tween = _canvasGroup.DOFade(_endValue, Duration).From(_startValue);
                 case FadeObject.Material:
                 {
                     var material = _meshMaterial.sharedMaterial;
-                    return Tween = material.DOFade(_endValue, _duration).From(_startValue);
+                    return Tween = material.DOFade(_endValue, Duration).From(_startValue);
                 }
                 case FadeObject.SpriteRenderer:
-                    return Tween = _spriteRenderer.DOFade(_endValue, _duration).From(_startValue);
+                    return Tween = _spriteRenderer.DOFade(_endValue, Duration).From(_startValue);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

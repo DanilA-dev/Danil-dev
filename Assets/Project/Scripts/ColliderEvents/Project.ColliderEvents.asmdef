@@ -1,8 +1,9 @@
 {
-    "name": "Project.CSV",
+    "name": "Project.ColliderEvents",
     "rootNamespace": "",
     "references": [
-        "GUID:74cacc66adaa63e41931e373163dfd62"
+        "GUID:6efb4fdd415a3304aae591e808eb8d6c",
+        "GUID:560b04d1a97f54a4e82edc0cbbb69285"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

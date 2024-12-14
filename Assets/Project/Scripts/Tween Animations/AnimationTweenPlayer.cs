@@ -1,7 +1,7 @@
 ﻿#if DOTWEEN
 using DG.Tweening;
 
-namespace TweenAnimations
+namespace Project.Scripts.Tween_Animations
 {
     public class AnimationTweenPlayer : BaseAnimationTweenPlayable
     {

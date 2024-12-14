@@ -1,8 +1,8 @@
 {
-    "name": "Project.CSV",
+    "name": "Project.TweenScrollSnapper",
     "rootNamespace": "",
     "references": [
-        "GUID:74cacc66adaa63e41931e373163dfd62"
+        "GUID:4db865c5757194d4fb774542fc98bc04"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

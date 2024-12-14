@@ -1,11 +1,11 @@
 {
-    "name": "Project.UI",
+    "name": "Project.Menu",
     "rootNamespace": "",
     "references": [
         "GUID:f51ebe6a0ceec4240a699833d6309b23",
         "GUID:560b04d1a97f54a4e82edc0cbbb69285",
-        "GUID:4db865c5757194d4fb774542fc98bc04",
-        "GUID:cb1a05c32f5d5744bb2273b8970ae954"
+        "GUID:cb1a05c32f5d5744bb2273b8970ae954",
+        "GUID:4db865c5757194d4fb774542fc98bc04"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -33,22 +33,14 @@ namespace Project.Scripts.ColliderChecker
             bool checkPassed = true;
             bool ignorePassed = true;
             
-            if (_checkLayer && ((1 << collider.gameObject.layer) & _checkLayerMask) == 0)
+            if (_checkLayer && ((1 << collider.gameObject.layer) & _checkLayerMask) == 0
+                || _checkTag && !collider.gameObject.HasTags(_checkTags))
                 checkPassed = false;
 
-            if (_checkTag && !collider.gameObject.HasTags(_checkTags))
-                checkPassed = false;
-
-            if (_ignoreTrigger && collider.isTrigger)
-                ignorePassed = false;
-
-            if (_ignoreColliders && _ignoredColliders.Any(c => c.Equals(collider)))
-                ignorePassed = false;
-            
-            if (_ignoreLayer && ((1 << collider.gameObject.layer) & _ignoreLayerMask) != 0)
-                ignorePassed = false;
-
-            if (_ignoreTag && collider.gameObject.HasTags(_ignoreTags))
+            if (_ignoreTrigger && collider.isTrigger
+                || _ignoreColliders && _ignoredColliders.Any(c => c.Equals(collider))
+                || _ignoreLayer && ((1 << collider.gameObject.layer) & _ignoreLayerMask) != 0
+                || _ignoreTag && collider.gameObject.HasTags(_ignoreTags))
                 ignorePassed = false;
             
             return checkPassed && ignorePassed;

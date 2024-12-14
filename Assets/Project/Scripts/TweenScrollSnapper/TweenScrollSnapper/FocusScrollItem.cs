@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace UI
+namespace Project.Scripts.TweenScrollSnapper.TweenScrollSnapper
 {
     public class FocusScrollItem : MonoBehaviour
     {
