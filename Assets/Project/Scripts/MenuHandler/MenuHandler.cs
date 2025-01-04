@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace UI
+namespace Project.Scripts.MenuHandler
 {
     public class MenuHandler : MonoBehaviour
     {
+        #region Fields
+
         [SerializeField] private bool _createMenusOnEnable;
         [SerializeField] private RectTransform _overlayCanvas;
         [SerializeField] private RectTransform _cameraCanvas;
@@ -13,11 +14,19 @@ namespace UI
 
         private Dictionary<MenuInfo,BaseMenu> _createdMenus = new();
 
+        #endregion
+
+        #region Monobehaviour
+
         private void OnEnable()
         {
             if(_createMenusOnEnable)
                 CreateMenus();
         }
+
+        #endregion
+
+        #region Public
 
         public void CreateMenus()
         {
@@ -57,5 +66,7 @@ namespace UI
             foreach (var keyValuePair in _createdMenus)
                 keyValuePair.Value.Close();
         }
+
+        #endregion
     }
 }

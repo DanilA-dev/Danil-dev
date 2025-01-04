@@ -1,11 +1,17 @@
 ﻿using System.Linq;
 using UnityEngine;
 
-namespace Entities.EntitiesInfo
+namespace Project.Scripts.Entities.EntitiesInfo
 {
     public class EntitiesSpawner : MonoBehaviour
     {
+        #region Fields
+
         [SerializeField] private EntitySpawnSettings[] _spawnSettings;
+
+        #endregion
+
+        #region Monobehaviour
 
         private void Start()
         {
@@ -25,6 +31,10 @@ namespace Entities.EntitiesInfo
                 entitySpawnSettings.Dispose();
         }
 
+        #endregion
+
+        #region Public
+
         public GameObject CreateEntity(EntityInfo data)
         {
             var spawnSettings = _spawnSettings.FirstOrDefault(s => s.Data == data);
@@ -36,5 +46,7 @@ namespace Entities.EntitiesInfo
             var spawnSettings = _spawnSettings[settingsIndex];
             return spawnSettings?.Get();
         }
+
+        #endregion
     }
 }

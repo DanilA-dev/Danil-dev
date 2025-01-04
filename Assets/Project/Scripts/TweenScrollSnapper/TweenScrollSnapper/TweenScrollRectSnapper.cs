@@ -13,12 +13,18 @@ namespace Project.Scripts.TweenScrollSnapper.TweenScrollSnapper
     [RequireComponent(typeof(ScrollRect))]
     public class TweenScrollRectSnapper : MonoBehaviour, IEndDragHandler, IBeginDragHandler, IDragHandler
     {
+        #region Enums
+
         public enum ScrollMovementDirection
         {
             Horizontal,
             Vertical
         }
-        
+
+        #endregion
+
+        #region Fields
+
         [SerializeField] private bool _autoFindFocusScrollItem;
         [SerializeField] private bool _enableArrows;
         [ShowIf(nameof(_enableArrows))]
@@ -53,6 +59,10 @@ namespace Project.Scripts.TweenScrollSnapper.TweenScrollSnapper
         private FocusScrollItem _prevFocusScrollItem;
         private FocusScrollItem[] _focusScrollItems;
         private ScrollRect _scrollRect;
+
+        #endregion
+
+        #region Monobehaviour
 
         private void Awake()
         {
@@ -111,6 +121,10 @@ namespace Project.Scripts.TweenScrollSnapper.TweenScrollSnapper
             _scrollRect.enabled = true;
         }
 
+        #endregion
+
+        #region Public
+
         public void ScrollAndFocus(RectTransform rectTransform, float scrollTime = 0)
         {
             var focusSettings =
@@ -122,8 +136,12 @@ namespace Project.Scripts.TweenScrollSnapper.TweenScrollSnapper
             MoveContentRect(focusSettings, scrollTime);
             SetFocusScrollRect(focusSettings);
         }
-        
-        private void InitScrollItems()
+
+        #endregion
+
+        #region Private
+
+         private void InitScrollItems()
         {
             TryFindFocusElementsFromContent();
             SetElementsRelativePositions();
@@ -258,11 +276,15 @@ namespace Project.Scripts.TweenScrollSnapper.TweenScrollSnapper
             foreach (var focusRectSettings in _focusRectSettings)
                 focusRectSettings.ToggleAutoFindItem();
         }
+
+        #endregion
     }
 
     [System.Serializable]
     public class FocusRectSettings
     {
+        #region Fields
+
         [SerializeField, ReadOnly] private Vector2 _relativePosition;
         [ShowIf(nameof(_autoFindFocusScrollItem))]
         [SerializeField] private FocusScrollItem _focusScrollItem;
@@ -272,17 +294,22 @@ namespace Project.Scripts.TweenScrollSnapper.TweenScrollSnapper
         private int _index;
         private float _orientation;
 
+        #endregion
+
+        #region Properties
+
         public FocusScrollItem FocusScrollItem
         {
             get => _focusScrollItem;
             set => _focusScrollItem = value;
         }
         public int Index => _index;
-
         public Vector2 RelativePosition => _relativePosition;
-
         public RectTransform ElementRect => _elementRect;
 
+        #endregion
+
+        #region Public
 
         public void ToggleAutoFindItem() => _autoFindFocusScrollItem = !_autoFindFocusScrollItem;
 
@@ -304,6 +331,8 @@ namespace Project.Scripts.TweenScrollSnapper.TweenScrollSnapper
         {
             return _relativePosition == new Vector2(Mathf.Abs(pos.x), Mathf.Abs(pos.y));
         }
+
+        #endregion
     }
 
 }

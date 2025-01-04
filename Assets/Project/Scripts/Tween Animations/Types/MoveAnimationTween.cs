@@ -9,6 +9,8 @@ namespace Project.Scripts.Tween_Animations.Types
     [System.Serializable]
     public class MoveAnimationTween : BaseAnimationTween
     {
+        #region Enums
+
         public enum MoveObjectType
         {
             Vector,
@@ -17,6 +19,10 @@ namespace Project.Scripts.Tween_Animations.Types
             Z,
             Transform
         }
+
+        #endregion
+
+        #region Fields
 
         [SerializeField] private MoveObjectType _moveObjectType;
         [SerializeField] private Transform _movedObject;
@@ -31,6 +37,10 @@ namespace Project.Scripts.Tween_Animations.Types
         [SerializeField] private Vector3 _positionEnd;
 
         private Vector3 _initialStartPos;
+
+        #endregion
+
+        #region Properties
 
         public MoveObjectType MoveType
         {
@@ -74,6 +84,10 @@ namespace Project.Scripts.Tween_Animations.Types
             set => _positionEnd = value;
         }
 
+        #endregion
+
+        #region Override
+
         public override Tween Play()
         {
             RectTransform rect = _movedObject.GetComponent<RectTransform>();
@@ -100,6 +114,10 @@ namespace Project.Scripts.Tween_Animations.Types
             }
             return Tween;
         }
+
+        #endregion
+
+        #region Private
 
         private Tween TransfromTween()
         {
@@ -151,11 +169,17 @@ namespace Project.Scripts.Tween_Animations.Types
                     : rect.DOAnchorPos(_positionEnd, Duration)
                         .From(!_useInitialPositionAsStart? _positionStart : _initialStartPos);
         }
-        
+
+        #endregion
+
+        #region Public
+
         public override void Pause()
         {
             Tween.Pause();
         }
+
+        #endregion
     }
 }
 #endif

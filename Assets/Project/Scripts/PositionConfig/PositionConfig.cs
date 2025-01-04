@@ -3,8 +3,10 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace PositionSetter
+namespace Project.Scripts.PositionConfig
 {
+    #region Enums
+
     public enum PositionType
     {
         Vector = 0,
@@ -26,10 +28,14 @@ namespace PositionSetter
         Random_In_Sphere = 1,
         Random_In_Circle = 2
     }
+
+    #endregion
     
     [System.Serializable]
     public class PositionConfig
     {
+        #region Fields
+
         [Title("Position")]
         [SerializeField] private PositionType _positionType;
         [ShowIf(nameof(_positionType), PositionType.Vector)]
@@ -54,8 +60,11 @@ namespace PositionSetter
         [SerializeField] private bool _localRotTransform;
         [ShowIf(nameof(_rotationType), RotationType.Transform)]
         [SerializeField] private Transform _transformRot;
-        
-        
+
+        #endregion
+
+        #region Public
+
         public Vector3 GetPosition()
         {
             Vector3 pos = _positionType switch
@@ -88,5 +97,7 @@ namespace PositionSetter
             };
             return rot;
         }
+
+        #endregion
     }
 }

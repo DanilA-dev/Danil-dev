@@ -1,20 +1,35 @@
-public class IncrementTimer : BaseTimer
+namespace Project.Scripts.TimerSystem.Timer_System
 {
-    private float _targetTime;
-    
-    public IncrementTimer(float initialTime, float targetTime) : base(0)
+    public class IncrementTimer : BaseTimer
     {
-        _targetTime = targetTime;
-    }
+        #region Fields
 
-    public override void Tick(float deltaTime)
-    {
-        if (IsRunning && Time < _targetTime)
-            Time += deltaTime;
+        private float _targetTime;
+
+        #endregion
+
+        #region Construct
+
+        public IncrementTimer(float initialTime, float targetTime) : base(0)
+        {
+            _targetTime = targetTime;
+        }
+
+        #endregion
+
+        #region Override
+
+        public override void Tick(float deltaTime)
+        {
+            if (IsRunning && Time < _targetTime)
+                Time += deltaTime;
         
-        if(IsRunning && Time >= _targetTime)
-            Stop();
-    }
+            if(IsRunning && Time >= _targetTime)
+                Stop();
+        }
 
-    public override void Reset() => Time = 0;
+        public override void Reset() => Time = 0;
+
+        #endregion
+    }
 }

@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
-using Extensions;
-using PositionSetter;
+using Project.Scripts.Extensions;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace Entities.EntitiesInfo
+namespace Project.Scripts.Entities.EntitiesInfo
 {
     [System.Serializable]
     public class EntitySpawnSettings
     {
+        #region Fields
+
         [FoldoutGroup("Data")] 
         [SerializeField] private EntityInfo _data;
         [FoldoutGroup("Data")] 
@@ -21,7 +22,7 @@ namespace Entities.EntitiesInfo
         [SerializeField] private bool _setActiveOnStart;
         [FoldoutGroup("Position and Rotation")]
         [HideLabel]
-        [SerializeField] private PositionConfig _posConfig;
+        [SerializeField] private PositionConfig.PositionConfig _posConfig;
         [FoldoutGroup("Pool")]
         [SerializeField] private bool _usePool;
         [FoldoutGroup("Pool")]
@@ -40,9 +41,17 @@ namespace Entities.EntitiesInfo
         private ObjectPool<PoolableObject> _pool;
         private List<PoolableObject> _poolableEntities;
 
-        public EntityInfo Data => _data;
+        #endregion
 
+        #region Properties
+
+        public EntityInfo Data => _data;
         
+
+        #endregion
+
+        #region Public
+
         public void Init()
         {
             if (_usePool)
@@ -100,6 +109,10 @@ namespace Entities.EntitiesInfo
                 _pool?.Release(poolableObject);
         }
 
+        #endregion
+
+        #region Private
+
         private void PreCreateObjects()
         {
             for (int i = 0; i < _startEntitiesAmount; i++)
@@ -145,5 +158,7 @@ namespace Entities.EntitiesInfo
         {
             Release(poolableObject);
         }
+
+        #endregion
     }
 }

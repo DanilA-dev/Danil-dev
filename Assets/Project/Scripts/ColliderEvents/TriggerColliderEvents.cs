@@ -5,6 +5,8 @@ namespace Project.Scripts.ColliderEvents
 {
     public class TriggerColliderEvents : BaseColliderEvents
     {
+        #region Override
+
         protected override void InitColliderEvents()
         {
             if (_checkEnter)
@@ -31,5 +33,7 @@ namespace Project.Scripts.ColliderEvents
                         DebugCollider(c, passed);
                     });
         }
+
+        #endregion
     }
 }

@@ -1,0 +1,16 @@
+{
+    "name": "Project.Raycaster",
+    "rootNamespace": "",
+    "references": [
+        "GUID:6efb4fdd415a3304aae591e808eb8d6c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

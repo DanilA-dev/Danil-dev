@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Project.Scripts.TimerSystem.Timer_System;
+using UnityEngine;
 
 namespace CustomFSM.Preicate
 {

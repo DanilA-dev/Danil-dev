@@ -8,11 +8,17 @@ namespace Project.Scripts.Tween_Animations.Types
     [System.Serializable]
     public class ScaleAnimationTween : BaseAnimationTween
     {
+        #region Fields
+
         [SerializeField] private Transform _scaleObject;
         [SerializeField] private bool _useInitialScaleAsStart;
         [SerializeField] private Vector3 _endScale;
         [HideIf(nameof(_useInitialScaleAsStart))]
         [SerializeField] private Vector3 _startScale;
+
+        #endregion
+
+        #region Properties
 
         public Transform ScaleObject
         {
@@ -38,6 +44,10 @@ namespace Project.Scripts.Tween_Animations.Types
             set => _startScale = value;
         }
 
+        #endregion
+
+        #region Override
+
         public override Tween Play()
         {
             Tween = _scaleObject.DOScale(_endScale, Duration)
@@ -52,6 +62,8 @@ namespace Project.Scripts.Tween_Animations.Types
         {
             Tween.Pause();
         }
+
+        #endregion
     }
 }
 #endif

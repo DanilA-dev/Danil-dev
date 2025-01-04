@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Entities.EntitiesInfo
+namespace Project.Scripts.Entities.EntitiesInfo
 {
     [CreateAssetMenu(menuName = "Project/EntityInfo")]
     public class EntityInfo : ScriptableObject

@@ -9,6 +9,8 @@ namespace Project.Scripts.Tween_Animations
 {
     public abstract class BaseAnimationTweenPlayable : MonoBehaviour
     {
+        #region Fields
+
         [SerializeReference] protected BaseAnimationTween[] _tweens;
         [Space]
         [PropertyOrder(-100)]
@@ -20,7 +22,11 @@ namespace Project.Scripts.Tween_Animations
         public UnityEvent OnStart;
         [FoldoutGroup("Events")]
         public UnityEvent OnComplete;
-      
+
+        #endregion
+
+        #region Monobehaviour
+
         protected void OnEnable()
         {
             if(_playOnEnable && HasTweensInArray())
@@ -33,9 +39,12 @@ namespace Project.Scripts.Tween_Animations
                 Play();
         }
 
-        public bool HasTweensInArray() => _tweens != null || _tweens.Length > 0;
+        #endregion
 
+        #region Private
 
+        protected bool HasTweensInArray() => _tweens != null || _tweens.Length > 0;
+        
         private void Play()
         {
             OnStart?.Invoke();
@@ -48,11 +57,17 @@ namespace Project.Scripts.Tween_Animations
                 lastTween.OnComplete.RemoveAllListeners();
             }));
         }
-        
-        public abstract void OnPlay();
+
+
+        #endregion
+
+        #region Virtual/Abstract
+
+        protected abstract void OnPlay();
         
         public virtual void Pause() {}
-        
+
+        #endregion
     }
 }
 #endif

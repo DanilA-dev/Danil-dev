@@ -10,13 +10,19 @@ namespace Project.Scripts.Tween_Animations.Types
     [Serializable]
     public class ColorTween : BaseAnimationTween
     {
+        #region Enums
+
         public enum ColorObjectType
         {
             Image,
             Material,
             SpriteRenderer
         }
-        
+
+        #endregion
+
+        #region Fields
+
         [SerializeField] private ColorObjectType _colorObjectType;
         [ShowIf("@this._colorObject == ColorObject.Image")]
         [SerializeField] private Image _image;
@@ -28,6 +34,10 @@ namespace Project.Scripts.Tween_Animations.Types
         [HideIf(nameof(_useInitialColorAsStart))]
         [SerializeField] private Color _startValue;
         [SerializeField] private Color _endValue;
+
+        #endregion
+
+        #region Properties
 
         public ColorObjectType ColorType
         {
@@ -71,6 +81,10 @@ namespace Project.Scripts.Tween_Animations.Types
             set => _useInitialColorAsStart = value;
         }
 
+        #endregion
+
+        #region Override
+
         public override Tween Play()
         {
             switch (_colorObjectType)
@@ -95,6 +109,8 @@ namespace Project.Scripts.Tween_Animations.Types
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        #endregion
     }
 }
 #endif

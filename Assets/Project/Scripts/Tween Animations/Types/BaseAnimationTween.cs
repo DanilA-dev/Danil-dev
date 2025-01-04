@@ -9,6 +9,8 @@ namespace Project.Scripts.Tween_Animations.Types
     [System.Serializable]
     public abstract class BaseAnimationTween
     {
+        #region Fields
+
         [SerializeField] protected float _duration;
         [SerializeField] protected Ease _ease;
         [SerializeField] protected bool _ignoreTimeScale;
@@ -25,6 +27,11 @@ namespace Project.Scripts.Tween_Animations.Types
         public UnityEvent OnComplete;
 
         private Tween _tween;
+
+        #endregion
+
+        #region Properties
+
         protected Tween Tween
         {
             get => _tween;
@@ -73,13 +80,22 @@ namespace Project.Scripts.Tween_Animations.Types
             set => _loopType = value;
         }
 
+        #endregion
+
+        #region Virtual/Abstract
 
         public abstract Tween Play();
         public virtual void Pause() {}
-        
+
+        #endregion
+
+        #region Debug
+
         [FoldoutGroup("Debug")]
         [Button]
         public void DebugPlay() => Play();
+
+        #endregion
     }
 }
 #endif

@@ -8,9 +8,15 @@ namespace CustomFSM.StateMachine
 {
     public partial class StateMachine
     {
+        #region Fields
+
         private StateNode _currentStateNode;
         private Dictionary<Type, StateNode> _stateDic = new Dictionary<Type, StateNode>();
         private HashSet<ITransition> _anyTransitions = new HashSet<ITransition>();
+
+        #endregion
+
+        #region Public
 
         public void AddTransition(IState from, IState to, IPredicate condition)
         {
@@ -43,6 +49,10 @@ namespace CustomFSM.StateMachine
             _currentStateNode?.State.OnEnter();
         }
 
+        #endregion
+
+        #region Private
+
         private void ChangeState(IState state)
         {
             if(_currentStateNode.State == state)
@@ -72,8 +82,6 @@ namespace CustomFSM.StateMachine
             return null;
         }
 
-        
-
         private StateNode GetOrAddNode(IState state)
         {
             var statenode = _stateDic.GetValueOrDefault(state.GetType());
@@ -82,9 +90,9 @@ namespace CustomFSM.StateMachine
                 statenode = new StateNode(state);
                 _stateDic.Add(state.GetType(), statenode);
             }
-
             return statenode;
         }
 
+        #endregion
     }
 }

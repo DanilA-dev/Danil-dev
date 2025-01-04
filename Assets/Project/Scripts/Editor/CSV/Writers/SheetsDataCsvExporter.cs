@@ -2,23 +2,32 @@
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using SheetsLoadable;
+using Project.Scripts.SheetsLoadableSystem.SheetsLoadable;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 
-namespace CSV
+namespace Project.Scripts.Editor.CSV.Writers
 {
     [CreateAssetMenu(menuName = "Editor/Sheets/Data Exporter")]
     public class SheetsDataCsvExporter : ScriptableObject
     {
+        #region Fields
+
         [SerializeField] private string _path;
         [SerializeField] private bool _clearOnExport;
         [SerializeField] private List<ScriptableObject> _dataToExport = new();
 
+        #endregion
+
+        #region Properties
         private string Path => _path + ".csv";
 
-        [Button]
+        #endregion
+
+        #region Editor
+
+         [Button]
         public void ExportData()
         {
             if(_dataToExport.Count <= 0)
@@ -99,5 +108,7 @@ namespace CSV
             }
             EditorUtility.OpenPropertyEditor(exporter);
         }
+
+        #endregion
     }
 }

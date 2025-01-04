@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UI
+namespace Project.Scripts.MenuHandler
 {
     [CreateAssetMenu(menuName = "Project/Info/MenuInfo")]
     public class MenuInfo : ScriptableObject

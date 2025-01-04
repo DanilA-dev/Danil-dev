@@ -3,17 +3,17 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace SheetsLoadable
+namespace Project.Scripts.SheetsLoadableSystem.SheetsLoadable
 {
     public static class SheetsLoadableExtensions
     {
         public static Dictionary<string, object> GetData(this ScriptableObject sheetsLoadable)
         {
-            var attDic = new Dictionary<SheetsLoadable, object>();
+            var attDic = new Dictionary<Project.Scripts.SheetsLoadableSystem.SheetsLoadable.SheetsLoadable, object>();
             var returnDic = new Dictionary<string, object>();
             foreach (PropertyInfo propertyInfo in sheetsLoadable.GetType().GetProperties())
             {
-                var key = propertyInfo.GetCustomAttribute<SheetsLoadable>();
+                var key = propertyInfo.GetCustomAttribute<Project.Scripts.SheetsLoadableSystem.SheetsLoadable.SheetsLoadable>();
                 if (key != null)
                 {
                     var value = propertyInfo.GetValue(sheetsLoadable, null);
@@ -21,7 +21,7 @@ namespace SheetsLoadable
                 }
             }
 
-            attDic = new Dictionary<SheetsLoadable, object>(attDic.OrderBy(i => i.Key.Сolumn));
+            attDic = new Dictionary<Project.Scripts.SheetsLoadableSystem.SheetsLoadable.SheetsLoadable, object>(attDic.OrderBy(i => i.Key.Сolumn));
             foreach (var (key, value) in attDic)
                 returnDic.Add(key.ValueName, value);
             
@@ -34,7 +34,7 @@ namespace SheetsLoadable
             {
                 if (propertyInfo.CanWrite)
                 {
-                    var key = propertyInfo.GetCustomAttribute<SheetsLoadable>();
+                    var key = propertyInfo.GetCustomAttribute<Project.Scripts.SheetsLoadableSystem.SheetsLoadable.SheetsLoadable>();
                     var propertyValue = propertyInfo.GetValue(sheetsLoadable, null);
                     if(key == null)
                         continue;

@@ -5,7 +5,9 @@ namespace Project.Scripts.Tween_Animations
 {
     public class AnimationTweenSequencer : BaseAnimationTweenPlayable
     {
-        public override void OnPlay()
+        #region Override
+
+        protected override void OnPlay()
         {
             if(!HasTweensInArray())
                 return;
@@ -17,8 +19,9 @@ namespace Project.Scripts.Tween_Animations
                 seq.Append(tween.Play());
             
             seq.SetAutoKill(gameObject);
-
         }
+
+        #endregion
     }
 }
 #endif

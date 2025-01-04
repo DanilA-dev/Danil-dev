@@ -2,10 +2,12 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Entities
+namespace Project.Scripts.Entities
 {
     public class PoolableObject : MonoBehaviour
     {
+        #region Fields
+
         [PropertyOrder(100)]
         [FoldoutGroup("Events")]
         public UnityEvent<PoolableObject> OnEntityRelease;
@@ -13,7 +15,13 @@ namespace Entities
         [FoldoutGroup("Events")]
         public UnityEvent<PoolableObject> OnEntityDestroy;
 
+        #endregion
+
+        #region Monobehaviour
+
         private void OnDestroy() => OnEntityDestroy?.Invoke(this);
         public void Release() => OnEntityRelease?.Invoke(this);
+
+        #endregion
     }
 }

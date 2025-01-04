@@ -1,50 +1,71 @@
 using System;
 
-
-public abstract class BaseTimer
+namespace Project.Scripts.TimerSystem.Timer_System
 {
-   protected float _initialTime;
-   
-   protected float Time { get; set; }
-   public bool IsRunning { get; protected set; }
-   public bool IsFinished { get; protected set; }
-   public float Progress => Time / _initialTime;
+    public abstract class BaseTimer
+    {
+       #region Fields
 
-   public Action OnTimerStart;
-   public Action OnTimerEnd;
-   
+       protected float _initialTime;
+       
+       public Action OnTimerStart;
+       public Action OnTimerEnd;
 
-   public BaseTimer(float initialTime)
-   {
-      _initialTime = initialTime;
-      IsRunning = false;
-   }
+       #endregion
 
-   public void Start()
-   {
-      Time = _initialTime;
-      if (!IsRunning)
-      {
-         IsFinished = false;
-         IsRunning = true;
-         OnTimerStart?.Invoke();
-      }
-         
-   }
-   
-   public void Stop()
-   {
-      if (IsRunning)
-      {
-         IsFinished = true;
-         IsRunning = false;
-         OnTimerEnd?.Invoke();
-      }
-   }
+       #region Properties
 
-   public void Resume() => IsRunning = true;
-   public void Pause() => IsRunning = false;
+       protected float Time { get; set; }
+       public bool IsRunning { get; protected set; }
+       public bool IsFinished { get; protected set; }
+       public float Progress => Time / _initialTime;
 
-   public abstract void Tick(float deltaTime);
-   public abstract void Reset();
+       #endregion
+
+       #region Construct
+
+       public BaseTimer(float initialTime)
+       {
+          _initialTime = initialTime;
+          IsRunning = false;
+       }
+
+       #endregion
+
+       #region Public
+
+       public void Start()
+       {
+           Time = _initialTime;
+           if (!IsRunning)
+           {
+               IsFinished = false;
+               IsRunning = true;
+               OnTimerStart?.Invoke();
+           }
+          
+       }
+    
+       public void Stop()
+       {
+           if (IsRunning)
+           {
+               IsFinished = true;
+               IsRunning = false;
+               OnTimerEnd?.Invoke();
+           }
+       }
+ 
+       public void Resume() => IsRunning = true;
+       public void Pause() => IsRunning = false;
+
+       #endregion
+
+       #region Abstract
+
+       public abstract void Tick(float deltaTime);
+       public abstract void Reset();
+
+       #endregion
+    }
 }

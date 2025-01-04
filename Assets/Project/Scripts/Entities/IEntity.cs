@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Entities
+namespace Project.Scripts.Entities
 {
     public interface IEntity
     {

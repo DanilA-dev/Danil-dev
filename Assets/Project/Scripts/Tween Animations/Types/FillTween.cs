@@ -10,11 +10,17 @@ namespace Project.Scripts.Tween_Animations.Types
     [System.Serializable]
     public class FillTween : BaseAnimationTween
     {
+        #region Enums
+
         public enum FillType
         {
             Slider = 0,
             Image = 1
         }
+
+        #endregion
+
+        #region Fields
 
         [SerializeField] private FillType _fillType;
         [ShowIf(nameof(_fillType), FillType.Image)]
@@ -25,6 +31,10 @@ namespace Project.Scripts.Tween_Animations.Types
         [SerializeField] private float _startValue;
         [SerializeField] private float _endValue;
         [SerializeField] private bool _snapping;
+
+        #endregion
+
+        #region Properties
 
         public FillType Fill
         {
@@ -62,6 +72,10 @@ namespace Project.Scripts.Tween_Animations.Types
             set => _snapping = value;
         }
 
+        #endregion
+
+        #region Override
+
         public override Tween Play()
         {
             return _fillType switch
@@ -71,6 +85,8 @@ namespace Project.Scripts.Tween_Animations.Types
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
+
+        #endregion
     }
 }
 #endif

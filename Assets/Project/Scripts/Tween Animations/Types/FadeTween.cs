@@ -11,6 +11,8 @@ namespace Project.Scripts.Tween_Animations.Types
     [Serializable]
     public class FadeTween : BaseAnimationTween
     {
+        #region Enums
+
         public enum FadeObject
         {
             Image,
@@ -18,7 +20,11 @@ namespace Project.Scripts.Tween_Animations.Types
             Material,
             SpriteRenderer
         }
-        
+
+        #endregion
+
+        #region Fields
+
         [SerializeField] private FadeObject _fadeObject;
         [ShowIf("@this._fadeObject == FadeObject.Image")]
         [SerializeField] private Image _image;
@@ -32,6 +38,10 @@ namespace Project.Scripts.Tween_Animations.Types
         [Space]
         [SerializeField] private float _startValue;
         [SerializeField] private float _endValue;
+
+        #endregion
+
+        #region Properties
 
         public FadeObject Fade
         {
@@ -75,6 +85,10 @@ namespace Project.Scripts.Tween_Animations.Types
             set => _endValue = value;
         }
 
+        #endregion
+
+        #region Override
+
         public override Tween Play()
         {
             switch (_fadeObject)
@@ -94,6 +108,8 @@ namespace Project.Scripts.Tween_Animations.Types
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        #endregion
     }
 }
 #endif

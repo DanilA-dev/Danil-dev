@@ -1,23 +1,40 @@
-public class CountdownTimer : BaseTimer
+namespace Project.Scripts.TimerSystem.Timer_System
 {
-    public float RemainingTime => Time;
-    
-    public CountdownTimer(float initialTime) : base(initialTime) {}
-
-    public override void Tick(float deltaTime)
+    public class CountdownTimer : BaseTimer
     {
-        if (IsRunning && Time > 0)
-            Time -= deltaTime;
+        #region Properties
+        public float RemainingTime => Time;
+
+        #endregion
+
+        #region Construct
+        public CountdownTimer(float initialTime) : base(initialTime) {}
+
+        #endregion
+
+        #region Override
+
+        public override void Tick(float deltaTime)
+        {
+            if (IsRunning && Time > 0)
+                Time -= deltaTime;
       
-        if(IsRunning && Time <= 0)
-            Stop();
-    }
+            if(IsRunning && Time <= 0)
+                Stop();
+        }
 
-    public override void Reset() => Time = _initialTime;
+        public override void Reset() => Time = _initialTime;
 
-    public void Reset(float newInitTime)
-    {
-        _initialTime = newInitTime;
-        Reset();
+        #endregion
+
+        #region Public
+
+        public void Reset(float newInitTime)
+        {
+            _initialTime = newInitTime;
+            Reset();
+        }
+
+        #endregion
     }
 }

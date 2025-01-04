@@ -5,10 +5,12 @@ using Project.Scripts.Tween_Animations.Types;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace UI
+namespace Project.Scripts.MenuHandler
 {
     public abstract class BaseMenu : MonoBehaviour
     {
+        #region Fields
+
         [OnValueChanged(nameof(ActiveColor))]
         [GUIColor(nameof(ActiveColor))]
         [SerializeField, ReadOnly] private bool _isOpen;
@@ -22,12 +24,20 @@ namespace UI
         [ShowIf(nameof(_hasCloseAniation))]
         [SerializeReference] private BaseAnimationTween[] _closeAnimations;
 
+        #endregion
+
+        #region Properties
         public bool IsOpen => _isOpen;
 
-        protected void Awake()
-        {
-            ForceClose();
-        }
+        #endregion
+
+        #region Monobehaviour
+
+        protected void Awake() => ForceClose();
+
+        #endregion
+
+        #region Public
 
         public async void Open()
         {
@@ -36,7 +46,7 @@ namespace UI
             
             gameObject.SetActive(true);
             if (_hasOpenAnimation && _openAnimations != null
-                && _openAnimations.Length > 0)
+                                  && _openAnimations.Length > 0)
             {
                 var seq = DOTween.Sequence();
                 seq.Restart();
@@ -59,7 +69,7 @@ namespace UI
                 return;
             
             if (_hasCloseAniation && _closeAnimations != null
-                && _closeAnimations.Length > 0)
+                                  && _closeAnimations.Length > 0)
             {
                 var seq = DOTween.Sequence();
                 seq.Restart();
@@ -87,12 +97,20 @@ namespace UI
             _isOpen = false;
             gameObject.SetActive(IsOpen);
         }
-        
+
+        #endregion
+
+        #region Virtual
         protected virtual void OnOpen() {}
         protected virtual void OnClose() {}
 
+        #endregion
+
+        #region Private
+
         private Color ActiveColor() => _isOpen ? Color.green : Color.red;
 
+        #endregion
     }
 }
 #endif

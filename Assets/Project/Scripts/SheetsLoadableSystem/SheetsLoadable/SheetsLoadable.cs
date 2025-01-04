@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SheetsLoadable
+namespace Project.Scripts.SheetsLoadableSystem.SheetsLoadable
 {
     public class SheetsLoadable : Attribute
     {

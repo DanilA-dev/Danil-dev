@@ -3,23 +3,29 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
-using SheetsLoadable;
+using Project.Scripts.SheetsLoadableSystem.SheetsLoadable;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 using Task = System.Threading.Tasks.Task;
 
-namespace CSV
+namespace Project.Scripts.Editor.CSV.Loaders
 {
     [CreateAssetMenu(menuName = "Editor/Sheets/Data Importer")]
     public class SheetsDataUrlImporter : ScriptableObject
     {
+        #region Enums
+
         private enum ImportType
         {
             URL,
             File
         }
-        
+
+        #endregion
+
+        #region Fields
+
         [SerializeField] private ImportType _importType;
         [SerializeField] private bool _clearOnImport;
         [ShowIf(nameof(_importType), ImportType.URL)]
@@ -27,6 +33,10 @@ namespace CSV
         [ShowIf(nameof(_importType), ImportType.File)]
         [SerializeField] private TextAsset _textFile;
         [SerializeField] private List<ScriptableObject> _dataToImport = new();
+
+        #endregion
+
+        #region Editor
 
         [Button]
         public void ImportData()
@@ -41,6 +51,22 @@ namespace CSV
             else
                 ImportFromURL();
         }
+        
+        [MenuItem("Tools/CSV/Import")]
+        public static void OpenImportMenu()
+        {
+            SheetsDataUrlImporter importer = Resources.LoadAll<SheetsDataUrlImporter>("")[0];
+            if (null == importer)
+            {
+                Debug.LogError($"{importer.name} can't be found!");
+                return;
+            }
+            EditorUtility.OpenPropertyEditor(importer);
+        }
+
+        #endregion
+
+        #region Private
 
         private async void ImportFromURL()
         {
@@ -140,18 +166,7 @@ namespace CSV
                 return _dataToImport.FirstOrDefault(a => a.ToString() == dataName);
             return null; 
         }
-        
-        [MenuItem("Tools/CSV/Import")]
-        public static void OpenImportMenu()
-        {
-            SheetsDataUrlImporter importer = Resources.LoadAll<SheetsDataUrlImporter>("")[0];
-            if (null == importer)
-            {
-                Debug.LogError($"{importer.name} can't be found!");
-                return;
-            }
-            EditorUtility.OpenPropertyEditor(importer);
-        }
-        
+
+        #endregion
     }
 }

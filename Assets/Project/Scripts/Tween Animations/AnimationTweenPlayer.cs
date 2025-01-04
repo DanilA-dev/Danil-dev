@@ -5,7 +5,9 @@ namespace Project.Scripts.Tween_Animations
 {
     public class AnimationTweenPlayer : BaseAnimationTweenPlayable
     {
-        public override void OnPlay()
+        #region Override
+
+        protected override void OnPlay()
         {
             if(!HasTweensInArray())
                 return;
@@ -27,6 +29,8 @@ namespace Project.Scripts.Tween_Animations
             foreach (var tween in _tweens)
                 tween.Pause();
         }
+
+        #endregion
     }
 }
 #endif

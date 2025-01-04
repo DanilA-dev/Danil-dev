@@ -6,6 +6,8 @@ namespace Project.Scripts.ColliderEvents
 {
     public abstract class BaseColliderEvents : MonoBehaviour
     {
+        #region Fields
+
         [SerializeField] protected Rigidbody _rigidbody;
         [SerializeField] protected ColliderChecker.ColliderChecker _colliderChecker;
         [Space]
@@ -19,6 +21,10 @@ namespace Project.Scripts.ColliderEvents
         [Space] 
         [SerializeField] protected bool _debugColliders;
 
+        #endregion
+
+        #region Properties
+
         public UnityEvent<Collider> OnEnter
         {
             get => _onEnter;
@@ -31,9 +37,20 @@ namespace Project.Scripts.ColliderEvents
             set => _onExit = value;
         }
 
+        #endregion
+
+        #region Monobehaviour
+
         private void Awake() => InitColliderEvents();
 
+        #endregion
+
+        #region Abstract
         protected abstract void InitColliderEvents();
+
+        #endregion
+
+        #region Debug
 
         protected void DebugCollider(Collider collider, bool isPassed)
         {
@@ -43,5 +60,7 @@ namespace Project.Scripts.ColliderEvents
             if(_debugColliders)
                 Debug.Log($"[{gameObject.name}] found collider {collider.name}, collider <color={color}> {result} </color>");
         }
+
+        #endregion
     }
 }

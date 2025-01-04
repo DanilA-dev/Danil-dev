@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using UnityEngine;
 
-namespace SheetsLoadable
+namespace Project.Scripts.SheetsLoadableSystem.SheetsLoadable
 {
     public static class SheetsDataParser
     {
