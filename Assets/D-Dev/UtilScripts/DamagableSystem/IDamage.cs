@@ -1,7 +1,9 @@
-﻿namespace D_Dev.UtilScripts.DamagableSystem
+﻿using D_Dev.UtilScripts.ValueSystem;
+
+namespace D_Dev.UtilScripts.DamagableSystem
 {
     public interface IDamage
     {
-        public void ApplyDamage(ref float health);
+        public float ApplyDamage(ref FloatValue health);
     }
 }

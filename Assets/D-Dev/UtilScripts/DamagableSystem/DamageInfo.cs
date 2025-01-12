@@ -6,5 +6,12 @@ namespace D_Dev.UtilScripts.DamagableSystem
     {
         public GameObject DamageDealer { get; set; }
         public IDamage Damage { get; set; }
+        
+        public DamageInfo(GameObject damageDealer, IDamage damage)
+        {
+            DamageDealer = damageDealer;
+            Damage = damage;
+        }
+
     }
 }
