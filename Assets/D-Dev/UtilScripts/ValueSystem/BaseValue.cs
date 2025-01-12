@@ -5,7 +5,15 @@ namespace D_Dev.UtilScripts.ValueSystem
 {
     public class BaseValue<T>
     {
+        #region Fields
+
         [SerializeField] protected T _value;
+        
+
+        public Action<T> OnValueChanged;
+        #endregion
+
+        #region Properties
 
         public virtual T Value
         {
@@ -16,6 +24,9 @@ namespace D_Dev.UtilScripts.ValueSystem
                 OnValueChanged?.Invoke(_value);
             }
         }
-        public Action<T> OnValueChanged;
+
+        #endregion
+
+       
     }
 }
