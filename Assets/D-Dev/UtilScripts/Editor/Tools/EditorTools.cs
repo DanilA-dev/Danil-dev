@@ -34,7 +34,7 @@ namespace D_Dev
         {
             var path = "Assets";
             var directory = Directory.GetCurrentDirectory() + "/D-Dev_Utils.unitypackage";
-            AssetDatabase.ExportPackage(path, directory, ExportPackageOptions.IncludeDependencies);
+            AssetDatabase.ExportPackage(path, directory, ExportPackageOptions.Recurse);
             Debug.Log($"Exported package to {directory}");
         }
         #endregion
