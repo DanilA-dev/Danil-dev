@@ -52,7 +52,7 @@ namespace D_Dev.UtilScripts.Editor.CSV.Loaders
                 ImportFromURL();
         }
         
-        [MenuItem("Tools/CSV/Import")]
+        [MenuItem("Tools/D_Dev/CSV/Import")]
         public static void OpenImportMenu()
         {
             SheetsDataUrlImporter importer = Resources.LoadAll<SheetsDataUrlImporter>("")[0];

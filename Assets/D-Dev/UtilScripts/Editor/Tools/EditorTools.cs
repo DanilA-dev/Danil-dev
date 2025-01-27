@@ -14,7 +14,7 @@ namespace D_Dev
         
         #region Editor
 
-        [MenuItem("Tools/Setup/Create Folders")]
+        [MenuItem("Tools/D_Dev/Setup/Create Folders")]
         public static void InitProjectFolders()
         {
             CreateFolders("_Project" ,new []
@@ -27,6 +27,15 @@ namespace D_Dev
                 "ScriptableObjects"
             });
             AssetDatabase.Refresh();
+        }
+
+        [MenuItem("Tools/D_Dev/ExportPackage")]
+        public static void ExportPackage()
+        {
+            var path = "Assets";
+            var directory = Directory.GetCurrentDirectory() + "/D-Dev_Utils.unitypackage";
+            AssetDatabase.ExportPackage(path, directory, ExportPackageOptions.IncludeDependencies);
+            Debug.Log($"Exported package to {directory}");
         }
         #endregion
 

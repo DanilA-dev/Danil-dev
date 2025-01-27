@@ -97,7 +97,7 @@ namespace D_Dev.UtilScripts.Editor.CSV.Writers
             }
         }
 
-        [MenuItem("Tools/CSV/Export")]
+        [MenuItem("Tools/D_Dev/CSV/Export")]
         public static void OpenExportMenu()
         {
             SheetsDataCsvExporter exporter = Resources.LoadAll<SheetsDataCsvExporter>("")[0];
