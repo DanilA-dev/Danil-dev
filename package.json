@@ -4,9 +4,7 @@
   "displayName": "D-Dev Tools",
   "dependencies": 
   {
-   "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
-   "com.neuecc.unirx": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts",
-    "com.demigiant.dotween": "https://github.com/Demigiant/dotween.git#1.2.335"
+    "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.10"
   }
 }
 
