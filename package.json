@@ -4,7 +4,8 @@
   "displayName": "D-Dev Tools",
   "dependencies": 
   {
-    
+    "com.neuecc.unirx": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts",
+    "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"
   }
 }
 

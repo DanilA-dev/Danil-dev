@@ -1,9 +1,9 @@
-﻿#if DOTWEEN
-using Cysharp.Threading.Tasks;
-using D_Dev.UtilScripts.Tween_Animations.Types;
-using DG.Tweening;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
+#if DOTWEEN
+using DG.Tweening;
+using D_Dev.UtilScripts.Tween_Animations.Types;
+#endif
 
 namespace D_Dev.UtilScripts.MenuHandler
 {
@@ -19,11 +19,12 @@ namespace D_Dev.UtilScripts.MenuHandler
         [SerializeField] private bool _hasCloseAniation;
         [ShowIf(nameof(_hasCloseAniation))]
         [SerializeField] private bool _disableObjectOnComplete;
+#if DOTWEEN
         [ShowIf(nameof(_hasOpenAnimation))]
         [SerializeReference] private BaseAnimationTween[] _openAnimations;
         [ShowIf(nameof(_hasCloseAniation))]
         [SerializeReference] private BaseAnimationTween[] _closeAnimations;
-
+#endif
         #endregion
 
         #region Properties
@@ -45,6 +46,7 @@ namespace D_Dev.UtilScripts.MenuHandler
                 return;
             
             gameObject.SetActive(true);
+#if DOTWEEN
             if (_hasOpenAnimation && _openAnimations != null
                                   && _openAnimations.Length > 0)
             {
@@ -57,10 +59,10 @@ namespace D_Dev.UtilScripts.MenuHandler
 
                 await seq.AsyncWaitForCompletion().AsUniTask();
                 _isOpen = true;
+                return;
             }
-            else
-                _isOpen = true;
-           
+#endif
+            _isOpen = true;
         }
 
         public async void Close()
@@ -68,6 +70,7 @@ namespace D_Dev.UtilScripts.MenuHandler
             if(!IsOpen)
                 return;
             
+#if DOTWEEN
             if (_hasCloseAniation && _closeAnimations != null
                                   && _closeAnimations.Length > 0)
             {
@@ -81,9 +84,10 @@ namespace D_Dev.UtilScripts.MenuHandler
                 await seq.AsyncWaitForCompletion().AsUniTask();
                 _isOpen = false;
                 gameObject.SetActive(!_disableObjectOnComplete);
+                return;
             }
-            else
-                ForceClose();
+#endif
+            ForceClose();
         }
 
         public void ForceOpen()
@@ -113,4 +117,3 @@ namespace D_Dev.UtilScripts.MenuHandler
         #endregion
     }
 }
-#endif
