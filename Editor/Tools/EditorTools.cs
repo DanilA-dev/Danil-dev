@@ -1,8 +1,6 @@
 #if UNITY_EDITOR
 using System.IO;
 using UnityEditor;
-using UnityEditor.PackageManager;
-using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using Application = UnityEngine.Device.Application;
 
@@ -10,8 +8,6 @@ namespace D_Dev
 {
     public static class EditorTools
     {
-        private static ListRequest _listRequest;
-        
         #region Editor
 
         [MenuItem("Tools/D_Dev/Setup/Create Folders")]
@@ -32,8 +28,8 @@ namespace D_Dev
         [MenuItem("Tools/D_Dev/ExportPackage")]
         public static void ExportPackage()
         {
-            var path = "Assets";
-            var directory = Directory.GetCurrentDirectory() + "/D-Dev_Utils.unitypackage";
+            var path = Directory.GetCurrentDirectory() + "/Danil-dev";
+            var directory = Directory.GetCurrentDirectory() + "Danil-dev/UnityPackages/Danil-Dev.unitypackage";
             AssetDatabase.ExportPackage(path, directory, ExportPackageOptions.Recurse);
             Debug.Log($"Exported package to {directory}");
         }
