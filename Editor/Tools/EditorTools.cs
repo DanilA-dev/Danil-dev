@@ -28,10 +28,10 @@ namespace D_Dev
         [MenuItem("Tools/D_Dev/ExportPackage")]
         public static void ExportPackage()
         {
-            var path = Directory.GetCurrentDirectory() + "/Danil-dev";
-            var directory = Directory.GetCurrentDirectory() + "Danil-dev/UnityPackages/Danil-Dev.unitypackage";
-            AssetDatabase.ExportPackage(path, directory, ExportPackageOptions.Recurse);
-            Debug.Log($"Exported package to {directory}");
+            var path =  "Assets/Danil-dev";
+            var exportDirectory =  "Assets/Danil-dev/UnityPackages/Danil-Dev.unitypackage";
+            AssetDatabase.ExportPackage(path, exportDirectory, ExportPackageOptions.Recurse | ExportPackageOptions.IncludeDependencies);
+            Debug.Log($"Exported package to {exportDirectory}");
         }
         #endregion
 
