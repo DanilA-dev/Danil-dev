@@ -33,6 +33,14 @@ namespace D_Dev
             AssetDatabase.ExportPackage(path, exportDirectory, ExportPackageOptions.Recurse | ExportPackageOptions.IncludeDependencies);
             Debug.Log($"Exported package to {exportDirectory}");
         }
+
+        [MenuItem("Tools/D_Dev/Setup/ImportPackage")]
+        public static void ImportUtilsPackage()
+        {
+            var path = "Packages/com.d-dev.utils/Danil-Dev.unitypackage";
+            AssetDatabase.ImportPackage(path,true);
+        }
+
         #endregion
 
         #region Helpers
