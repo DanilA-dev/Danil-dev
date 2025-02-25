@@ -1,5 +1,7 @@
 #if UNITY_EDITOR
+using System;
 using System.IO;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 using Application = UnityEngine.Device.Application;
@@ -8,6 +10,15 @@ namespace D_Dev
 {
     public static class EditorTools
     {
+        #region Const
+
+        private static readonly string UniTaskPackage = "com.cysharp.unitask";
+
+        private static readonly string UniTaskURL =
+            "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask";
+
+        #endregion
+        
         #region Editor
 
         [MenuItem("Tools/D_Dev/Setup/Create Folders")]
@@ -25,7 +36,7 @@ namespace D_Dev
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("Tools/D_Dev/ExportPackage")]
+        [MenuItem("Tools/D_Dev/Setup/ExportPackage")]
         public static void ExportPackage()
         {
             var path =  "Assets/Danil-dev";
@@ -37,10 +48,10 @@ namespace D_Dev
         [MenuItem("Tools/D_Dev/Setup/ImportPackage")]
         public static void ImportUtilsPackage()
         {
+            AddPackageToManifest(UniTaskPackage, UniTaskURL);
             var path = "Packages/com.d-dev.utils/Danil-Dev.unitypackage";
             AssetDatabase.ImportPackage(path,true);
         }
-
         #endregion
 
         #region Helpers
@@ -51,6 +62,15 @@ namespace D_Dev
             
             foreach (var dir in directions)
                 Directory.CreateDirectory(Path.Combine(combinedPath, dir));
+        }
+        
+        private static void AddPackageToManifest(string package, string url)
+        {
+            var manifest = "Packages/manifest.json";
+            var text = File.ReadAllText(manifest, Encoding.Default);
+            var addedPackagePath = text.Replace("\"dependencies\": {", "\"dependencies\": {" + Environment.NewLine + " " +
+                                                                       '"' + package + '"'+ ":" + " " + '"' + url + '"' + ",");
+            File.WriteAllText(manifest, addedPackagePath, Encoding.Default);
         }
 
         #endregion
