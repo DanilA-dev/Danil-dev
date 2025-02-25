@@ -2,7 +2,7 @@
 
 namespace D_Dev.UtilScripts.MenuHandler
 {
-    [CreateAssetMenu(menuName = "Project/Info/MenuInfo")]
+    [CreateAssetMenu(menuName = "D-Dev/Info/MenuInfo")]
     public class MenuInfo : ScriptableObject
     {
         public enum CanvasType

@@ -11,7 +11,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace D_Dev.UtilScripts.Editor.CSV.Loaders
 {
-    [CreateAssetMenu(menuName = "Editor/Sheets/Data Importer")]
+    [CreateAssetMenu(menuName = "D-Dev/Editor/Sheets/Data Importer")]
     public class SheetsDataUrlImporter : ScriptableObject
     {
         #region Enums

@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace D_Dev.UtilScripts.Editor.CSV.Writers
 {
-    [CreateAssetMenu(menuName = "Editor/Sheets/Data Exporter")]
+    [CreateAssetMenu(menuName = "D-Dev/Editor/Sheets/Data Exporter")]
     public class SheetsDataCsvExporter : ScriptableObject
     {
         #region Fields
