@@ -40,7 +40,7 @@ namespace D_Dev
         public static void ExportPackage()
         {
             var path =  "Assets/Danil-dev";
-            var exportDirectory =  "Assets/Danil-dev/UnityPackages/Danil-Dev.unitypackage";
+            var exportDirectory =  "Assets/Danil-dev/Package/Danil-Dev.unitypackage";
             AssetDatabase.ExportPackage(path, exportDirectory, ExportPackageOptions.Recurse | ExportPackageOptions.IncludeDependencies);
             Debug.Log($"Exported package to {exportDirectory}");
         }
