@@ -8,8 +8,10 @@ namespace D_Dev.UtilScripts.TimerSystem
 
        protected float _initialTime;
        
-       public Action OnTimerStart;
-       public Action OnTimerEnd;
+       public event Action OnTimerStart;
+
+       public event Action<float> OnTimerProgressUpdate;
+       public event Action OnTimerEnd;
 
        #endregion
 
@@ -17,7 +19,6 @@ namespace D_Dev.UtilScripts.TimerSystem
 
        protected float Time { get; set; }
        public bool IsRunning { get; protected set; }
-       public bool IsFinished { get; protected set; }
        public float Progress => Time / _initialTime;
 
        #endregion
@@ -39,7 +40,6 @@ namespace D_Dev.UtilScripts.TimerSystem
            Time = _initialTime;
            if (!IsRunning)
            {
-               IsFinished = false;
                IsRunning = true;
                OnTimerStart?.Invoke();
            }
@@ -50,7 +50,6 @@ namespace D_Dev.UtilScripts.TimerSystem
        {
            if (IsRunning)
            {
-               IsFinished = true;
                IsRunning = false;
                OnTimerEnd?.Invoke();
            }
@@ -63,9 +62,17 @@ namespace D_Dev.UtilScripts.TimerSystem
 
        #region Abstract
 
-       public abstract void Tick(float deltaTime);
-       public abstract void Reset();
+       public virtual void Tick(float deltaTime)
+       {
+           OnTimerProgressUpdate?.Invoke(Progress);
+       }
+
+       public virtual void Reset()
+       {
+           OnTimerStart?.Invoke();
+       }
 
        #endregion
+      
     }
 }

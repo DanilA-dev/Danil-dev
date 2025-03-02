@@ -16,6 +16,7 @@ namespace D_Dev.UtilScripts.TimerSystem
 
         public override void Tick(float deltaTime)
         {
+            base.Tick(deltaTime);
             if (IsRunning && Time > 0)
                 Time -= deltaTime;
       
@@ -31,6 +32,7 @@ namespace D_Dev.UtilScripts.TimerSystem
 
         public void Reset(float newInitTime)
         {
+            base.Reset();
             _initialTime = newInitTime;
             Reset();
         }

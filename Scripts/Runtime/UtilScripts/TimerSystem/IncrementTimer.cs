@@ -21,14 +21,21 @@ namespace D_Dev.UtilScripts.TimerSystem
 
         public override void Tick(float deltaTime)
         {
+            base.Tick(deltaTime);
             if (IsRunning && Time < _targetTime)
+            {
                 Time += deltaTime;
+            }
         
             if(IsRunning && Time >= _targetTime)
                 Stop();
         }
 
-        public override void Reset() => Time = 0;
+        public override void Reset()
+        {
+            base.Reset();
+            Time = 0;
+        }
 
         #endregion
     }
