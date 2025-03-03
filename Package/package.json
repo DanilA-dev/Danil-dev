@@ -4,6 +4,7 @@
   "displayName": "D-Dev Tools",
   "dependencies": 
   {
+    "com.unity.inputsystem": "1.7.0"
   }
 }
 
