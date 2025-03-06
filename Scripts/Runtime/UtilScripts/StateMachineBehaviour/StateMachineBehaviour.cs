@@ -12,6 +12,7 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.StateMachineBehaviour
         #region Fields
 
         [SerializeField, ReadOnly] protected TStateEnum _currentState;
+        [SerializeField] protected bool _debugStateChange;
         [Space]
         [SerializeField] protected TStateEnum _startState;
         [FoldoutGroup("Events")]
@@ -32,6 +33,7 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.StateMachineBehaviour
             {
                 OnStateEnter?.Invoke(state);
                 _currentState = state;
+                StateChangedDebug(state);
             };
             _stateMachine.OnStateExit += state => OnStateExit?.Invoke(state);
             InitStates();
@@ -78,5 +80,14 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.StateMachineBehaviour
         
         #endregion
         
+        #region Debug
+
+        protected void StateChangedDebug(TStateEnum stateName)
+        {
+            if(_debugStateChange)
+                Debug.Log($"[StateBehaviour [<color=pink>{this.name}</color>] entered state <color=yellow>{stateName}</color>");
+        }
+
+        #endregion
     }
 }
