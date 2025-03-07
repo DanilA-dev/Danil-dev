@@ -18,8 +18,6 @@ namespace D_Dev.UtilScripts.ColliderEvents
         [SerializeField] protected UnityEvent<Collider> _onEnter;
         [ShowIf(nameof(_checkExit))]
         [SerializeField] protected UnityEvent<Collider> _onExit;
-        [Space] 
-        [SerializeField] protected bool _debugColliders;
 
         #endregion
 
@@ -47,19 +45,6 @@ namespace D_Dev.UtilScripts.ColliderEvents
 
         #region Abstract
         protected abstract void InitColliderEvents();
-
-        #endregion
-
-        #region Debug
-
-        protected void DebugCollider(Collider collider, bool isPassed)
-        {
-            string color = isPassed ? "green" : "red";
-            string result = isPassed ? "is passed" : "don't passed";
-            
-            if(_debugColliders)
-                Debug.Log($"[{gameObject.name}] found collider {collider.name}, collider <color={color}> {result} </color>");
-        }
 
         #endregion
     }

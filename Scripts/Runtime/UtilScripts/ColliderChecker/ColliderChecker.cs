@@ -30,6 +30,8 @@ namespace D_Dev.UtilScripts.ColliderChecker
         [SerializeField] private bool _ignoreTag;
         [ShowIf(nameof(_ignoreTag))]
         [SerializeField] private Tag[] _ignoreTags;
+        [Title("Debug")]
+        [SerializeField] protected bool _debugColliders;
 
         #endregion
 
@@ -120,7 +122,22 @@ namespace D_Dev.UtilScripts.ColliderChecker
                 || _ignoreTag && collider.gameObject.HasTags(_ignoreTags))
                 ignorePassed = false;
             
-            return checkPassed && ignorePassed;
+            bool passed = checkPassed && ignorePassed;
+            DebugCollider(collider, passed);
+            return passed;
+        }
+
+        #endregion
+        
+        #region Debug
+
+        private void DebugCollider(Collider collider, bool isPassed)
+        {
+            string color = isPassed ? "green" : "red";
+            string result = isPassed ? "is passed" : "don't passed";
+            
+            if(_debugColliders)
+                Debug.Log($"{collider.name}, collider <color={color}> {result} </color>");
         }
 
         #endregion

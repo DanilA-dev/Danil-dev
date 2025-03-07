@@ -17,8 +17,6 @@ namespace D_Dev.UtilScripts.ColliderEvents
                         
                         if(passed)
                             OnEnter?.Invoke(c);
-                        
-                        DebugCollider(c, passed);
                     });
             
             if (_checkExit)
@@ -29,8 +27,6 @@ namespace D_Dev.UtilScripts.ColliderEvents
                         
                         if(passed)
                             OnExit?.Invoke(c);
-                        
-                        DebugCollider(c, passed);
                     });
         }
 
