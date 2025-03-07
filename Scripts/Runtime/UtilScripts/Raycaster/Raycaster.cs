@@ -47,8 +47,21 @@ namespace D_Dev.UtilScripts.Raycaster
 
             #region Properties
 
-            public Transform RaycastTransformPoint => _raycastTransformPoint;
-            public RaycastPointType PointType => _raycastPointType;
+            public RaycastPointType PointType
+            {
+                get => _raycastPointType;
+                set => _raycastPointType = value;
+            }
+            public Vector3 RaycastVectorPoint
+            {
+                get => _raycastVectorPoint;
+                set => _raycastVectorPoint = value;
+            }
+            public Transform RaycastTransformPoint
+            {
+                get => _raycastTransformPoint;
+                set => _raycastTransformPoint = value;
+            }
 
             #endregion
 
@@ -92,6 +105,9 @@ namespace D_Dev.UtilScripts.Raycaster
         [Title("Gizmos")] 
         [SerializeField] private Color _debugColor;
 
+        private Ray _ray = new();
+        private RaycastHit[] _hits;
+        
         #endregion
 
         #region Properties
@@ -126,16 +142,17 @@ namespace D_Dev.UtilScripts.Raycaster
 
         public bool IsHit()
         {
-            var results = new RaycastHit[_collidersBuffer];
-            var ray = new Ray(_origin.GetPoint(), _direction.GetPoint());
-            var hitsAmount = Physics.RaycastNonAlloc(ray, results, _distance);
-            Debug.DrawRay(ray.origin, ray.direction, _debugColor);
+            _hits ??= new RaycastHit[_collidersBuffer];
+            _ray.origin = _origin.GetPoint();
+            _ray.direction = _direction.GetPoint();
+            var hitsAmount = Physics.RaycastNonAlloc(_ray, _hits, _distance);
+            Debug.DrawRay(_ray.origin, _ray.direction, _debugColor);
             if (hitsAmount > 0)
             {
-                for (var i = 0; i < results.Length; i++)
+                for (var i = 0; i < _hits.Length; i++)
                 {
-                    if (results[i].collider != null
-                        && _colliderChecker.IsColliderPassed(results[i].collider))
+                    if (_hits[i].collider != null
+                        && _colliderChecker.IsColliderPassed(_hits[i].collider))
                         return true;
                 }
             }
@@ -144,18 +161,19 @@ namespace D_Dev.UtilScripts.Raycaster
 
         public bool IsHit(out Collider collider)
         {
-            var results = new RaycastHit[_collidersBuffer];
-            var ray = new Ray(_origin.GetPoint(), _direction.GetPoint());
-            var hitsAmount = Physics.RaycastNonAlloc(ray, results, _distance);
-            Debug.DrawRay(ray.origin, ray.direction, _debugColor);
+            _hits ??= new RaycastHit[_collidersBuffer];
+            _ray.origin = _origin.GetPoint();
+            _ray.direction = _direction.GetPoint();
+            var hitsAmount = Physics.RaycastNonAlloc(_ray, _hits, _distance);
+            Debug.DrawRay(_ray.origin, _ray.direction, _debugColor);
             if (hitsAmount > 0)
             {
-                for (var i = 0; i < results.Length; i++)
+                for (var i = 0; i < _hits.Length; i++)
                 {
-                    if (results[i].collider != null
-                        && _colliderChecker.IsColliderPassed(results[i].collider))
+                    if (_hits[i].collider != null
+                        && _colliderChecker.IsColliderPassed(_hits[i].collider))
                     {
-                        collider = results[i].collider;
+                        collider = _hits[i].collider;
                         return true;
                     }
                 }
