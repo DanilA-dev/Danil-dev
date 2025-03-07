@@ -13,10 +13,6 @@ namespace D_Dev.UtilScripts.Raycaster
         [SerializeField] private RaycastPoint _direction;
         [Title("Collider checker")]
         [SerializeField] private ColliderChecker.ColliderChecker _colliderChecker;
-        [Space]
-        [Title("Gizmos")] 
-        [SerializeField] private Color _debugColor;
-
         
         #endregion
         

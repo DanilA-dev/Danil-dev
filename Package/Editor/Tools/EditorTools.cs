@@ -37,7 +37,7 @@ namespace D_Dev
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("Tools/D_Dev/Setup/ExportPackage")]
+        [MenuItem("Tools/D_Dev/Setup/Export Utils Package")]
         public static void ExportPackage()
         {
             var path =  "Assets/Danil-dev";
@@ -46,12 +46,17 @@ namespace D_Dev
             Debug.Log($"Exported package to {exportDirectory}");
         }
 
-        [MenuItem("Tools/D_Dev/Setup/ImportPackage")]
+        [MenuItem("Tools/D_Dev/Setup/Import Utils Package")]
         public static void ImportUtilsPackage()
         {
-            AddPackageToManifest(UniTaskPackage, UniTaskURL);
             var path = "Packages/com.d-dev.utils/Danil-Dev.unitypackage";
             AssetDatabase.ImportPackage(path,true);
+        }
+        
+        [MenuItem("Tools/D_Dev/Setup/Import Dependencies")]
+        public static void ImportDependencies()
+        {
+            AddPackageToManifest(UniTaskPackage, UniTaskURL);
         }
         #endregion
 
@@ -71,8 +76,6 @@ namespace D_Dev
             var text = File.ReadAllText(manifest, Encoding.Default);
             var addedPackagePath = text.Replace("\"dependencies\": {", "\"dependencies\": {" + Environment.NewLine + " " +
                                                                        '"' + package + '"'+ ":" + " " + '"' + url + '"' + ",");
-            if(text.Contains(addedPackagePath))
-                return;
             
             File.WriteAllText(manifest, addedPackagePath, Encoding.Default);
         }
