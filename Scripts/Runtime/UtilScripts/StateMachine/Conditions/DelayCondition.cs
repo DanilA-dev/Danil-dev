@@ -4,23 +4,24 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.SimpleStateMachine
 {
     public class DelayCondition : IStateCondition
     {
-        private float _maxTime;
         private float _currentTime;
+        private float _maxTime;
+        private bool _isTimerRunning;
         
         public DelayCondition(float maxTime)
         {
-            _currentTime = maxTime;
+            _maxTime = maxTime;
+            _currentTime = _maxTime;
         }
         
         public bool IsMatched()
         {
-            _currentTime -= Time.deltaTime;
-            if (_currentTime <= 0)
-            {
+            if(!_isTimerRunning && _currentTime <= 0)
                 _currentTime = _maxTime;
-                return true;
-            }
-            return false;
+            
+            _isTimerRunning = _currentTime > 0;
+            _currentTime -= Time.deltaTime;
+            return !_isTimerRunning;
         }
     }
 }

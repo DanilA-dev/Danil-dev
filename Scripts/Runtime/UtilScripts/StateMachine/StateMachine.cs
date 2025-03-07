@@ -15,7 +15,7 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.SimpleStateMachine
         
         private IState _current;
         private Dictionary<TStateEnum, IState> _states;
-        private Dictionary<TStateEnum, StateTransition<TStateEnum>> _statesConditions;
+        private Dictionary<TStateEnum, List<StateTransition<TStateEnum>>> _statesConditions;
         private CancellationTokenSource _tokenSource;
         
         private bool _isStateSwitching;
@@ -44,8 +44,11 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.SimpleStateMachine
         #region Public
 
         public void AddState(TStateEnum stateEnum, IState state) => _states.TryAdd(stateEnum, state);
-        public void AddTransition(TStateEnum fromState, TStateEnum toState, IStateCondition condition) 
-            => _statesConditions.TryAdd(fromState, new StateTransition<TStateEnum>(toState, condition));
+        public void AddTransition(TStateEnum fromState, TStateEnum toState, IStateCondition condition)
+        {
+            if(!_statesConditions.TryAdd(fromState, new List<StateTransition<TStateEnum>> {new(toState, condition) }))
+                _statesConditions[fromState].Add(new(toState, condition));
+        }
 
         public void OnUpdate()
         {
@@ -95,8 +98,11 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.SimpleStateMachine
                 if(!stateEnum.Equals(_currentState))
                     continue;
                 
-                if(transition.Condition.IsMatched() && !_isStateSwitching)
-                    ChangeState(transition.ToState);
+                foreach (var stateTransition in transition)
+                {
+                    if(stateTransition.Condition.IsMatched() && !_isStateSwitching)
+                        ChangeState(stateTransition.ToState);
+                }
             }
         }
 
