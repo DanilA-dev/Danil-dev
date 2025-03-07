@@ -74,8 +74,12 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.StateMachineBehaviour
         #region Protected
 
         protected void AddState(TStateEnum stateName, IState state) => _stateMachine?.AddState(stateName, state);
-        protected void AddTransition(TStateEnum fromState, TStateEnum toState, IStateCondition condition) 
-            => _stateMachine?.AddTransition(fromState, toState, condition);
+        protected void AddTransition(TStateEnum[] fromStates, TStateEnum toState, IStateCondition condition)
+        {
+            foreach (var fromState in fromStates)
+                _stateMachine?.AddTransition(fromState, toState, condition);
+        }
+
         protected void ChangeState(TStateEnum stateName) => _stateMachine.ChangeState(stateName);
         
         #endregion
