@@ -1,97 +1,28 @@
-﻿using System;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace D_Dev.UtilScripts.Raycaster
 {
+    public enum RaycastPointType
+    {
+        Vector,
+        Transform
+    }
+            
+    public enum LocalTransformDirection
+    {
+        Self = 0,
+        Up = 1,
+        Down = 2,
+        Right = 3,
+        Left = 4,
+        Forward = 5,
+        Back = 7
+    }
+
     [System.Serializable]
     public class Raycaster
     {
-        #region Classes
-
-         [System.Serializable]
-        public class RaycastPoint
-        {
-            #region Enums
-
-            public enum RaycastPointType
-            {
-                Vector,
-                Transform
-            }
-            
-            public enum LocalTransformDirection
-            {
-                None = 0,
-                Up = 1,
-                Down = 2,
-                Right = 3,
-                Left = 4,
-                Forward = 5,
-                Back = 7
-            }
-
-            #endregion
-
-            #region Fields
-
-            [SerializeField] private RaycastPointType _raycastPointType;
-            [ShowIf(nameof(_raycastPointType), RaycastPointType.Vector)] 
-            [SerializeField] private Vector3 _raycastVectorPoint;
-            [ShowIf(nameof(_raycastPointType), RaycastPointType.Transform)] 
-            [SerializeField] private Transform _raycastTransformPoint;
-            [ShowIf(nameof(_raycastPointType), RaycastPointType.Transform)] 
-            [SerializeField] private LocalTransformDirection _localTransformDirection;
-
-            #endregion
-
-            #region Properties
-
-            public RaycastPointType PointType
-            {
-                get => _raycastPointType;
-                set => _raycastPointType = value;
-            }
-            public Vector3 RaycastVectorPoint
-            {
-                get => _raycastVectorPoint;
-                set => _raycastVectorPoint = value;
-            }
-            public Transform RaycastTransformPoint
-            {
-                get => _raycastTransformPoint;
-                set => _raycastTransformPoint = value;
-            }
-
-            #endregion
-
-            #region Public
-
-            public Vector3 GetPoint()
-            {
-                return _raycastPointType switch
-                {
-                    RaycastPointType.Vector => _raycastVectorPoint,
-                    RaycastPointType.Transform => _localTransformDirection switch
-                    {
-                        LocalTransformDirection.None => _raycastTransformPoint.position,
-                        LocalTransformDirection.Up => _raycastTransformPoint.up,
-                        LocalTransformDirection.Down => -_raycastTransformPoint.up,
-                        LocalTransformDirection.Right => _raycastTransformPoint.right,
-                        LocalTransformDirection.Left => -_raycastTransformPoint.right,
-                        LocalTransformDirection.Forward => _raycastTransformPoint.forward,
-                        LocalTransformDirection.Back => -_raycastTransformPoint.forward,
-                        _ => throw new ArgumentOutOfRangeException()
-                    },
-                    _ => throw new ArgumentOutOfRangeException()
-                };
-            }
-
-            #endregion
-        }
-
-        #endregion
-
         #region Fields
 
         [Title("Ray settings")]
@@ -188,9 +119,9 @@ namespace D_Dev.UtilScripts.Raycaster
 
         public void OnGizmos()
         {
-            if(_origin.PointType == RaycastPoint.RaycastPointType.Transform &&
+            if(_origin.PointType == RaycastPointType.Transform &&
                _origin.RaycastTransformPoint == null ||
-               _direction.PointType == RaycastPoint.RaycastPointType.Transform &&
+               _direction.PointType == RaycastPointType.Transform &&
                _direction.RaycastTransformPoint == null)
                 return;
             
