@@ -89,6 +89,48 @@ namespace D_Dev.UtilScripts.Raycaster
             }
             return false;
         }
+        
+        public bool IsHit(Vector3 origin, Vector3 direction)
+        {
+            _hits ??= new RaycastHit[_collidersBuffer];
+            _ray.origin = origin;
+            _ray.direction = direction;
+            var hitsAmount = Physics.RaycastNonAlloc(_ray, _hits, _distance);
+            Debug.DrawRay(_ray.origin, _ray.direction, _debugColor);
+            if (hitsAmount > 0)
+            {
+                for (var i = 0; i < _hits.Length; i++)
+                {
+                    if (_hits[i].collider != null
+                        && _colliderChecker.IsColliderPassed(_hits[i].collider))
+                        return true;
+                }
+            }
+            return false;
+        }
+        
+        public bool IsHit(Vector3 origin, Vector3 direction, out Collider collider)
+        {
+            _hits ??= new RaycastHit[_collidersBuffer];
+            _ray.origin = origin;
+            _ray.direction = direction;
+            var hitsAmount = Physics.RaycastNonAlloc(_ray, _hits, _distance);
+            Debug.DrawRay(_ray.origin, _ray.direction, _debugColor);
+            if (hitsAmount > 0)
+            {
+                for (var i = 0; i < _hits.Length; i++)
+                {
+                    if (_hits[i].collider != null
+                        && _colliderChecker.IsColliderPassed(_hits[i].collider))
+                    {
+                        collider = _hits[i].collider;
+                        return true;
+                    }
+                }
+            }
+            collider = null;
+            return false;
+        }
 
         public bool IsHit(out Collider collider)
         {

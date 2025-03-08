@@ -39,6 +39,12 @@ namespace D_Dev.UtilScripts.Raycaster
             return Physics.Linecast(_origin.GetPoint(), _direction.GetPoint(), out RaycastHit hit) 
                    && _colliderChecker.IsColliderPassed(hit.collider);
         }
+        
+        public bool IsIntersect(Vector3 origin, Vector3 direction)
+        {
+            return Physics.Linecast(origin, direction, out RaycastHit hit) 
+                   && _colliderChecker.IsColliderPassed(hit.collider);
+        }
 
         #endregion
     }
