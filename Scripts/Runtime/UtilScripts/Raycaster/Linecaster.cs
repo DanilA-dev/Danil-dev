@@ -37,13 +37,17 @@ namespace D_Dev.UtilScripts.Raycaster
 
         public bool IsIntersect()
         {
-            return Physics.Linecast(_origin.GetPoint(), _direction.GetPoint(), out RaycastHit hit, _colliderChecker.CheckLayerMask, _queryTriggerInteraction) 
+            return Physics.Linecast(_origin.GetPoint(), _direction.GetPoint(), out RaycastHit hit,  _colliderChecker.CheckLayer 
+                       ? _colliderChecker.CheckLayerMask 
+                       : ~0, _queryTriggerInteraction) 
                    && _colliderChecker.IsColliderPassed(hit.collider);
         }
         
         public bool IsIntersect(Vector3 origin, Vector3 direction)
         {
-            return Physics.Linecast(origin, direction, out RaycastHit hit, _colliderChecker.CheckLayerMask, _queryTriggerInteraction) 
+            return Physics.Linecast(origin, direction, out RaycastHit hit, _colliderChecker.CheckLayer 
+                       ? _colliderChecker.CheckLayerMask 
+                       : ~0, _queryTriggerInteraction) 
                    && _colliderChecker.IsColliderPassed(hit.collider);
         }
 
