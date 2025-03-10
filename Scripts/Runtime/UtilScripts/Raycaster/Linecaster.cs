@@ -11,6 +11,7 @@ namespace D_Dev.UtilScripts.Raycaster
         [Title("Ray settings")]
         [SerializeField] private RaycastPoint _origin;
         [SerializeField] private RaycastPoint _direction;
+        [SerializeField] private QueryTriggerInteraction _queryTriggerInteraction;
         [Title("Collider checker")]
         [SerializeField] private ColliderChecker.ColliderChecker _colliderChecker;
         
@@ -36,13 +37,13 @@ namespace D_Dev.UtilScripts.Raycaster
 
         public bool IsIntersect()
         {
-            return Physics.Linecast(_origin.GetPoint(), _direction.GetPoint(), out RaycastHit hit) 
+            return Physics.Linecast(_origin.GetPoint(), _direction.GetPoint(), out RaycastHit hit, _colliderChecker.CheckLayerMask, _queryTriggerInteraction) 
                    && _colliderChecker.IsColliderPassed(hit.collider);
         }
         
         public bool IsIntersect(Vector3 origin, Vector3 direction)
         {
-            return Physics.Linecast(origin, direction, out RaycastHit hit) 
+            return Physics.Linecast(origin, direction, out RaycastHit hit, _colliderChecker.CheckLayerMask, _queryTriggerInteraction) 
                    && _colliderChecker.IsColliderPassed(hit.collider);
         }
 

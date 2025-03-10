@@ -30,6 +30,7 @@ namespace D_Dev.UtilScripts.Raycaster
         [SerializeField] private int _collidersBuffer;
         [SerializeField] private RaycastPoint _origin;
         [SerializeField] private RaycastPoint _direction;
+        [SerializeField] private QueryTriggerInteraction _queryTriggerInteraction;
         [Title("Collider checker")]
         [SerializeField] private ColliderChecker.ColliderChecker _colliderChecker;
         [Space]
@@ -76,7 +77,7 @@ namespace D_Dev.UtilScripts.Raycaster
             _hits ??= new RaycastHit[_collidersBuffer];
             _ray.origin = _origin.GetPoint();
             _ray.direction = _direction.GetPoint();
-            var hitsAmount = Physics.RaycastNonAlloc(_ray, _hits, _distance);
+            var hitsAmount = Physics.RaycastNonAlloc(_ray, _hits, _distance, _colliderChecker.CheckLayerMask, _queryTriggerInteraction);
             Debug.DrawRay(_ray.origin, _ray.direction, _debugColor);
             if (hitsAmount > 0)
             {
@@ -95,7 +96,7 @@ namespace D_Dev.UtilScripts.Raycaster
             _hits ??= new RaycastHit[_collidersBuffer];
             _ray.origin = origin;
             _ray.direction = direction;
-            var hitsAmount = Physics.RaycastNonAlloc(_ray, _hits, _distance);
+            var hitsAmount = Physics.RaycastNonAlloc(_ray, _hits, _distance, _colliderChecker.CheckLayerMask, _queryTriggerInteraction);
             Debug.DrawRay(_ray.origin, _ray.direction, _debugColor);
             if (hitsAmount > 0)
             {
@@ -114,7 +115,7 @@ namespace D_Dev.UtilScripts.Raycaster
             _hits ??= new RaycastHit[_collidersBuffer];
             _ray.origin = origin;
             _ray.direction = direction;
-            var hitsAmount = Physics.RaycastNonAlloc(_ray, _hits, _distance);
+            var hitsAmount = Physics.RaycastNonAlloc(_ray, _hits, _distance, _colliderChecker.CheckLayerMask, _queryTriggerInteraction);
             Debug.DrawRay(_ray.origin, _ray.direction, _debugColor);
             if (hitsAmount > 0)
             {
@@ -137,7 +138,7 @@ namespace D_Dev.UtilScripts.Raycaster
             _hits ??= new RaycastHit[_collidersBuffer];
             _ray.origin = _origin.GetPoint();
             _ray.direction = _direction.GetPoint();
-            var hitsAmount = Physics.RaycastNonAlloc(_ray, _hits, _distance);
+            var hitsAmount = Physics.RaycastNonAlloc(_ray, _hits, _distance, _colliderChecker.CheckLayerMask, _queryTriggerInteraction);
             Debug.DrawRay(_ray.origin, _ray.direction, _debugColor);
             if (hitsAmount > 0)
             {
