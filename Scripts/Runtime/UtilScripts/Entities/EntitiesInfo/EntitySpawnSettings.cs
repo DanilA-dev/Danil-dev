@@ -45,8 +45,65 @@ namespace D_Dev.UtilScripts.Entities.EntitiesInfo
 
         #region Properties
 
-        public EntityInfo Data => _data;
-        
+        public EntityInfo Data
+        {
+            get => _data;
+            set => _data = value;
+        }
+
+        public bool CreateOnStart
+        {
+            get => _createOnStart;
+            set => _createOnStart = value;
+        }
+
+        public int StartEntitiesAmount
+        {
+            get => _startEntitiesAmount;
+            set => _startEntitiesAmount = value;
+        }
+
+        public bool SetActiveOnStart
+        {
+            get => _setActiveOnStart;
+            set => _setActiveOnStart = value;
+        }
+
+        public PositionConfig.PositionConfig PosConfig
+        {
+            get => _posConfig;
+            set => _posConfig = value;
+        }
+
+        public bool UsePool
+        {
+            get => _usePool;
+            set => _usePool = value;
+        }
+
+        public bool ApplyPosConfigOnGet
+        {
+            get => _applyPosConfigOnGet;
+            set => _applyPosConfigOnGet = value;
+        }
+
+        public bool PoolCollectionCheck
+        {
+            get => _poolCollectionCheck;
+            set => _poolCollectionCheck = value;
+        }
+
+        public int PoolDefaultCapacity
+        {
+            get => _poolDefaultCapacity;
+            set => _poolDefaultCapacity = value;
+        }
+
+        public int PoolMaxSize
+        {
+            get => _poolMaxSize;
+            set => _poolMaxSize = value;
+        }
 
         #endregion
 
@@ -71,7 +128,7 @@ namespace D_Dev.UtilScripts.Entities.EntitiesInfo
                 PreCreateObjects();
         }
 
-        public void Dispose()
+        public void DisposePool()
         {
             if(_poolableEntities.Count <= 0)
                 return;
@@ -103,7 +160,7 @@ namespace D_Dev.UtilScripts.Entities.EntitiesInfo
             return returnObj;
         }
 
-        public void Release(PoolableObject poolableObject)
+        public void ReleasePoolObject(PoolableObject poolableObject)
         {
             if(_usePool)
                 _pool?.Release(poolableObject);
@@ -156,7 +213,7 @@ namespace D_Dev.UtilScripts.Entities.EntitiesInfo
 
         private void OnPoolableEntityReleased(PoolableObject poolableObject)
         {
-            Release(poolableObject);
+            ReleasePoolObject(poolableObject);
         }
 
         #endregion

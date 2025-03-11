@@ -28,7 +28,7 @@ namespace D_Dev.UtilScripts.Entities.EntitiesInfo
                 return;
             
             foreach (var entitySpawnSettings in _spawnSettings)
-                entitySpawnSettings.Dispose();
+                entitySpawnSettings.DisposePool();
         }
 
         #endregion

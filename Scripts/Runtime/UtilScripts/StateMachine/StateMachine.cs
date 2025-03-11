@@ -71,6 +71,9 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.SimpleStateMachine
             
             if (_current != null)
             {
+                if(Equals(_currentState, newState))
+                    return;
+                
                 if(_current.ExitTime > 0)
                     await UniTask.Delay(TimeSpan.FromSeconds(_current.ExitTime), cancellationToken: _tokenSource.Token);
                 
