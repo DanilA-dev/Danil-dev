@@ -38,6 +38,7 @@ namespace D_Dev.UtilScripts.PositionConfig
 
         [Title("Position")]
         [SerializeField] private PositionType _positionType;
+        [SerializeField] private Transform _parent;
         [ShowIf(nameof(_positionType), PositionType.Vector)]
         [SerializeField] private Vector3 _vectorPos;
         [ShowIf(nameof(_positionType), PositionType.Transform)]
@@ -60,6 +61,90 @@ namespace D_Dev.UtilScripts.PositionConfig
         [SerializeField] private bool _localRotTransform;
         [ShowIf(nameof(_rotationType), RotationType.Transform)]
         [SerializeField] private Transform _transformRot;
+
+        
+
+        #endregion
+
+        #region Properties
+
+        public PositionType PositionType
+        {
+            get => _positionType;
+            set => _positionType = value;
+        }
+
+        public Transform Parent
+        {
+            get => _parent;
+            set => _parent = value;
+        }
+
+        public Vector3 VectorPos
+        {
+            get => _vectorPos;
+            set => _vectorPos = value;
+        }
+
+        public bool LocalPosTransform
+        {
+            get => _localPosTransform;
+            set => _localPosTransform = value;
+        }
+
+        public Transform TransformPos
+        {
+            get => _transformPos;
+            set => _transformPos = value;
+        }
+
+        public Vector3[] RandomVectorPos
+        {
+            get => _randomVectorPos;
+            set => _randomVectorPos = value;
+        }
+
+        public Transform[] RandomTransforms
+        {
+            get => _randomTransforms;
+            set => _randomTransforms = value;
+        }
+
+        public PositionRandomizeType RandomizeType
+        {
+            get => _positionRandomizeType;
+            set => _positionRandomizeType = value;
+        }
+
+        public float RandomRadius
+        {
+            get => _randomRadius;
+            set => _randomRadius = value;
+        }
+
+        public RotationType RotationType
+        {
+            get => _rotationType;
+            set => _rotationType = value;
+        }
+
+        public Vector3 EulerAngles
+        {
+            get => _eulerAngles;
+            set => _eulerAngles = value;
+        }
+
+        public bool LocalRotTransform
+        {
+            get => _localRotTransform;
+            set => _localRotTransform = value;
+        }
+
+        public Transform TransformRot
+        {
+            get => _transformRot;
+            set => _transformRot = value;
+        }
 
         #endregion
 
@@ -96,6 +181,18 @@ namespace D_Dev.UtilScripts.PositionConfig
                 _ => throw new ArgumentOutOfRangeException()
             };
             return rot;
+        }
+
+        public void SetPosition(ref Transform target)
+        {
+            target.parent = _parent;
+            target.position = GetPosition();;
+        }
+        
+        public void SetRotation(ref Transform target)
+        {
+            target.parent = _parent;
+            target.rotation = GetRotation();
         }
 
         #endregion
