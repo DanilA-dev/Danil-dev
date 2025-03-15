@@ -1,17 +1,11 @@
-﻿using UnityEngine;
+﻿using UnityEngine;                    
 
 namespace D_Dev.UtilScripts.DamagableSystem
 {
+    [System.Serializable]
     public class DamageInfo
     {
-        public GameObject DamageDealer { get; set; }
-        public IDamage Damage { get; set; }
-        
-        public DamageInfo(GameObject damageDealer, IDamage damage)
-        {
-            DamageDealer = damageDealer;
-            Damage = damage;
-        }
-
+        [field: SerializeField] public GameObject DamageDealer { get; set; }
+        [field: SerializeReference] public IDamage Damage { get; set; }
     }
 }

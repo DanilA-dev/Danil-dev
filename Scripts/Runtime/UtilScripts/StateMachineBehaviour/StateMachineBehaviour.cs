@@ -1,9 +1,10 @@
 ﻿using System;
-using Cysharp.Threading.Tasks;
+using System.Linq;
 using D_Dev.Scripts.Runtime.UtilScripts.SimpleStateMachine;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
+
 
 namespace D_Dev.Scripts.Runtime.UtilScripts.StateMachineBehaviour
 {
@@ -16,9 +17,11 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.StateMachineBehaviour
         [Space]
         [SerializeField] protected TStateEnum _startState;
         [FoldoutGroup("Events")]
-        public UnityEvent<TStateEnum> OnStateEnter;
+        [SerializeField] protected StateEvent<TStateEnum>[] _stateEvents;
         [FoldoutGroup("Events")]
-        public UnityEvent<TStateEnum> OnStateExit;
+        public UnityEvent<TStateEnum> OnAnyStateEnter;
+        [FoldoutGroup("Events")]
+        public UnityEvent<TStateEnum> OnAnyStateExit;
         
         protected StateMachine<TStateEnum> _stateMachine;
 
@@ -31,11 +34,12 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.StateMachineBehaviour
             _stateMachine = new StateMachine<TStateEnum>();
             _stateMachine.OnStateEnter += state =>
             {
-                OnStateEnter?.Invoke(state);
                 _currentState = state;
+                OnAnyStateEnter?.Invoke(state);
+                InvokeStateEnterEvent(state);
                 StateChangedDebug(state);
             };
-            _stateMachine.OnStateExit += state => OnStateExit?.Invoke(state);
+            _stateMachine.OnStateExit += InvokeStateExitEvent;
             InitStates();
         }
 
@@ -43,10 +47,11 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.StateMachineBehaviour
         {
             _stateMachine.OnStateEnter -= state =>
             {
-                OnStateEnter?.Invoke(state);
                 _currentState = state;
+                OnAnyStateExit?.Invoke(state);
+                InvokeStateEnterEvent(state);
             };
-            _stateMachine.OnStateExit -= state => OnStateExit?.Invoke(state);
+            _stateMachine.OnStateExit -= InvokeStateExitEvent;
         }
 
         private void Update()
@@ -82,6 +87,26 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.StateMachineBehaviour
 
         protected void ChangeState(TStateEnum stateName) => _stateMachine.ChangeState(stateName);
         
+        #endregion
+
+        #region Private
+
+        private void InvokeStateEnterEvent(TStateEnum state)
+        {
+            if(_stateEvents.Length <= 0)
+                return;
+            
+            _stateEvents.FirstOrDefault(s => s.State.Equals(state))?.OnStateEnter?.Invoke(state);
+        }
+        
+        private void InvokeStateExitEvent(TStateEnum state)
+        {
+            if(_stateEvents.Length <= 0)
+                return;
+            
+            _stateEvents.FirstOrDefault(s => s.State.Equals(state))?.OnStateExit?.Invoke(state);
+        }
+
         #endregion
         
         #region Debug

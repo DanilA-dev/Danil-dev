@@ -19,9 +19,9 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.StateMachineBehaviour
         private void OnEnable()
         {
             _camera = Camera.main;
-            _stateMachineBehaviour.OnStateEnter.AddListener(OnStateEnter);
+            _stateMachineBehaviour.OnAnyStateEnter.AddListener(OnStateEnter);
         }
-        private void OnDisable() => _stateMachineBehaviour.OnStateEnter.RemoveListener(OnStateEnter);
+        private void OnDisable() => _stateMachineBehaviour.OnAnyStateEnter.RemoveListener(OnStateEnter);
 
         private void LateUpdate() => transform.LookAt(_camera.transform.position);
 
