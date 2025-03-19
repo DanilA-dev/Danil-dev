@@ -40,9 +40,14 @@ namespace D_Dev
         [MenuItem("Tools/D_Dev/Setup/Export Utils Package")]
         public static void ExportPackage()
         {
-            var path =  "Assets/Danil-dev";
+            string[] paths = new []
+            {
+                "Assets/Danil-dev/Assets",
+                "Assets/Danil-dev/Plugins",
+                "Assets/Danil-dev/Scripts"
+            } ;
             var exportDirectory =  "Assets/Danil-dev/Package/Danil-Dev.unitypackage";
-            AssetDatabase.ExportPackage(path, exportDirectory, ExportPackageOptions.Recurse | ExportPackageOptions.IncludeDependencies);
+            AssetDatabase.ExportPackage(paths, exportDirectory, ExportPackageOptions.Recurse | ExportPackageOptions.IncludeDependencies);
             Debug.Log($"Exported package to {exportDirectory}");
         }
 
