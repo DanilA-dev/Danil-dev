@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -23,6 +24,8 @@ namespace D_Dev.UtilScripts.ColliderEvents
 
         #region Properties
 
+        public List<Collider> Colliders { get; private set; } = new();
+        
         public UnityEvent<Collider> OnEnter
         {
             get => _onEnter;

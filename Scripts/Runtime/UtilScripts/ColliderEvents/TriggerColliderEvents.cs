@@ -15,8 +15,11 @@ namespace D_Dev.UtilScripts.ColliderEvents
                     {
                         var passed = _colliderChecker.IsColliderPassed(c);
                         
-                        if(passed)
+                        if (passed)
+                        {
                             OnEnter?.Invoke(c);
+                            Colliders.Add(c);
+                        }
                     });
             
             if (_checkExit)
@@ -25,8 +28,12 @@ namespace D_Dev.UtilScripts.ColliderEvents
                     {
                         var passed = _colliderChecker.IsColliderPassed(c);
                         
-                        if(passed)
+                        if (passed)
+                        {
                             OnExit?.Invoke(c);
+                            if(Colliders.Contains(c))
+                                Colliders.Remove(c);
+                        }
                     });
         }
 

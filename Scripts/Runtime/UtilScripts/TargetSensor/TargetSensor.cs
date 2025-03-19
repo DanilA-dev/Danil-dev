@@ -48,6 +48,9 @@ namespace Danil_dev.Scripts.Runtime.UtilScripts.TargetSensor
 
         public void Init()
         {
+            if(_trigger == null)
+                return;
+            
             _targetRayPoint = new();
             _trigger.OnEnter.AddListener(OnTargetEnter);
             _trigger.OnExit.AddListener(OnTargetExit);
@@ -55,6 +58,9 @@ namespace Danil_dev.Scripts.Runtime.UtilScripts.TargetSensor
 
         public void Dispose()
         {
+            if(_trigger == null)
+                return;
+            
             _trigger.OnEnter.RemoveListener(OnTargetEnter);
             _trigger.OnExit.RemoveListener(OnTargetExit);
         }
