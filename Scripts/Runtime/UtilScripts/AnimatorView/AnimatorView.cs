@@ -30,10 +30,10 @@ namespace Danil_dev.Scripts.Runtime.UtilScripts.AnimatorView
             if (_animations.TryGetValue(animationConfig, out var animationHash))
             {
                 Animator.CrossFadeInFixedTime(animationHash, animationConfig.CrossFadeTime, animationConfig.Layer);
-                OnAnimationChange?.Invoke(animationConfig.AnimationClip.name);
+                OnAnimationChange?.Invoke(animationConfig.GetAnimationClip().name);
                 return;
             }
-            var newAnimationHash = Animator.StringToHash(animationConfig.AnimationClip.name);
+            var newAnimationHash = Animator.StringToHash(animationConfig.GetAnimationClip().name);
             Animator.CrossFadeInFixedTime(newAnimationHash, animationConfig.CrossFadeTime, animationConfig.Layer);
             _animations.Add(animationConfig, newAnimationHash);
         }
