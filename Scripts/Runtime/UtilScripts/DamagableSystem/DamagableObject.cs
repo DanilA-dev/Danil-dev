@@ -23,6 +23,7 @@ namespace D_Dev.UtilScripts.DamagableSystem
 
         private Stat _healthStat;
         private FloatValue _healthValue;
+        private Rigidbody _rigidbody;
         
         #endregion
         
@@ -40,6 +41,7 @@ namespace D_Dev.UtilScripts.DamagableSystem
         {
             _healthStat = _statsContainer.GetStat(_healthVariable);
             _healthValue = _healthStat.StatValue;
+            _rigidbody = GetComponent<Rigidbody>();
         }
 
         #endregion
@@ -52,6 +54,20 @@ namespace D_Dev.UtilScripts.DamagableSystem
                 return;
             
             var damageValue = damageInfo.Damage.ApplyDamage(ref _healthValue);
+            if (damageInfo.UseForceOnDamage)
+            {
+                if (_rigidbody != null)
+                {
+                    Vector3 dir = Vector3.zero;
+                    if(damageInfo.DamageDealer != null)
+                        dir = (transform.position - damageInfo.DamageDealer.transform.position).normalized;
+                    else
+                        dir = transform.position;
+                    
+                    _rigidbody.AddForce(damageInfo.GetForceDirection(dir), damageInfo.ForceMode);
+                }
+                    
+            }
             OnDamage?.Invoke(damageValue);
             OnDamageWithInfo?.Invoke(damageInfo);
 

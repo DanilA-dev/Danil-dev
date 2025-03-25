@@ -1,0 +1,17 @@
+{
+    "name": "D-Dev.DamageCollider",
+    "rootNamespace": "",
+    "references": [
+        "GUID:eb1128c4553b424459decb2e805d743e",
+        "GUID:ce2b898ae95920f4ba24cb64995a3989"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
