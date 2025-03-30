@@ -84,7 +84,8 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.StateMachineBehaviour
             foreach (var fromState in fromStates)
                 _stateMachine?.AddTransition(fromState, toState, condition);
         }
-
+        
+        protected void RemoveTransition(TStateEnum keyState) => _stateMachine?.RemoveTransition(keyState);
         protected void ChangeState(TStateEnum stateName) => _stateMachine.ChangeState(stateName);
         
         #endregion

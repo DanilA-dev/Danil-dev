@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
-using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Danil_dev.Scripts.Runtime.UtilScripts.AnimatorView
+namespace D_Dev.Scripts.Runtime.UtilScripts.AnimatorView
 {
     public class AnimatorView : MonoBehaviour
     {
@@ -28,13 +27,18 @@ namespace Danil_dev.Scripts.Runtime.UtilScripts.AnimatorView
                 return;
 
             var clip = animationConfig.GetAnimationClip();
+            if(clip == null)
+                return;
+            
             if (_animations.TryGetValue(clip, out var animationHash))
             {
+                Animator.speed = animationConfig.AnimationSpeed;
                 Animator.CrossFadeInFixedTime(animationHash, animationConfig.CrossFadeTime, animationConfig.Layer);
                 OnAnimationChange?.Invoke(animationConfig.GetAnimationClip().name);
                 return;
             }
             var newAnimationHash = Animator.StringToHash(animationConfig.GetAnimationClip().name);
+            Animator.speed = animationConfig.AnimationSpeed;
             Animator.CrossFadeInFixedTime(newAnimationHash, animationConfig.CrossFadeTime, animationConfig.Layer);
             _animations.Add(clip, newAnimationHash);
         }

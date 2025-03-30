@@ -130,6 +130,9 @@ namespace D_Dev.UtilScripts.Entities.EntitiesInfo
 
         public void DisposePool()
         {
+            if(!_usePool)
+                return;
+            
             if(_poolableEntities.Count <= 0)
                 return;
 

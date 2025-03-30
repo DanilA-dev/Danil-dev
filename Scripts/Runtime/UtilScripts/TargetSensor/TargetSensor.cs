@@ -3,7 +3,7 @@ using D_Dev.UtilScripts.Raycaster;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Danil_dev.Scripts.Runtime.UtilScripts.TargetSensor
+namespace D_Dev.Scripts.Runtime.UtilScripts.TargetSensor
 {
     [System.Serializable]
     public class TargetSensor
@@ -63,6 +63,14 @@ namespace Danil_dev.Scripts.Runtime.UtilScripts.TargetSensor
             
             _trigger.OnEnter.RemoveListener(OnTargetEnter);
             _trigger.OnExit.RemoveListener(OnTargetExit);
+        }
+        
+        public bool IsTargetFound()
+        {
+            if (!_checkObstacleLinecast)
+                return Target != null;
+            else
+                return Target != null && _obstacleLinecaster.IsIntersect();
         }
         
         public bool IsTargetFound(out Collider target)

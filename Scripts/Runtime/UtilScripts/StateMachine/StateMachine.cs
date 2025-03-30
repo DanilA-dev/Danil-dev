@@ -50,6 +50,12 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.SimpleStateMachine
                 _statesConditions[fromState].Add(new(toState, condition));
         }
 
+        public void RemoveTransition(TStateEnum keyState)
+        {
+            if(_statesConditions.ContainsKey(keyState))
+                _statesConditions.Remove(keyState);
+        }
+        
         public void OnUpdate()
         {
             _current?.OnUpdate();
