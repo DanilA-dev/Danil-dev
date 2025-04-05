@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using D_Dev.UtilScripts.Extensions;
 using D_Dev.UtilScripts.ScriptableVaiables;
@@ -20,19 +21,50 @@ namespace D_Dev.UtilScripts.StatsSystem
 
         #endregion
 
+        #region Monobehaviour
+
+        private void Start()
+        {
+            if(_stats.Count <= 0)
+                return;
+
+            foreach (var stat in _stats)
+                stat.Init();
+        }
+
+        private void OnDisable()
+        {
+            if(_stats.Count <= 0)
+                return;
+
+            foreach (var stat in _stats)
+                stat.Dispose();
+        }
+
+        #endregion
+        
         #region Public
 
         public void AddStat(Stat newStat)
         {
-            if(!_stats.Contains(newStat))
+            if (!_stats.Contains(newStat))
+            {
+                newStat.Init();
                 _stats.Add(newStat);
+            }
         }
 
-        public void SetStats(List<Stat> newStats) => _stats = newStats;
-        
+        public void SetStats(List<Stat> newStats)
+        {
+            _stats = newStats;
+            foreach (var stat in _stats)
+                stat.Init();
+        }
+
         public void RemoveStat(Stat stat)
         {
-            _stats.TryRemove(stat);
+            if(_stats.TryRemove(stat))
+                stat.Dispose();
         }
 
         public void RemoveStat(StringScriptableVariable statName)
@@ -41,7 +73,8 @@ namespace D_Dev.UtilScripts.StatsSystem
             if(stat == null)
                 return;
             
-            _stats.TryRemove(stat);
+            if(_stats.TryRemove(stat))
+                stat.Dispose();
         }
 
         public Stat GetStat(StringScriptableVariable statName)

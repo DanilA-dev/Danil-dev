@@ -27,13 +27,13 @@ namespace D_Dev.UtilScripts.Tween_Animations.Types
         [SerializeField] private MoveObjectType _moveObjectType;
         [SerializeField] private Transform _movedObject;
         [SerializeField] private bool _useInitialPositionAsStart;
-        [ShowIf("@!_useInitialPositionAsStart && this._moveType == MoveType.Transform")]
+        [ShowIf("@!_useInitialPositionAsStart && this._moveObjectType == MoveObjectType.Transform")]
         [SerializeField] private Transform _moveStart;
         [ShowIf(nameof(_moveObjectType), MoveObjectType.Transform)]
         [SerializeField] private Transform _moveEnd;
-        [ShowIf("@!_useInitialPositionAsStart && this._moveType != MoveType.Transform")]
+        [ShowIf("@!_useInitialPositionAsStart && this._moveObjectType != MoveObjectType.Transform")]
         [SerializeField] private Vector3 _positionStart;
-        [ShowIf("@this._moveType != MoveType.Transform")]
+        [ShowIf("@this._moveObjectType != MoveObjectType.Transform")]
         [SerializeField] private Vector3 _positionEnd;
 
         private Vector3 _initialStartPos;

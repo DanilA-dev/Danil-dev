@@ -24,11 +24,11 @@ namespace D_Dev.UtilScripts.Tween_Animations.Types
         #region Fields
 
         [SerializeField] private ColorObjectType _colorObjectType;
-        [ShowIf("@this._colorObject == ColorObject.Image")]
+        [ShowIf("@this._colorObjectType == ColorObjectType.Image")]
         [SerializeField] private Image _image;
-        [ShowIf("@this._colorObject == ColorObject.Material")]
+        [ShowIf("@this._colorObjectType == ColorObjectType.Material")]
         [SerializeField] private MeshRenderer _meshMaterial;
-        [ShowIf("@this._colorObject == ColorObject.SpriteRenderer")]
+        [ShowIf("@this._colorObjectType == ColorObjectType.SpriteRenderer")]
         [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private bool _useInitialColorAsStart;
         [HideIf(nameof(_useInitialColorAsStart))]

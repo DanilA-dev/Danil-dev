@@ -41,11 +41,9 @@ namespace D_Dev.UtilScripts.Tween_Animations
 
         #endregion
 
-        #region Private
+        #region Public
 
-        protected bool HasTweensInArray() => _tweens != null || _tweens.Length > 0;
-        
-        private void Play()
+        public void Play()
         {
             OnStart?.Invoke();
             OnPlay();
@@ -58,6 +56,11 @@ namespace D_Dev.UtilScripts.Tween_Animations
             }));
         }
 
+        #endregion
+        
+        #region Private
+
+        protected bool HasTweensInArray() => _tweens != null || _tweens.Length > 0;
 
         #endregion
 
