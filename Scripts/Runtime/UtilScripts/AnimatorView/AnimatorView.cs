@@ -114,7 +114,5 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.AnimatorView
         public void StopAnimator() => Animator?.StopPlayback();
 
         #endregion
-        
-        
     }
 }
