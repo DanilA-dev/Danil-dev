@@ -29,7 +29,7 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.StateMachineBehaviour
 
         #region Monobehaviour
 
-        private void Awake()
+        protected virtual void Awake()
         {
             _stateMachine = new StateMachine<TStateEnum>();
             _stateMachine.OnStateEnter += state =>
@@ -43,7 +43,7 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.StateMachineBehaviour
             InitStates();
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             _stateMachine.OnStateEnter -= state =>
             {
@@ -54,13 +54,13 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.StateMachineBehaviour
             _stateMachine.OnStateExit -= InvokeStateExitEvent;
         }
 
-        private void Update()
+        protected virtual void Update()
         {
             _stateMachine?.OnUpdate();
             OnUpdate();
         }
 
-        private void FixedUpdate()
+        protected virtual void FixedUpdate()
         {
             _stateMachine?.OnFixedUpdate();
             OnFixedUpdate();
