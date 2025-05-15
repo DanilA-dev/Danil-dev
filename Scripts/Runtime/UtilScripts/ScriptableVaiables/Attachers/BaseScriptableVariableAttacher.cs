@@ -38,10 +38,10 @@ namespace D_dev.UtilScripts.ScriptableVaiables.Attachers
             if(_variable == null)
                 return;
 
-            _variable.Variable = objectToAttach;
+            _variable.Value = objectToAttach;
         }
 
-        public void ResetVariable() => _variable.Variable = default;
+        public void ResetVariable() => _variable.Value = default;
 
         #endregion
     }

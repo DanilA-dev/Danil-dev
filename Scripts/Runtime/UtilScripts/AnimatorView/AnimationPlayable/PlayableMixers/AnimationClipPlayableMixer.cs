@@ -19,7 +19,6 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.AnimatorView.AnimationPlayableHandle
         [ShowIf(nameof(_hasStartAnimations))]
         [SerializeField] private AnimationPlayableClipConfig[] _onStartAnimations;
         
-        private AnimationPlayableClipConfig _currentPlayableClipConfig;
         private AnimationPlayableClipConfig _lastPlayedConfig;
         private AnimationLayerMixerPlayable _targetLayerMixerPlayable;
         
@@ -107,7 +106,6 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.AnimatorView.AnimationPlayableHandle
             _playableGraph.Animator.applyRootMotion = newPlayableConfig.ApplyRootMotion;
             
             _targetLayerMixerPlayable.SetLayerAdditive((uint)newAnimationLayer, newPlayableConfig.IsAdditive);
-            _currentPlayableClipConfig = newPlayableConfig;
             if (_playablesPair.Count > 0 || _layer != 0)
             {
                 BlendIn(newPlayableConfig);

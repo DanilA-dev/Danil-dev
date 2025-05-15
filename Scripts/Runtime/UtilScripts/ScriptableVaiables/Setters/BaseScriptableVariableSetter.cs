@@ -37,7 +37,7 @@ namespace D_Dev.UtilScripts.ScriptableVaiables.Setters
             if(value == null)
                 return;
             
-            _variable.Variable = value;
+            _variable.Value = value;
         }
 
         #endregion
