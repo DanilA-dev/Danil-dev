@@ -93,7 +93,7 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.AnimatorView
             _animations.Add(clip, newAnimationHash);
         }
 
-        
+        #region Setters
 
         public void SetBool(string boolParameter, bool value)
         {
@@ -134,7 +134,7 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.AnimatorView
         public void SetTrigger(string triggerParameter)
         {
             if(_animationParams.TryGetValue(triggerParameter, out var hash))
-               SetAnimatorTrigger(hash);
+                SetAnimatorTrigger(hash);
             else
             {
                 var newHash = Animator.StringToHash(triggerParameter);
@@ -142,6 +142,42 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.AnimatorView
                 SetAnimatorTrigger(newHash);
             }
         }
+
+        #endregion
+
+        #region Getters
+
+        public bool GetBool(string boolParameter)
+        {
+            bool result = false;
+            if(_runtimeAnimatorType == RuntimeAnimatorType.AnimatorPlayable && _animationMixer != null)
+                result = _animationMixer.AnimatorPlayable.GetBool(boolParameter);
+            else if (_runtimeAnimatorType == RuntimeAnimatorType.RegularAnimator && Animator != null)
+                result = _animator.GetBool(boolParameter);
+            return result;
+        }
+        
+        public float GetFloat(string floatParameter)
+        {
+            float result = 0;
+            if(_runtimeAnimatorType == RuntimeAnimatorType.AnimatorPlayable && _animationMixer != null)
+                result = _animationMixer.AnimatorPlayable.GetFloat(floatParameter);
+            else if (_runtimeAnimatorType == RuntimeAnimatorType.RegularAnimator && Animator != null)
+                result = _animator.GetFloat(floatParameter);
+            return result;
+        }
+
+        public int GetInt(string intParameter)
+        {
+            int result = 0;
+            if(_runtimeAnimatorType == RuntimeAnimatorType.AnimatorPlayable && _animationMixer!= null)
+                result = _animationMixer.AnimatorPlayable.GetInteger(intParameter);
+            else if (_runtimeAnimatorType == RuntimeAnimatorType.RegularAnimator && Animator!= null)
+                result = _animator.GetInteger(intParameter);
+            return result;
+        }
+
+        #endregion
         
         public void ChangeAnimatorUpdateMode(AnimatorUpdateMode newUpdateMode)
         {
