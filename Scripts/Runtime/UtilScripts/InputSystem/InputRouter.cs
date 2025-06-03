@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using static InputActions;
 
-namespace Danil_dev.Scripts.Runtime.UtilScripts.InputSystem
+namespace D_dev.Scripts.Runtime.UtilScripts.InputSystem
 {
     [CreateAssetMenu(menuName = "D-Dev/InputRouter")]
     public class InputRouter : ScriptableObject, IPlayerActions
