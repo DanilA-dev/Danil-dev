@@ -1,6 +1,8 @@
 ﻿#if UNITY_EDITOR
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using D_dev.Scripts.EventHandler;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
@@ -11,10 +13,7 @@ namespace D_dev.Scripts.Runtime
     public class EventsCreator : ScriptableObject
     {
         #region Fields
-
-        [SerializeField] private string _eventsContainerPath;
-        [SerializeField] private TextAsset _structureEventContainerPlaceHolder;
-        [Space]
+        
         [SerializeField] private string _eventName;
 
         #endregion
@@ -24,10 +23,13 @@ namespace D_dev.Scripts.Runtime
          [Button]
         private void CreateEvent()
         {
-            var split = _eventsContainerPath.Split('/');
-            split[^1] = "EventContainer.cs";
-            var fullPath = Path.Combine(_eventsContainerPath, split[^1]);
-            
+            var guids = AssetDatabase.FindAssets("CustomEventType");
+            if (guids.Length == 0)
+            {
+                Debug.LogError("[CustomEventType] file not found");
+                return;
+            }
+            var fullPath = AssetDatabase.GUIDToAssetPath(guids[0]);
             if (!string.IsNullOrEmpty(_eventName))
             {
                 if(_eventName.Contains(" "))
@@ -36,11 +38,8 @@ namespace D_dev.Scripts.Runtime
                 string filePath = fullPath;
                 List<string> lines = new List<string>();
         
-                if (File.Exists(filePath))
-                    lines.AddRange(File.ReadAllLines(filePath));
-                else
-                    lines.AddRange(_structureEventContainerPlaceHolder.text.Split(new[] { "\r\n", "\n", "\r"}, System.StringSplitOptions.None));
-        
+                lines.AddRange(File.ReadAllLines(filePath));
+                
                 int enumDeclarationIndex = lines.FindIndex(line => line.Contains("public enum"));
                 int openingBraceIndex = lines.FindIndex(enumDeclarationIndex, line => line.Contains("{"));
                 int closingBraceIndex = lines.FindIndex(openingBraceIndex, line => line.Contains("}"));
@@ -58,12 +57,11 @@ namespace D_dev.Scripts.Runtime
         
                 if (!existingEvents.Contains(_eventName))
                     existingEvents.Add(_eventName);
-        
-                if (File.Exists(filePath))
-                    File.Delete(filePath);
+                else
+                    Debug.Log($"[CustomEventType] Event - [{_eventName}] already exists");
         
                 lines.Clear();
-                lines.AddRange(_structureEventContainerPlaceHolder.text.Split(new[] { "\r\n", "\n", "\r"}, System.StringSplitOptions.None));
+                lines.AddRange(File.ReadAllLines(filePath));
         
                 enumDeclarationIndex = lines.FindIndex(line => line.Contains("public enum"));
                 openingBraceIndex = lines.FindIndex(enumDeclarationIndex, line => line.Contains("{"));
