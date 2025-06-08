@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using D_dev.Scripts.EventHandler;
 using UnityEngine;
 
 namespace D_Dev.UtilScripts.MenuHandler
@@ -12,16 +15,30 @@ namespace D_Dev.UtilScripts.MenuHandler
         [SerializeField] private RectTransform _cameraCanvas;
         [SerializeField] private List<MenuInfo> _menuInfos = new();
 
+        private static MenuHandler _instance;
         private Dictionary<MenuInfo,BaseMenu> _createdMenus = new();
 
         #endregion
 
         #region Monobehaviour
 
+        private void Awake()
+        {
+            _instance = this;
+            CustomEventHandler.AddListener<MenuInfo>(CustomEventType.OpenMenu, OpenMenu);
+            CustomEventHandler.AddListener<MenuInfo>(CustomEventType.CloseMenu, CloseMenu);
+        }
+
         private void OnEnable()
         {
             if(_createMenusOnEnable)
                 CreateMenus();
+        }
+
+        private void OnDestroy()
+        {
+            CustomEventHandler.RemoveListener<MenuInfo>(CustomEventType.OpenMenu, OpenMenu);
+            CustomEventHandler.RemoveListener<MenuInfo>(CustomEventType.CloseMenu, CloseMenu);
         }
 
         #endregion
@@ -58,6 +75,7 @@ namespace D_Dev.UtilScripts.MenuHandler
                 menu.Close();
         }
 
+        
         public void CloseAllMenus()
         {
             if(_createdMenus.Count <= 0)
@@ -65,6 +83,48 @@ namespace D_Dev.UtilScripts.MenuHandler
 
             foreach (var keyValuePair in _createdMenus)
                 keyValuePair.Value.Close();
+        }
+
+        #endregion
+
+        #region Static
+
+        public static bool IsMenuOpen(MenuInfo menuInfo)
+        {
+            if(_instance._createdMenus.TryGetValue(menuInfo, out var menu))
+                return menu.IsOpen;
+            
+            return false;
+        }
+        
+        public static bool IsMenuClosed(MenuInfo menuInfo)
+        {
+            if(_instance._createdMenus.TryGetValue(menuInfo, out var menu))
+                return !menu.IsOpen;
+            
+            return false;
+        }
+        
+        public static async UniTask WaitForMenuOpen(MenuInfo menuInfo)
+        {
+            try
+            {
+                if (_instance._createdMenus.TryGetValue(menuInfo, out var menu))
+                    await UniTask.WaitUntil(() => menu.IsOpen,
+                        cancellationToken: _instance.GetCancellationTokenOnDestroy());
+            }
+            catch (OperationCanceledException e) {}
+        }
+        
+        public static async UniTask WaitForMenuClose(MenuInfo menuInfo)
+        {
+            try
+            {
+                if (_instance._createdMenus.TryGetValue(menuInfo, out var menu))
+                    await UniTask.WaitUntil(() => !menu.IsOpen,
+                        cancellationToken: _instance.GetCancellationTokenOnDestroy());
+            }
+            catch (OperationCanceledException e) {}
         }
 
         #endregion
