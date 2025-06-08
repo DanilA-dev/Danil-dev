@@ -11,5 +11,31 @@ namespace D_Dev.UtilScripts.Extensions
 
             return go.AddComponent<TComponent>();
         }
+        
+        public static bool TryGetComponentInAny<TComponent>(this GameObject go, out TComponent outComponent)
+            where TComponent : Component
+        {
+            if (go.TryGetComponent(out TComponent comp))
+            {
+                outComponent = comp;
+                return true;
+            }
+            foreach (Transform child in go.transform)
+            {
+                if (child.TryGetComponent(out TComponent childComp))
+                {
+                    outComponent = childComp;
+                    return true;
+                }
+            }
+
+            if (go.transform.parent.TryGetComponent(out TComponent parentComp))
+            {
+                outComponent = parentComp;
+                return true;
+            }
+            outComponent = null;
+            return false;
+        }
     }
 }
