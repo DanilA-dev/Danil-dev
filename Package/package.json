@@ -4,7 +4,8 @@
   "displayName": "D-Dev Tools",
   "dependencies": 
   {
-    "com.unity.inputsystem": "1.7.0"
+    "com.unity.inputsystem": "1.7.0",
+    "com.unity.cinemachine":  "2.10.3"
   }
 }
 
