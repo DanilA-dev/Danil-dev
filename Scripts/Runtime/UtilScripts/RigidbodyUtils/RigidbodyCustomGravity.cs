@@ -8,7 +8,7 @@ namespace D_dev.UtilScripts.RigidbodyUtils
         
         [SerializeField] private Rigidbody _body;
         [SerializeField] private Vector3 _gravityDirection = new(0f, -9.81f, 0f);
-        [SerializeField, Min(1)] private float _gravityMultiplier = 1;
+        [SerializeField] private float _gravityMultiplier = 1;
         [SerializeField] private ForceMode _forceMode;
 
         #endregion
