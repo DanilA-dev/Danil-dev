@@ -15,6 +15,8 @@ namespace D_dev.Scripts.Runtime.UtilScripts.InputSystem
         public event Action<Vector2> Move;
         public event Action<Vector2> Look;
         public event Action<bool> JumpPressed;
+        public event Action<bool> SprintPressed;
+        public event Action<bool> CrouchPressed;
         public event Action<bool> EscPressed;
         public event Action<bool> InteractPressed;
         public event Action<bool> RmbPressed;
@@ -82,6 +84,25 @@ namespace D_dev.Scripts.Runtime.UtilScripts.InputSystem
                     break;
             }
         }
+        
+        public void OnSprint(InputAction.CallbackContext context)
+        {
+            bool isPressed = context.ReadValueAsButton();
+            SprintPressed?.Invoke(isPressed);
+        }
+
+        public void OnCrouch(InputAction.CallbackContext context)
+        {
+            switch (context.phase)
+            {
+                case InputActionPhase.Started:
+                    CrouchPressed?.Invoke(true);
+                    break;
+                case InputActionPhase.Canceled:
+                    CrouchPressed?.Invoke(false);
+                    break;
+            }
+        }
 
         public void OnJump(InputAction.CallbackContext context)
         {
@@ -108,6 +129,8 @@ namespace D_dev.Scripts.Runtime.UtilScripts.InputSystem
                     break;
             }
         }
+
+        
 
         #endregion
       
