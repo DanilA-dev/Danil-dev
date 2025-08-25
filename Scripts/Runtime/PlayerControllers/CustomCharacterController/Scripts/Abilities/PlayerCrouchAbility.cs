@@ -15,8 +15,6 @@ namespace CustomCharacterController.Abilities
         [SerializeField] private float _crouchHeight;
         [SerializeField] private float _crouchTime;
         
-        [FoldoutGroup("Events")]
-        public UnityEvent<bool> OnCrouch;
         [FoldoutGroup("Events")] 
         public UnityEvent<float> OnCrouchHeightChange;
         
@@ -65,8 +63,7 @@ namespace CustomCharacterController.Abilities
                 ? _crouchHorizontalSpeed 
                 : _defaultHorizontalSpeed;
             
-            _isExecuting = isCrouch;
-            OnCrouch?.Invoke(_isExecuting);
+            IsExecuting = isCrouch;
             
             if(!_isCrouchingRoutine)
                 StartCoroutine(CrouchRoutine(_crouchTime, endHeight));
@@ -96,7 +93,7 @@ namespace CustomCharacterController.Abilities
             _characterController.height = endHeight;
             _isCrouchingRoutine = false;
             
-            if(!_isExecuting && Mathf.Approximately(_characterController.height, _crouchHeight))
+            if(!IsExecuting && Mathf.Approximately(_characterController.height, _crouchHeight))
                 yield return StartCoroutine(CrouchRoutine(_crouchTime, _defaultHeight));
         }
         #endregion

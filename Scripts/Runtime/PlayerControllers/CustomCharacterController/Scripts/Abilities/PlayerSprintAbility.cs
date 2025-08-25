@@ -1,7 +1,5 @@
 ﻿using CustomCharacterController.Core;
-using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace CustomCharacterController.Abilities
 {
@@ -10,8 +8,6 @@ namespace CustomCharacterController.Abilities
         #region Fields
 
         [SerializeField] private float _maxSprintSpeed;
-        [FoldoutGroup("Events")]
-        public UnityEvent<bool> OnSprint;
         
         private float _defaultMovementSpeed;
 
@@ -44,15 +40,14 @@ namespace CustomCharacterController.Abilities
             if(IsBlockedByExecutingAbilities())
                 return;
             
-            if (!_isActive)
+            if (!IsActive)
             {
                 _playerMovementCore.MaxHorizontalSpeed = _defaultMovementSpeed;
                 return;
             }
             
             _playerMovementCore.MaxHorizontalSpeed = isSprint ? _maxSprintSpeed : _defaultMovementSpeed;
-            _isExecuting = isSprint;
-            OnSprint?.Invoke(_isExecuting);
+            IsExecuting = isSprint;
         }
 
         #endregion

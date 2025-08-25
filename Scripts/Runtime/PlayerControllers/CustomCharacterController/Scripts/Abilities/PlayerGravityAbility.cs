@@ -2,7 +2,6 @@ using CustomCharacterController.Core;
 using D_Dev.UtilScripts.TimerSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace CustomCharacterController.Abilities
 {
@@ -17,8 +16,6 @@ namespace CustomCharacterController.Abilities
         [Title("Fall Settings")]
         [SerializeField] private float _fallTimeout = 0.15f;
         
-        [FoldoutGroup("Events")]
-        public UnityEvent<bool> OnFalling;
         [Space]
         [FoldoutGroup("Debug")]
         [SerializeField, DisplayAsString] private bool _isFalling;
@@ -32,8 +29,6 @@ namespace CustomCharacterController.Abilities
         #endregion
 
         #region Properties
-
-        public bool IsFalling => _isFalling;
         public float VerticalVelocity => _verticalVelocity;
 
         #endregion
@@ -56,7 +51,6 @@ namespace CustomCharacterController.Abilities
 
         protected override void OnTickUpdate()
         {
-            _isExecuting = _isActive;
             _fallTimer.Tick(Time.deltaTime);
             
             SyncVerticalVelocity();
@@ -74,8 +68,8 @@ namespace CustomCharacterController.Abilities
             _fallTimer = new CountdownTimer(_fallTimeout);
             _fallTimer.OnTimerEnd += () =>
             {
-                _isFalling = true;
-                OnFalling?.Invoke(_isFalling);
+                IsExecuting = true;
+                _isFalling = IsExecuting;
             };
         }
 
@@ -90,7 +84,7 @@ namespace CustomCharacterController.Abilities
             }
             else
             {
-                if (!_isFalling && !_fallTimer.IsRunning)
+                if (!IsExecuting && !_fallTimer.IsRunning)
                     _fallTimer.Start();
 
                 if (_verticalVelocity > _fallTerminalVelocity)
@@ -105,12 +99,12 @@ namespace CustomCharacterController.Abilities
         private void UpdateDebugInfo() => _currentVerticalVelocity = _verticalVelocity;
         private void ResetFallState()
         {
-            if(!_isFalling)
+            if(!IsExecuting)
                 return;
             
-            _isFalling = false;
+            IsExecuting = false;
+            _isFalling = IsExecuting;
             _fallTimer.Reset();
-            OnFalling?.Invoke(_isFalling);
         }
 
 

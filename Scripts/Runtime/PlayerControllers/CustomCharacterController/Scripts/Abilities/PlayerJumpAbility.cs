@@ -2,7 +2,6 @@ using CustomCharacterController.Core;
 using D_Dev.UtilScripts.TimerSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace CustomCharacterController.Abilities
 {
@@ -15,8 +14,6 @@ namespace CustomCharacterController.Abilities
         [SerializeField] private float _jumpTimeout = 0.50f;
         [SerializeField] private bool _canJumpInAir;
 
-        [FoldoutGroup("Events")]
-        public UnityEvent<bool> OnJump;
         [Space]
         [FoldoutGroup("Debug")]
         [SerializeField, DisplayAsString] private bool _isJumping;
@@ -95,8 +92,7 @@ namespace CustomCharacterController.Abilities
                 return;
             
             _jumpInput = isJump;
-            _isExecuting = isJump && _isActive;
-            OnJump?.Invoke(isJump);
+            IsExecuting = isJump && IsActive;
         }
 
         #endregion

@@ -38,7 +38,7 @@ namespace CustomCharacterController.Abilities
 
         protected override void OnTickUpdate()
         {
-            _isExecuting = _isActive;
+            
             UpdateMovementAcceleration();
             UpdateMovement();
         }
@@ -70,6 +70,7 @@ namespace CustomCharacterController.Abilities
             if(_playerMovementCore.GetInputMovementModifier() != Vector3.zero)
                 inputDir = _playerMovementCore.GetInputMovementModifier();
             
+            IsExecuting = _moveInput != Vector3.zero;
             _playerMovementCore.HorizontalVelocity = inputDir.normalized * (_currentSpeed * Time.deltaTime);
         }
 

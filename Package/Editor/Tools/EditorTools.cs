@@ -37,7 +37,7 @@ namespace D_Dev
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("Tools/D_Dev/Setup/Export Utils Package")]
+        [MenuItem("Tools/D_Dev/Setup/Export Package")]
         public static void ExportPackage()
         {
             string[] paths = new []
@@ -51,7 +51,7 @@ namespace D_Dev
             Debug.Log($"Exported package to {exportDirectory}");
         }
 
-        [MenuItem("Tools/D_Dev/Setup/Import Utils Package")]
+        [MenuItem("Tools/D_Dev/Setup/Import Package")]
         public static void ImportUtilsPackage()
         {
             var path = "Packages/com.d-dev.utils/Danil-Dev.unitypackage";

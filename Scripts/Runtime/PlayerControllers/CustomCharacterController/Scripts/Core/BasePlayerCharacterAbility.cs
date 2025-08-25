@@ -13,15 +13,17 @@ namespace CustomCharacterController.Core
 
         [FoldoutGroup("Base")]
         [GUIColor(nameof(GetActiveColor))]
-        [SerializeField] protected bool _isActive;
+        [SerializeField] private bool _isActive;
         [FoldoutGroup("Base")]
-        [SerializeField, ReadOnly] protected bool _isExecuting;
+        [SerializeField, ReadOnly] private bool _isExecuting;
         [FoldoutGroup("Base")]
         [SerializeField] protected List<BasePlayerCharacterAbility> _blockedByExecutingAbilities = new();
         [FoldoutGroup("Events")]
         public UnityEvent OnAbilityActivated;
         [FoldoutGroup("Events")]
         public UnityEvent OnAbilityDeactivated;
+        [FoldoutGroup("Events")]
+        public UnityEvent<bool> OnAbilityExecuting;
 
         protected IPlayerCameraController _playerCameraController;
         protected IPlayerInputProvider _playerInputProvider;
@@ -50,7 +52,16 @@ namespace CustomCharacterController.Core
             }
         }
 
-        public bool IsExecuting { get => _isExecuting; set => _isExecuting = value; }
+        public bool IsExecuting
+        {
+            get => _isExecuting;
+            set
+            {
+                _isExecuting = value;
+                OnAbilityExecuting?.Invoke(value);
+            }
+        }
+
         public bool IsInitialized {get; private set;}
         
         #endregion

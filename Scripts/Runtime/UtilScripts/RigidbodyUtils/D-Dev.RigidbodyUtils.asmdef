@@ -1,3 +1,14 @@
 {
-	"name": "D-Dev.RigidbodyUtils"
+    "name": "D-Dev.RigidbodyUtils",
+    "rootNamespace": "",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
