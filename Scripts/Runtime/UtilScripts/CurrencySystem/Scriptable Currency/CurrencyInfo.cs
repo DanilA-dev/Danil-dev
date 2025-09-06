@@ -24,7 +24,7 @@ namespace D_dev.Scripts.Runtime.UtilScripts.CurrencySystem
 
         [PropertySpace(10)]
         [Button]
-        private void DebugDepositValue(int depositValue) => _currency.Deposit(depositValue);
+        private void DebugDepositValue(int depositValue) => _currency.TryDeposit(depositValue);
 
         [Button]
         private void DebugWithdrawValue(int withdrawValue) => _currency.TryWithdraw(withdrawValue);

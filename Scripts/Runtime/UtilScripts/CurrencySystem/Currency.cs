@@ -14,12 +14,6 @@ namespace GlebSherzhukov.Scripts.Game.CurrencySystem
             Deposit = 0,
             Withdraw = 1
         }
-
-        public enum CurrencyMaxValueType
-        {
-            Auto = 0,
-            Manual = 1
-        }
         
         #endregion
         
@@ -36,10 +30,11 @@ namespace GlebSherzhukov.Scripts.Game.CurrencySystem
         #region Fields
 
         [SerializeField] private string _name;
+        [Space]
         [SerializeField, ReadOnly] private int _value;
+        [SerializeField] private int _defaultValue;
         [SerializeField] private bool _hasMaxValue;
         [ShowIf(nameof(_hasMaxValue))]
-        [SerializeField] private CurrencyMaxValueType _currencyMaxValueType;
         [SerializeField] private int _maxValue;
 
         public event Action<CurrencyEvent,int> OnCurrencyUpdate;
@@ -54,21 +49,18 @@ namespace GlebSherzhukov.Scripts.Game.CurrencySystem
             get => _hasMaxValue;
             set => _hasMaxValue = value;
         }
-
-        public CurrencyMaxValueType MaxValueType
-        {
-            get => _currencyMaxValueType;
-            set => _currencyMaxValueType = value;
-        }
+   
 
         public int MaxValue
         {
-            get => _currencyMaxValueType == CurrencyMaxValueType.Manual ? _maxValue : int.MaxValue;
-            set
-            {
-                if(_currencyMaxValueType == CurrencyMaxValueType.Manual)
-                    _maxValue = value;
-            }
+            get => _maxValue;
+            set => _maxValue = value;
+        }
+
+        public int DefaultValue
+        {
+            get => _defaultValue;
+            set => _defaultValue = value;
         }
 
         #endregion
@@ -85,7 +77,7 @@ namespace GlebSherzhukov.Scripts.Game.CurrencySystem
         
         #region Public
 
-        public void Deposit(int depositValue)
+        public bool TryDeposit(int depositValue)
         {
             if (depositValue <= 0 || _hasMaxValue && _value >= MaxValue)
             {
@@ -95,12 +87,18 @@ namespace GlebSherzhukov.Scripts.Game.CurrencySystem
                     IsSuccess = false,
                 }, _value);
                 Debug.Log($"[Currency : <color=pink>{_name}</color>] Deposit - {depositValue}, <color=red> Failed </color>");
-                return;
+                return false;
             }
             
-            _value += depositValue;
+            var newValue = _value + depositValue;
+            if (_hasMaxValue && newValue >= MaxValue)
+                _value = MaxValue;
+            else
+                _value += depositValue;
+            
             OnCurrencyUpdate?.Invoke(new CurrencyEvent{ActionType = CurrencyActionType.Deposit, IsSuccess = true }, _value);
             Debug.Log($"[Currency : <color=pink>{_name}</color>] Deposit - {depositValue}, <color=green> Success </color>");
+            return true;
         }
 
         public bool TryWithdraw(int withdrawValue)
