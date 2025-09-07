@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6105562662287875626}
   - component: {fileID: 6105562662287875627}
   - component: {fileID: 6105562662287875631}
+  - component: {fileID: 3332929038383386180}
   m_Layer: 3
   m_Name: GroundedTrigger
   m_TagString: Untagged
@@ -102,6 +103,20 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3332929038383386180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6105562662287875624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cdc5300222145c393d90bbbb6ad5657, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tags:
+  - {fileID: 11400000, guid: 5ad0c1bec739a1b4698734b340af9781, type: 2}
 --- !u!1 &6105562662307944166
 GameObject:
   m_ObjectHideFlags: 0
@@ -284,6 +299,7 @@ GameObject:
   - component: {fileID: 8436862428799076126}
   - component: {fileID: 2497857706212029633}
   - component: {fileID: 5155725379595774429}
+  - component: {fileID: 843430491090247190}
   m_Layer: 3
   m_Name: 1stP_Player_Prefab
   m_TagString: Player
@@ -443,7 +459,22 @@ MonoBehaviour:
   _isActive: 1
   _isExecuting: 0
   _blockedByExecutingAbilities: []
+  OnAbilityActivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityDeactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityExecuting:
+    m_PersistentCalls:
+      m_Calls: []
   _acceleration: 100
+  OnSpeedChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMoveInputChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &337192426639992784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -459,6 +490,15 @@ MonoBehaviour:
   _isActive: 1
   _isExecuting: 0
   _blockedByExecutingAbilities: []
+  OnAbilityActivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityDeactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityExecuting:
+    m_PersistentCalls:
+      m_Calls: []
   _jumpHeight: 1
   _jumpTimeout: 0.3
   _canJumpInAir: 0
@@ -479,6 +519,15 @@ MonoBehaviour:
   _isExecuting: 0
   _blockedByExecutingAbilities:
   - {fileID: 5155725379595774429}
+  OnAbilityActivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityDeactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityExecuting:
+    m_PersistentCalls:
+      m_Calls: []
   _maxSprintSpeed: 8
 --- !u!114 &2497857706212029633
 MonoBehaviour:
@@ -495,6 +544,15 @@ MonoBehaviour:
   _isActive: 1
   _isExecuting: 0
   _blockedByExecutingAbilities: []
+  OnAbilityActivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityDeactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityExecuting:
+    m_PersistentCalls:
+      m_Calls: []
   _gravity: -15
   _fallTerminalVelocity: -53
   _fallTimeout: 0.15
@@ -515,7 +573,33 @@ MonoBehaviour:
   _isActive: 1
   _isExecuting: 0
   _blockedByExecutingAbilities: []
+  OnAbilityActivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityDeactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityExecuting:
+    m_PersistentCalls:
+      m_Calls: []
   _characterController: {fileID: 6105562663605199298}
   _crouchHorizontalSpeed: 3
   _crouchHeight: 0.75
   _crouchTime: 0.15
+  OnCrouchHeightChange:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &843430491090247190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6105562663605199327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cdc5300222145c393d90bbbb6ad5657, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tags:
+  - {fileID: 11400000, guid: 5ad0c1bec739a1b4698734b340af9781, type: 2}

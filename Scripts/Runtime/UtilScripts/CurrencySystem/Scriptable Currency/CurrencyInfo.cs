@@ -1,4 +1,4 @@
-using GlebSherzhukov.Scripts.Game.CurrencySystem;
+using D_Dev.Scripts.Runtime.UtilScripts.CurrencySystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -28,6 +28,11 @@ namespace D_dev.Scripts.Runtime.UtilScripts.CurrencySystem
 
         [Button]
         private void DebugWithdrawValue(int withdrawValue) => _currency.TryWithdraw(withdrawValue);
+
+        [Button]
+        public void ResetToZero() => _currency.TrySet(0);
+        [Button]
+        public void ResetToDefault() => _currency.TrySet(_currency.DefaultValue);
 
         #endregion
     }

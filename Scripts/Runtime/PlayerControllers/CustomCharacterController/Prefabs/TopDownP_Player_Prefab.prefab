@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 8198882850758320515}
   - component: {fileID: 2771866029061050972}
   - component: {fileID: 4850756974004981568}
+  - component: {fileID: 4432932224160981505}
   m_Layer: 3
   m_Name: TopDownP_Player_Prefab
   m_TagString: Player
@@ -98,10 +99,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cameraRoot: {fileID: 5793557433839628404}
   _characterRoot: {fileID: 5793557432316069699}
+  _rotateCharacterRootTransform: 1
   _topAngle: 80
   _botAngle: -80
   _rotationSmoothTime: 0.25
   _isLocked: 0
+  OnRotationValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInputRotationChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &7985714348802490444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -179,7 +187,22 @@ MonoBehaviour:
   _isActive: 1
   _isExecuting: 0
   _blockedByExecutingAbilities: []
+  OnAbilityActivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityDeactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityExecuting:
+    m_PersistentCalls:
+      m_Calls: []
   _acceleration: 100
+  OnSpeedChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMoveInputChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &31661087736807757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,6 +218,15 @@ MonoBehaviour:
   _isActive: 1
   _isExecuting: 0
   _blockedByExecutingAbilities: []
+  OnAbilityActivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityDeactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityExecuting:
+    m_PersistentCalls:
+      m_Calls: []
   _jumpHeight: 1
   _jumpTimeout: 0.3
   _canJumpInAir: 0
@@ -215,6 +247,15 @@ MonoBehaviour:
   _isExecuting: 0
   _blockedByExecutingAbilities:
   - {fileID: 4850756974004981568}
+  OnAbilityActivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityDeactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityExecuting:
+    m_PersistentCalls:
+      m_Calls: []
   _maxSprintSpeed: 8
 --- !u!114 &2771866029061050972
 MonoBehaviour:
@@ -231,6 +272,15 @@ MonoBehaviour:
   _isActive: 1
   _isExecuting: 0
   _blockedByExecutingAbilities: []
+  OnAbilityActivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityDeactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityExecuting:
+    m_PersistentCalls:
+      m_Calls: []
   _gravity: -15
   _fallTerminalVelocity: -53
   _fallTimeout: 0.15
@@ -251,10 +301,36 @@ MonoBehaviour:
   _isActive: 1
   _isExecuting: 0
   _blockedByExecutingAbilities: []
+  OnAbilityActivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityDeactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAbilityExecuting:
+    m_PersistentCalls:
+      m_Calls: []
   _characterController: {fileID: 5793557432316069727}
   _crouchHorizontalSpeed: 3
   _crouchHeight: 0.75
   _crouchTime: 0.15
+  OnCrouchHeightChange:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &4432932224160981505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793557432316069698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cdc5300222145c393d90bbbb6ad5657, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tags:
+  - {fileID: 11400000, guid: 5ad0c1bec739a1b4698734b340af9781, type: 2}
 --- !u!1 &5793557432351897507
 GameObject:
   m_ObjectHideFlags: 0
@@ -350,6 +426,7 @@ GameObject:
   - component: {fileID: 5793557433651296439}
   - component: {fileID: 5793557433651296438}
   - component: {fileID: 5793557433651296434}
+  - component: {fileID: 2280302828854147983}
   m_Layer: 3
   m_Name: GroundedTrigger
   m_TagString: Untagged
@@ -440,6 +517,20 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2280302828854147983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793557433651296437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cdc5300222145c393d90bbbb6ad5657, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tags:
+  - {fileID: 11400000, guid: 5ad0c1bec739a1b4698734b340af9781, type: 2}
 --- !u!1 &5793557433839628411
 GameObject:
   m_ObjectHideFlags: 0

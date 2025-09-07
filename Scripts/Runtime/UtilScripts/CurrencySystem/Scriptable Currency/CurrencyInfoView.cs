@@ -1,5 +1,5 @@
-﻿using GlebSherzhukov.Scripts.Game.CurrencySystem;
-using System.Collections;
+﻿using System.Collections;
+using D_Dev.Scripts.Runtime.UtilScripts.CurrencySystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;

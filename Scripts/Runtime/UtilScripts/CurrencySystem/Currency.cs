@@ -2,7 +2,7 @@ using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace GlebSherzhukov.Scripts.Game.CurrencySystem
+namespace D_Dev.Scripts.Runtime.UtilScripts.CurrencySystem
 {
     [System.Serializable]
     public class Currency
@@ -12,7 +12,8 @@ namespace GlebSherzhukov.Scripts.Game.CurrencySystem
         public enum CurrencyActionType
         {
             Deposit = 0,
-            Withdraw = 1
+            Withdraw = 1,
+            Set = 2,
         }
         
         #endregion
@@ -119,9 +120,22 @@ namespace GlebSherzhukov.Scripts.Game.CurrencySystem
             return true;
         }
 
-        public void Set(int value)
+        public bool TrySet(int value)
         {
+            if (value <= 0 || _hasMaxValue && value >= MaxValue)
+            {
+                OnCurrencyUpdate?.Invoke(new CurrencyEvent
+                {
+                    ActionType = CurrencyActionType.Set, IsSuccess = false
+                }, _value);
+                Debug.Log($"[Currency : <color=pink>{_name}</color>] Set value - {value}, <color=red> Failed </color>");
+                return false;
+            }
+            
             _value = value;
+            OnCurrencyUpdate?.Invoke(new CurrencyEvent{ActionType = CurrencyActionType.Set, IsSuccess = true }, _value);
+            Debug.Log($"[Currency : <color=pink>{_name}</color>] Set value - {value}, <color=green> Success </color>");
+            return true;
         }
         
         #endregion
