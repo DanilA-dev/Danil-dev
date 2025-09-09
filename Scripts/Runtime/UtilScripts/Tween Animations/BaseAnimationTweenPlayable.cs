@@ -25,6 +25,12 @@ namespace D_Dev.UtilScripts.Tween_Animations
 
         #endregion
 
+        #region Properties
+
+        public bool IsComplete {get; private set;}
+
+        #endregion
+        
         #region Monobehaviour
 
         protected void OnEnable()
@@ -47,11 +53,13 @@ namespace D_Dev.UtilScripts.Tween_Animations
         {
             OnStart?.Invoke();
             OnPlay();
+            IsComplete = false;
             
             var lastTween = _tweens.Last();
             lastTween.OnComplete.AddListener((() =>
             {
                 OnComplete?.Invoke();
+                IsComplete = true;
                 lastTween.OnComplete.RemoveAllListeners();
             }));
         }
