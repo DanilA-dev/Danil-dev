@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,21 +11,16 @@ namespace D_dev.Scripts.ScenarioSystem
 
         [SerializeField] private bool _startScenarioOnStart;
         [SerializeField] private bool _saveScenarioState;
-        [ShowIf(nameof(_startScenarioOnStart))]
+        [ShowIf(nameof(_saveScenarioState))]
         [SerializeField] private string _scenarioSaveID;
         
-        [Title("Pause System")]
-        [SerializeField] private bool _isPaused;
-        
-        [Title("Safety")]
+        [SerializeField, ReadOnly] private bool _isPaused;
+        [SerializeField, ReadOnly] private bool _isFinished;
+
+        [SerializeField] private bool _finishAllNodesOnBreak = true;
         [SerializeField] private float _nodeTimeoutSeconds = 10;
         [SerializeField] private bool _enableTimeoutProtection = true;
-        
-        [Title("Executable Nodes")]
-        [SerializeField] private BaseScenarioExecutableNode[] _scenarioNodes;
-        
-        [Title("Break Nodes")]
-        [SerializeField] private BaseScenarioBreakNode[] _scenarioBreakers;
+       
 
         [FoldoutGroup("Events")]
         [SerializeField] private UnityEvent _onScenarioStarted;
@@ -43,6 +39,9 @@ namespace D_dev.Scripts.ScenarioSystem
         [FoldoutGroup("Events")]
         [SerializeField] private UnityEvent<BaseScenarioBreakNode> _onScenarioBroken;
 
+        private BaseScenarioExecutableNode[] _scenarioExecutableNodes;
+        private BaseScenarioBreakNode[] _scenarioBreakNodes;
+        
         private int _currentScenarioNodeIndex;
         private float _currentNodeStartTime;
         private bool _scenarioStarted;
@@ -51,17 +50,23 @@ namespace D_dev.Scripts.ScenarioSystem
 
         #region Properties
 
-        public bool IsFinished { get; private set; }
+        public bool IsFinished { get => _isFinished; }
         public bool IsPaused => _isPaused;
         public int CurrentNodeIndex => _currentScenarioNodeIndex;
         public BaseScenarioExecutableNode CurrentNode => 
-            _scenarioNodes != null && _currentScenarioNodeIndex < _scenarioNodes.Length 
-                ? _scenarioNodes[_currentScenarioNodeIndex] 
+            _scenarioExecutableNodes != null && _currentScenarioNodeIndex < _scenarioExecutableNodes.Length 
+                ? _scenarioExecutableNodes[_currentScenarioNodeIndex] 
                 : null;
 
         #endregion
 
         #region Monobehaviour
+
+        private void Awake()
+        {
+            _scenarioExecutableNodes = GetComponentsInChildren<BaseScenarioExecutableNode>();
+            _scenarioBreakNodes = GetComponentsInChildren<BaseScenarioBreakNode>();
+        }
 
         private void Start()
         {
@@ -84,12 +89,12 @@ namespace D_dev.Scripts.ScenarioSystem
             if(IsFinished || _scenarioStarted)
                 return;
 
-            if (_scenarioNodes == null || _scenarioNodes.Length == 0)
+            if (_scenarioExecutableNodes == null || _scenarioExecutableNodes.Length == 0)
                 return;
 
             if (GetScenarioSavedState())
             {
-                IsFinished = true;
+                _isFinished = true;
                 return;
             }
             
@@ -97,7 +102,7 @@ namespace D_dev.Scripts.ScenarioSystem
                 ? GetLastActiveSavedNode() 
                 : 0;
                 
-            _currentScenarioNodeIndex = Mathf.Clamp(_currentScenarioNodeIndex, 0, _scenarioNodes.Length - 1);
+            _currentScenarioNodeIndex = Mathf.Clamp(_currentScenarioNodeIndex, 0, _scenarioExecutableNodes.Length - 1);
                 
             _scenarioStarted = true;
             _onScenarioStarted?.Invoke();
@@ -123,7 +128,7 @@ namespace D_dev.Scripts.ScenarioSystem
 
         public void StopScenario()
         {
-            IsFinished = true;
+            _isFinished = true;
             _scenarioStarted = false;
             _onScenarioFinished?.Invoke();
             
@@ -133,24 +138,20 @@ namespace D_dev.Scripts.ScenarioSystem
 
         public void ResetBreakers()
         {
-            if (_scenarioBreakers == null)
+            if (_scenarioBreakNodes == null)
                 return;
             
-            foreach (var breaker in _scenarioBreakers)
-            {
+            foreach (var breaker in _scenarioBreakNodes)
                 breaker?.Reset();
-            }
         }
 
         public void SetBreakersActive(bool active)
         {
-            if (_scenarioBreakers == null)
+            if (_scenarioBreakNodes == null)
                 return;
             
-            foreach (var breaker in _scenarioBreakers)
-            {
+            foreach (var breaker in _scenarioBreakNodes)
                 breaker?.SetActive(active);
-            }
         }
 
         #endregion
@@ -159,22 +160,25 @@ namespace D_dev.Scripts.ScenarioSystem
 
         private void ExecuteScenario()
         {
+            if(!_scenarioStarted)
+                return;
+            
             if (CheckScenarioBreakers())
                 return;
                 
-            if (_scenarioNodes == null || _scenarioNodes.Length == 0)
+            if (_scenarioExecutableNodes == null || _scenarioExecutableNodes.Length == 0)
             {
                 FinishScenario();
                 return;
             }
             
-            if (_currentScenarioNodeIndex >= _scenarioNodes.Length)
+            if (_currentScenarioNodeIndex >= _scenarioExecutableNodes.Length)
             {
                 FinishScenario();
                 return;
             }
 
-            BaseScenarioExecutableNode currentNode = _scenarioNodes[_currentScenarioNodeIndex];
+            BaseScenarioExecutableNode currentNode = _scenarioExecutableNodes[_currentScenarioNodeIndex];
             
             if (currentNode == null)
             {
@@ -232,7 +236,7 @@ namespace D_dev.Scripts.ScenarioSystem
         {
             if (!IsFinished)
             {
-                IsFinished = true;
+                _isFinished = true;
                 _scenarioStarted = false;
                 _onScenarioFinished?.Invoke();
                 
@@ -249,16 +253,16 @@ namespace D_dev.Scripts.ScenarioSystem
 
         private void ForceFinishCurrentNode()
         {
-            BaseScenarioExecutableNode currentNode = _scenarioNodes[_currentScenarioNodeIndex];
+            BaseScenarioExecutableNode currentNode = _scenarioExecutableNodes[_currentScenarioNodeIndex];
             currentNode?.ForceFinish();
         }
 
         private bool CheckScenarioBreakers()
         {
-            if (_scenarioBreakers == null || _scenarioBreakers.Length == 0)
+            if (_scenarioBreakNodes == null || _scenarioBreakNodes.Length == 0)
                 return false;
 
-            foreach (var breaker in _scenarioBreakers)
+            foreach (var breaker in _scenarioBreakNodes)
             {
                 if (breaker == null)
                     continue;
@@ -270,6 +274,15 @@ namespace D_dev.Scripts.ScenarioSystem
                     _onScenarioBroken?.Invoke(breaker);
                     
                     FinishScenario();
+                    if (_finishAllNodesOnBreak && _scenarioExecutableNodes != null)
+                    {
+                        foreach (var executableNode in _scenarioExecutableNodes)
+                        {
+                            executableNode?.Execute();
+                            executableNode?.ForceFinish();
+                        }
+                    }
+                    
                     return true;
                 }
             }
