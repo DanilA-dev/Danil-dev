@@ -1,0 +1,17 @@
+{
+    "name": "D-Dev.SaveSystemService",
+    "rootNamespace": "",
+    "references": [
+        "GUID:a947a454b8df3474d81c9577867188ff",
+        "GUID:01190eca76617ac469f1fc00df21c641"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

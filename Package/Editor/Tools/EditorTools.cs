@@ -63,6 +63,12 @@ namespace D_Dev
         {
             AddPackageToManifest(UniTaskPackage, UniTaskURL);
         }
+
+        [MenuItem("Tools/D_Dev/OpenPersistentDataPath")]
+        public static void OpenPersistentDataPath()
+        {
+            EditorUtility.RevealInFinder(Application.persistentDataPath);
+        }
         #endregion
 
         #region Helpers

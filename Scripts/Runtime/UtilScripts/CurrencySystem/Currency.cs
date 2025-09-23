@@ -122,7 +122,7 @@ namespace D_Dev.Scripts.Runtime.UtilScripts.CurrencySystem
 
         public bool TrySet(int value)
         {
-            if (value <= 0 || _hasMaxValue && value >= MaxValue)
+            if (value < 0 || _hasMaxValue && value >= MaxValue)
             {
                 OnCurrencyUpdate?.Invoke(new CurrencyEvent
                 {
