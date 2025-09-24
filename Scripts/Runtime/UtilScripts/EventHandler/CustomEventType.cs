@@ -5,5 +5,7 @@ namespace D_dev.Scripts.EventHandler
       AppBoot = 0,
       OpenMenu = 1,
       CloseMenu = 2,
+      LoadScene = 3,
+      ReloadScene = 4,
     }
 }

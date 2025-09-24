@@ -29,30 +29,11 @@ namespace D_dev.SaveSystem
 
         #region Public
 
-        public void Save<T>(string key, T value)
-        {
-            _saveConfig.Save(key, value);
-        }
-
-        public T Load<T>(string key, T defaultValue = default)
-        {
-            return _saveConfig.Load(key, defaultValue);
-        }
-
-        public bool HasKey(string key)
-        {
-            return _saveConfig.HasKey(key);
-        }
-
-        public void DeleteKey(string key)
-        {
-            _saveConfig.DeleteKey(key);
-        }
-
-        public void DeleteAll()
-        {
-            _saveConfig.DeleteAll();
-        }
+        public void Save<T>(string key, T value) => _saveConfig.Save(key, value);
+        public T Load<T>(string key, T defaultValue = default) => _saveConfig.Load(key, defaultValue);
+        public bool HasKey(string key) => _saveConfig.HasKey(key);
+        public void DeleteKey(string key) => _saveConfig.DeleteKey(key);
+        public void DeleteAll() => _saveConfig.DeleteAll();
 
         #endregion
     }

@@ -64,10 +64,24 @@ namespace D_Dev
             AddPackageToManifest(UniTaskPackage, UniTaskURL);
         }
 
-        [MenuItem("Tools/D_Dev/OpenPersistentDataPath")]
+        [MenuItem("Tools/D_Dev/Open PersistentDataPath")]
         public static void OpenPersistentDataPath()
         {
             EditorUtility.RevealInFinder(Application.persistentDataPath);
+        }
+        
+        [MenuItem("Tools/D_Dev/Clear All Data")]
+        public static void ClearData()
+        {
+            PlayerPrefs.DeleteAll();
+
+            DirectoryInfo dir = new DirectoryInfo(Application.persistentDataPath);
+            foreach (FileInfo file in dir.GetFiles())
+                file.Delete();
+            foreach (DirectoryInfo subDir in dir.GetDirectories())
+                subDir.Delete(true);
+            
+            Debug.Log("All data cleared");
         }
         #endregion
 

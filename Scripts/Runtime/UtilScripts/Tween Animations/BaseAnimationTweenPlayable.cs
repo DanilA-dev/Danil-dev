@@ -27,19 +27,19 @@ namespace D_Dev.UtilScripts.Tween_Animations
 
         #region Properties
 
-        public bool IsComplete {get; private set;}
+        public bool IsComplete {get; protected set;}
 
         #endregion
         
         #region Monobehaviour
 
-        protected void OnEnable()
+        protected virtual void OnEnable()
         {
             if(_playOnEnable && HasTweensInArray())
                 Play();
         }
 
-        protected void Start()
+        protected virtual void Start()
         {
             if(_playOnStart && HasTweensInArray())
                 Play();
@@ -54,7 +54,7 @@ namespace D_Dev.UtilScripts.Tween_Animations
             OnStart?.Invoke();
             OnPlay();
             IsComplete = false;
-            
+
             var lastTween = _tweens.Last();
             lastTween.OnComplete.AddListener((() =>
             {

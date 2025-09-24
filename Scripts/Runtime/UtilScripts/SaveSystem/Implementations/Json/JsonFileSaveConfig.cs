@@ -31,6 +31,8 @@ namespace D_dev.SaveSystem
 
         #endregion
 
+        #region Constructors
+
         public JsonFileSaveConfig()
         {
             _settings = new JsonSerializerSettings
@@ -46,13 +48,13 @@ namespace D_dev.SaveSystem
                 }
             };
         }
+
+        #endregion
         
         #region Public
 
         public void LoadRegistry()
         {
-            
-            
             if (File.Exists(RegistryPath))
             {
                 try
@@ -73,7 +75,7 @@ namespace D_dev.SaveSystem
             try
             {
                 string path = GetFilePath(key);
-                string json = JsonConvert.SerializeObject(value, Formatting.Indented);
+                string json = JsonConvert.SerializeObject(value, _settings);
                 File.WriteAllText(path, json);
 
                 if (_keys.Add(key))
@@ -94,7 +96,7 @@ namespace D_dev.SaveSystem
                     return defaultValue;
 
                 string json = File.ReadAllText(path);
-                return JsonConvert.DeserializeObject<T>(json);
+                return JsonConvert.DeserializeObject<T>(json, _settings);
             }
             catch (Exception ex)
             {
