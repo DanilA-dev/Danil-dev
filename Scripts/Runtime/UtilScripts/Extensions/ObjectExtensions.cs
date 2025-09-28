@@ -29,7 +29,7 @@ namespace D_Dev.UtilScripts.Extensions
                 }
             }
 
-            if (go.transform.parent.TryGetComponent(out TComponent parentComp))
+            if (go.transform.parent != null && go.transform.parent.TryGetComponent(out TComponent parentComp))
             {
                 outComponent = parentComp;
                 return true;

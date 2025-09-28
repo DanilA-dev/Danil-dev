@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace D_Dev.UtilScripts.ScriptableVaiables
@@ -20,6 +21,9 @@ namespace D_Dev.UtilScripts.ScriptableVaiables
             get => _value;
             set
             {
+                if(EqualityComparer<T>.Default.Equals(_value, value))
+                    return;
+
                 _value = value;
                 OnValueUpdate?.Invoke(_value);
             }
