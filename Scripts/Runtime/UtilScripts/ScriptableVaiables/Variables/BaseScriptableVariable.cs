@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace D_Dev.UtilScripts.ScriptableVaiables
+namespace D_Dev.ScriptableVaiables
 {
     public class BaseScriptableVariable<T> : ScriptableObject
     {

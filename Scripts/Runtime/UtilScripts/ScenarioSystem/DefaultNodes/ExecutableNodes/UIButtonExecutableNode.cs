@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace D_dev.Scripts.ScenarioSystem
+namespace D_Dev.ScenarioSystem
 {
     public class UIButtonExecutableNode : BaseScenarioExecutableNode
     {

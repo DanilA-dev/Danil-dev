@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace D_Dev.UtilScripts.ValueSystem
+namespace D_Dev.ValueSystem
 {
     public class DoubleValue : BaseValue<double>
     {

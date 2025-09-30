@@ -1,9 +1,9 @@
-﻿using D_Dev.UtilScripts.ColliderEvents;
-using D_Dev.UtilScripts.Raycaster;
+﻿using D_Dev.ColliderEvents;
+using D_Dev.Raycaster;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace D_Dev.Scripts.Runtime.UtilScripts.TargetSensor
+namespace D_Dev.TargetSensor
 {
     [System.Serializable]
     public class TargetSensor

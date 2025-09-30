@@ -1,4 +1,4 @@
-﻿namespace D_dev.Scripts.EventHandler.Listeners
+﻿namespace D_Dev.EventHandler.Listeners
 {
     public class BoolCustomEventListener : BaseParamCustomEventListener<bool>{}
 }

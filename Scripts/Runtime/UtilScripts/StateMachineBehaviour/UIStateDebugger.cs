@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace D_Dev.Scripts.Runtime.UtilScripts.StateMachineBehaviour
+namespace D_Dev.StateMachineBehaviour
 {
     public class UIStateDebugger<TStateEnum> : MonoBehaviour where TStateEnum : Enum
     {

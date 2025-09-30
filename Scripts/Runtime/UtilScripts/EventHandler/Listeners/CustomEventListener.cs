@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace D_dev.Scripts.EventHandler.Listeners
+namespace D_Dev.EventHandler.Listeners
 {
     public class CustomEventListener : MonoBehaviour
     {

@@ -1,7 +1,7 @@
 using UnityEngine;
-using D_Dev.UtilScripts.TimerSystem;
+using D_Dev.TimerSystem;
 
-namespace D_dev.Scripts.ScenarioSystem
+namespace D_Dev.ScenarioSystem
 {
     public class TimerExecutableNode : BaseScenarioExecutableNode
     {

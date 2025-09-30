@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace D_dev.SaveSystem
+namespace D_Dev.SaveSystem
 {
     public class PlayerPrefsSaveConfig : ISaveConfig
     {

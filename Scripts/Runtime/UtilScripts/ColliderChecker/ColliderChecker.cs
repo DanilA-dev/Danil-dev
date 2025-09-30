@@ -1,10 +1,10 @@
 ﻿using System.Linq;
-using D_Dev.UtilScripts.Tag_System;
-using D_Dev.UtilScripts.Tag_System.Extensions;
+using D_Dev.TagSystem;
+using D_Dev.TagSystem.Extensions;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace D_Dev.UtilScripts.ColliderChecker
+namespace D_Dev.ColliderChecker
 {
 
     #region Enums

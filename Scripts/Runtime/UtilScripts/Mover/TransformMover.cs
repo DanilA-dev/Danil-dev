@@ -1,6 +1,6 @@
     using UnityEngine;
 
-namespace D_Dev.UtilScripts.Mover
+namespace D_Dev.Mover
 {
     public class TransformMover : BaseMover
     {

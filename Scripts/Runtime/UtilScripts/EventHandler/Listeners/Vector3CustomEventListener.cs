@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace D_dev.Scripts.EventHandler.Listeners
+namespace D_Dev.EventHandler.Listeners
 {
     public class Vector3CustomEventListener : BaseParamCustomEventListener<Vector3>{}
 }

@@ -3,17 +3,17 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace D_Dev.UtilScripts.SheetsLoadableSystem
+namespace D_Dev.SheetsLoadableSystem
 {
     public static class SheetsLoadableExtensions
     {
         public static Dictionary<string, object> GetData(this ScriptableObject sheetsLoadable)
         {
-            var attDic = new Dictionary<D_Dev.UtilScripts.SheetsLoadableSystem.SheetsLoadable, object>();
+            var attDic = new Dictionary<D_Dev.SheetsLoadableSystem.SheetsLoadable, object>();
             var returnDic = new Dictionary<string, object>();
             foreach (PropertyInfo propertyInfo in sheetsLoadable.GetType().GetProperties())
             {
-                var key = propertyInfo.GetCustomAttribute<D_Dev.UtilScripts.SheetsLoadableSystem.SheetsLoadable>();
+                var key = propertyInfo.GetCustomAttribute<D_Dev.SheetsLoadableSystem.SheetsLoadable>();
                 if (key != null)
                 {
                     var value = propertyInfo.GetValue(sheetsLoadable, null);
@@ -21,10 +21,10 @@ namespace D_Dev.UtilScripts.SheetsLoadableSystem
                 }
             }
 
-            attDic = new Dictionary<D_Dev.UtilScripts.SheetsLoadableSystem.SheetsLoadable, object>(attDic.OrderBy(i => i.Key.Сolumn));
+            attDic = new Dictionary<D_Dev.SheetsLoadableSystem.SheetsLoadable, object>(attDic.OrderBy(i => i.Key.Сolumn));
             foreach (var (key, value) in attDic)
                 returnDic.Add(key.ValueName, value);
-            
+
             return returnDic;
         }
         
@@ -34,7 +34,7 @@ namespace D_Dev.UtilScripts.SheetsLoadableSystem
             {
                 if (propertyInfo.CanWrite)
                 {
-                    var key = propertyInfo.GetCustomAttribute<D_Dev.UtilScripts.SheetsLoadableSystem.SheetsLoadable>();
+                    var key = propertyInfo.GetCustomAttribute<D_Dev.SheetsLoadableSystem.SheetsLoadable>();
                     var propertyValue = propertyInfo.GetValue(sheetsLoadable, null);
                     if(key == null)
                         continue;

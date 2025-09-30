@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
-using D_Dev.Scripts.Runtime.UtilScripts.SimpleStateMachine;
+using D_Dev.StateMachine;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
 
-namespace D_Dev.Scripts.Runtime.UtilScripts.StateMachineBehaviour
+namespace D_Dev.StateMachineBehaviour
 {
     public abstract class StateMachineBehaviour<TStateEnum> : MonoBehaviour where TStateEnum : Enum
     {

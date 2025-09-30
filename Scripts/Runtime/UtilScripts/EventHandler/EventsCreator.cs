@@ -1,13 +1,11 @@
 ﻿#if UNITY_EDITOR
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using D_dev.Scripts.EventHandler;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 
-namespace D_dev.Scripts.Runtime
+namespace D_Dev.EventHandler
 {
     [CreateAssetMenu(menuName = "D-Dev/EventCreator")]
     public class EventsCreator : ScriptableObject
@@ -91,4 +89,3 @@ namespace D_dev.Scripts.Runtime
     }
 }
 #endif
-

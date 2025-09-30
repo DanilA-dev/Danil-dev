@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace D_Dev.UtilScripts.Tag_System.Extensions
+namespace D_Dev.TagSystem.Extensions
 {
     public static class TagExtensions
     {

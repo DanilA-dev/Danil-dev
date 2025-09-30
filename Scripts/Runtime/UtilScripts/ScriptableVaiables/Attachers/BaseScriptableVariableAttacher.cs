@@ -1,7 +1,7 @@
-using D_Dev.UtilScripts.ScriptableVaiables;
+using D_Dev.ScriptableVaiables;
 using UnityEngine;
 
-namespace D_dev.UtilScripts.ScriptableVaiables.Attachers
+namespace D_Dev.ScriptableVaiables.Attachers
 {
     public class BaseScriptableVariableAttacher<TVariable, T> : MonoBehaviour where TVariable : BaseScriptableVariable<T>
     {

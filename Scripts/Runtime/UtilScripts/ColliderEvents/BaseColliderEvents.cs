@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using D_Dev.UtilScripts.ColliderChecker;
+using D_Dev.ColliderChecker;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace D_Dev.UtilScripts.ColliderEvents
+namespace D_Dev.ColliderEvents
 {
     public abstract class BaseColliderEvents : MonoBehaviour
     {

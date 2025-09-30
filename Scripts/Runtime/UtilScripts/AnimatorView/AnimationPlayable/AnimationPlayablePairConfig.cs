@@ -1,6 +1,6 @@
 using UnityEngine.Animations;
 
-namespace D_Dev.Scripts.Runtime.UtilScripts.AnimatorView.AnimationPlayableHandler
+namespace D_Dev.AnimatorView.AnimationPlayableHandler
 {
     public struct AnimationPlayablePairConfig
     {

@@ -1,8 +1,8 @@
 using Cinemachine;
-using D_Dev.UtilScripts.ScriptableVaiables;
+using D_Dev.ScriptableVaiables;
 using UnityEngine;
 
-namespace D_dev.UtilScripts.CinemachineHelpers
+namespace D_Dev.CinemachineHelpers
 {
     public class CinemachineTargetAutoAssigner : MonoBehaviour
     {

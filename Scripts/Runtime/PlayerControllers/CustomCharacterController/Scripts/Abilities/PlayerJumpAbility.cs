@@ -1,5 +1,5 @@
 using CustomCharacterController.Core;
-using D_Dev.UtilScripts.TimerSystem;
+using D_Dev.TimerSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 

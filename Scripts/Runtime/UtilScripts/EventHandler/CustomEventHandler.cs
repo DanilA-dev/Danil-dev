@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace D_dev.Scripts.EventHandler
+namespace D_Dev.EventHandler
 {
     public static class CustomEventHandler
     {

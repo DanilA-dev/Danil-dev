@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using D_dev.Scripts.EventHandler;
+using D_Dev.EventHandler;
 using UnityEngine;
 
-namespace D_Dev.UtilScripts.MenuHandler
+namespace D_Dev.MenuHandler
 {
     public class MenuHandler : MonoBehaviour
     {

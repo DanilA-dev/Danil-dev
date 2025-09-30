@@ -1,8 +1,7 @@
-using D_Dev.Scripts.Runtime.UtilScripts.CurrencySystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace D_dev.Scripts.Runtime.UtilScripts.CurrencySystem
+namespace D_Dev.CurrencySystem
 {
     [CreateAssetMenu(menuName = "D-Dev/Currencies/CurrencyData")]
     public class CurrencyInfo : ScriptableObject

@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace D_dev.Scripts.Runtime.UtilScripts.CurrencySystem
+namespace D_Dev.CurrencySystem
 {
     public class CurrencyInfoSetter : MonoBehaviour
     {

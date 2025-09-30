@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using D_Dev.UtilScripts.Extensions;
+using D_Dev.Extensions;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace D_Dev.UtilScripts.Entities.EntitiesInfo
+namespace D_Dev.Entities.EntitiesInfo
 {
     [System.Serializable]
     public class EntitySpawnSettings

@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
-using D_Dev.UtilScripts.SheetsLoadableSystem;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 using Task = System.Threading.Tasks.Task;
 
-namespace D_Dev.UtilScripts.Editor.CSV.Loaders
+namespace D_Dev.SheetsLoadableSystem.Loaders
 {
     [CreateAssetMenu(menuName = "D-Dev/Editor/Sheets/Data Importer")]
     public class SheetsDataUrlImporter : ScriptableObject

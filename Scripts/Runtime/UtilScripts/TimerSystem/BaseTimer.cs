@@ -1,6 +1,6 @@
 using System;
 
-namespace D_Dev.UtilScripts.TimerSystem
+namespace D_Dev.TimerSystem
 {
     public abstract class BaseTimer
     {

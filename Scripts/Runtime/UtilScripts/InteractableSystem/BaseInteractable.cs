@@ -2,7 +2,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace D.dev.InteractableSystem
+namespace D_Dev.InteractableSystem
 {
     public abstract class BaseInteractable : MonoBehaviour, IInteractable
     {

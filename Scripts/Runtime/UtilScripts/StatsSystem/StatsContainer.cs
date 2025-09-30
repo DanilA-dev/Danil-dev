@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using D_Dev.UtilScripts.Extensions;
-using D_Dev.UtilScripts.ScriptableVaiables;
+using D_Dev.Extensions;
+using D_Dev.ScriptableVaiables;
 using UnityEngine;
 
-namespace D_Dev.UtilScripts.StatsSystem
+namespace D_Dev.StatsSystem
 {
     public class StatsContainer : MonoBehaviour
     {

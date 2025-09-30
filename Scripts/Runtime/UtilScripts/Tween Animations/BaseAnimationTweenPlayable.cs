@@ -1,11 +1,11 @@
 ﻿#if DOTWEEN
 using System.Linq;
-using D_Dev.UtilScripts.Tween_Animations.Types;
+using D_Dev.TweenAnimations.Types;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace D_Dev.UtilScripts.Tween_Animations
+namespace D_Dev.TweenAnimations
 {
     public abstract class BaseAnimationTweenPlayable : MonoBehaviour
     {

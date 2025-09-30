@@ -1,9 +1,9 @@
-using D_Dev.UtilScripts.ScriptableVaiables;
+using D_Dev.ScriptableVaiables;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace D_dev.Scripts.Runtime.UtilScripts.AudioSystem
+namespace D_Dev.AudioSystem
 {
     #region Enums
 

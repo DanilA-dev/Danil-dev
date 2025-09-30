@@ -5,7 +5,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace D_Dev.Scripts.Runtime.UtilScripts.SimpleStateMachine
+namespace D_Dev.StateMachine
 {
     public class StateMachine<TStateEnum> where TStateEnum : Enum
     {

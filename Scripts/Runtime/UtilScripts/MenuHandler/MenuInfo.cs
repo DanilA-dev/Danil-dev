@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace D_Dev.UtilScripts.MenuHandler
+namespace D_Dev.MenuHandler
 {
     [CreateAssetMenu(menuName = "D-Dev/Info/MenuInfo")]
     public class MenuInfo : ScriptableObject

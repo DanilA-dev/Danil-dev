@@ -1,10 +1,10 @@
-using D_Dev.UtilScripts.ColliderEvents;
-using D_Dev.UtilScripts.DamagableSystem;
+using D_Dev.ColliderEvents;
+using D_Dev.DamagableSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Danil_dev.Scripts.Runtime.UtilScripts.DamagableSystem.DamagableCollider
+namespace D_Dev.DamageCollider
 {
     public class DamageCollider : MonoBehaviour
     {

@@ -1,11 +1,11 @@
-﻿using D_Dev.UtilScripts.ScriptableVaiables;
-using D_Dev.UtilScripts.StatsSystem;
-using D_Dev.UtilScripts.ValueSystem;
+﻿using D_Dev.ScriptableVaiables;
+using D_Dev.StatsSystem;
+using D_Dev.ValueSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace D_Dev.UtilScripts.DamagableSystem
+namespace D_Dev.DamagableSystem
 {
     public class DamagableObject : MonoBehaviour, IDamagable
     {
@@ -76,7 +76,5 @@ namespace D_Dev.UtilScripts.DamagableSystem
         }
 
         #endregion
-        
-       
     }
 }

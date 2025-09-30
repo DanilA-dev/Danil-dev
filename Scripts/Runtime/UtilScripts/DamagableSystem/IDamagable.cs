@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace D_Dev.UtilScripts.DamagableSystem
+namespace D_Dev.DamagableSystem
 {
     public interface IDamagable
     {

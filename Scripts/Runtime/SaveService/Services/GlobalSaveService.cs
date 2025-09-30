@@ -1,7 +1,7 @@
-using D_dev.UtilScripts.Singleton;
+using D_Dev.Singleton;
 using UnityEngine;
 
-namespace D_dev.SaveSystem
+namespace D_Dev.SaveSystem
 {
     public class GlobalSaveService : BaseSingleton<GlobalSaveService>
     {

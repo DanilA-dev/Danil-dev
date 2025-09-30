@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace D_dev.AdsService
+namespace D_Dev.AdsService
 {
     #region Enums
 

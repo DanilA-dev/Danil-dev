@@ -2,10 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using D_Dev.UtilScripts.ScriptableVaiables;
+using D_Dev.ScriptableVaiables;
 using UnityEngine;
 
-namespace D_dev.Scripts.Runtime.UtilScripts.AudioSystem
+namespace D_Dev.AudioSystem
 {
     public class AudioPlayer : MonoBehaviour
     {

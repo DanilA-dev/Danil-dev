@@ -1,6 +1,6 @@
-using D_Dev.UtilScripts.ScriptableVaiables;
+using D_Dev.ScriptableVaiables;
 
-namespace D_dev.Scripts.UtilScripts.ScriptableVaiables.Listeners
+namespace D_Dev.ScriptableVaiables.Listeners
 {
     public class StringScriptableVariableListener : BaseScriptableVariableListener<string> { }
 }

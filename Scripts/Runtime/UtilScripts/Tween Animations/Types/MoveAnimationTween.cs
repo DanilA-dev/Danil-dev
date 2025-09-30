@@ -4,7 +4,7 @@ using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace D_Dev.UtilScripts.Tween_Animations.Types
+namespace D_Dev.TweenAnimations.Types
 {
     [System.Serializable]
     public class MoveAnimationTween : BaseAnimationTween
@@ -183,4 +183,3 @@ namespace D_Dev.UtilScripts.Tween_Animations.Types
     }
 }
 #endif
-

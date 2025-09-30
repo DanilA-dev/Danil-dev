@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
-namespace D_Dev.Scripts.Runtime.UtilScripts.AnimatorView.AnimationPlayableHandler
+namespace D_Dev.AnimatorView.AnimationPlayableHandler
 {
     [DefaultExecutionOrder(-1)]
     public class AnimationPlayableGraph : MonoBehaviour

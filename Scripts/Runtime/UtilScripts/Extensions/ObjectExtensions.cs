@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace D_Dev.UtilScripts.Extensions
+namespace D_Dev.Extensions
 {
     public static class ObjectExtensions
     {

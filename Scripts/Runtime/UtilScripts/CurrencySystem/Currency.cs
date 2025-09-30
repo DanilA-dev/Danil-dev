@@ -2,7 +2,7 @@ using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace D_Dev.Scripts.Runtime.UtilScripts.CurrencySystem
+namespace D_Dev.CurrencySystem
 {
     [System.Serializable]
     public class Currency

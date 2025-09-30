@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace D_Dev.Scripts.Runtime.UtilScripts.StateMachineBehaviour
+namespace D_Dev.StateMachineBehaviour
 {
     [System.Serializable]
     public class StateEvent<TStateEnum> where TStateEnum : Enum

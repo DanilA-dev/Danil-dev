@@ -1,6 +1,6 @@
-﻿using D_Dev.UtilScripts.ValueSystem;
+﻿using D_Dev.ValueSystem;
 
-namespace D_Dev.UtilScripts.DamagableSystem
+namespace D_Dev.DamagableSystem
 {
     public interface IDamage
     {

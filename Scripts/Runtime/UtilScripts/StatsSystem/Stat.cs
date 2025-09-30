@@ -1,10 +1,10 @@
-﻿using D_Dev.UtilScripts.ScriptableVaiables;
-using D_Dev.UtilScripts.ValueSystem;
+﻿using D_Dev.ScriptableVaiables;
+using D_Dev.ValueSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace D_Dev.UtilScripts.StatsSystem
+namespace D_Dev.StatsSystem
 {
     [System.Serializable]
     public class Stat

@@ -1,4 +1,4 @@
-﻿namespace D_Dev.UtilScripts.ValueSystem
+﻿namespace D_Dev.ValueSystem
 {
     [System.Serializable]
     public class BoolValue : BaseValue<bool> {}

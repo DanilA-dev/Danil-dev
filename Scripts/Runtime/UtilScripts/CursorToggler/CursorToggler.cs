@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace D_dev.UtilScripts.CursorToggler
+namespace D_Dev.CursorToggler
 {
     public class CursorToggler : MonoBehaviour
     {

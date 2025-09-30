@@ -4,7 +4,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace D_Dev.UtilScripts.Tween_Animations.Types
+namespace D_Dev.TweenAnimations.Types
 {
     [System.Serializable]
     public abstract class BaseAnimationTween

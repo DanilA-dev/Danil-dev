@@ -1,7 +1,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace D_Dev.Scripts.Runtime.UtilScripts.AnimatorView
+namespace D_Dev.AnimatorView
 {
     [System.Serializable]
     public class AnimationClipConfig

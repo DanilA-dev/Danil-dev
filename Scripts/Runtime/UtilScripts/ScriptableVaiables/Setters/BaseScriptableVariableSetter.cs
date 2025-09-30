@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace D_Dev.UtilScripts.ScriptableVaiables.Setters
+namespace D_Dev.ScriptableVaiables.Setters
 {
     public class BaseScriptableVariableSetter<T, TVariable> : MonoBehaviour where TVariable : BaseScriptableVariable<T>
     {

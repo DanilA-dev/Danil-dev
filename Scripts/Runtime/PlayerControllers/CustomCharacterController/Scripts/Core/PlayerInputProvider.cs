@@ -1,6 +1,6 @@
 ﻿using System;
 using CustomCharacterController.Interfaces;
-using D_dev.Scripts.Runtime.UtilScripts.InputSystem;
+using D_Dev.InputSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 

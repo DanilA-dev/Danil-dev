@@ -1,6 +1,6 @@
-using D_Dev.UtilScripts.ScriptableVaiables;
+using D_Dev.ScriptableVaiables;
 
-namespace D_dev.UtilScripts.ScriptableVaiables.Attachers
+namespace D_Dev.ScriptableVaiables.Attachers
 {
     public class FloatScriptableVariableAttacher : BaseScriptableVariableAttacher<FloatScriptableVariable, float> {}
 }

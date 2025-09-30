@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace D_dev.AdsService
+namespace D_Dev.AdsService
 {
     public interface IAdsModule
     {

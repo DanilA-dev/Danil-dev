@@ -1,7 +1,7 @@
-﻿using D_Dev.UtilScripts.ValueSystem;
+﻿using D_Dev.ValueSystem;
 using UnityEngine;
 
-namespace D_Dev.UtilScripts.DamagableSystem.DamageTypes
+namespace D_Dev.DamagableSystem.DamageTypes
 {
     [System.Serializable]
     public class RandomDamage : IDamage

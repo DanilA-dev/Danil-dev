@@ -1,7 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace D_Dev.UtilScripts.Raycaster
+namespace D_Dev.Raycaster
 {
     public enum RaycastPointType
     {

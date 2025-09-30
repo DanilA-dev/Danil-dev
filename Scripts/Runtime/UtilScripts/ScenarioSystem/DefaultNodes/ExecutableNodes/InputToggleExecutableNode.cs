@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace D_dev.Scripts.ScenarioSystem
+namespace D_Dev.ScenarioSystem
 {
     public class InputToggleExecutableNode : BaseScenarioExecutableNode
     {

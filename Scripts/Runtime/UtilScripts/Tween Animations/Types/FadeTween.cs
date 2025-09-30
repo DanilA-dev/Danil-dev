@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace D_Dev.UtilScripts.Tween_Animations.Types
+namespace D_Dev.TweenAnimations.Types
 {
     [Serializable]
     public class FadeTween : BaseAnimationTween

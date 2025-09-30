@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace D_dev.Scripts.EventHandler
+namespace D_Dev.EventHandler
 {
     public abstract class BaseParamCustomEventInvoker<T> : MonoBehaviour
     {

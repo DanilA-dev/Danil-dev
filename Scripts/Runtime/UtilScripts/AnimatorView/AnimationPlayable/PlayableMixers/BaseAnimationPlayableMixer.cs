@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
-namespace D_Dev.Scripts.Runtime.UtilScripts.AnimatorView.AnimationPlayableHandler
+namespace D_Dev.AnimatorView.AnimationPlayableHandler
 {
     public abstract class BaseAnimationPlayableMixer : MonoBehaviour
     {

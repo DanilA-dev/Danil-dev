@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace D_Dev.Scripts.Runtime.UtilScripts.AnimatorView
+namespace D_Dev.AnimatorView
 {
     public class AnimatorEventHandler : MonoBehaviour
     {

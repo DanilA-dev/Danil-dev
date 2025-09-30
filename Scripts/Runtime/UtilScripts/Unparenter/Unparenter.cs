@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace D_Dev.Scripts.Runtime.UtilScripts.Unparenter
+namespace D_Dev.Unparenter
 {
     public class Unparenter : MonoBehaviour
     {

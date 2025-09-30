@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace D_dev.Scripts.ScenarioSystem
+namespace D_Dev.ScenarioSystem
 {
     public class ScenarioHandler : MonoBehaviour
     {

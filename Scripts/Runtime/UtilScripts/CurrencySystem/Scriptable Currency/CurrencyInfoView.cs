@@ -1,10 +1,9 @@
 ﻿using System.Collections;
-using D_Dev.Scripts.Runtime.UtilScripts.CurrencySystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace D_dev.Scripts.Runtime.UtilScripts.CurrencySystem
+namespace D_Dev.CurrencySystem
 {
     public class CurrencyInfoView : MonoBehaviour
     {

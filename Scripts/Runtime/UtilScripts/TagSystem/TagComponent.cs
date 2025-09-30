@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace D_Dev.UtilScripts.Tag_System
+namespace D_Dev.TagSystem
 {
     public class TagComponent : MonoBehaviour
     {

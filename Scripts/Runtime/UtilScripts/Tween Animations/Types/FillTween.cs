@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace D_Dev.UtilScripts.Tween_Animations.Types
+namespace D_Dev.TweenAnimations.Types
 {
     [System.Serializable]
     public class FillTween : BaseAnimationTween

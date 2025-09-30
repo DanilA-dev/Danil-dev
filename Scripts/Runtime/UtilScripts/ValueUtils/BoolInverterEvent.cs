@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace D_dev.ValueUtils
+namespace D_Dev.ValueUtils
 {
     public class BoolInverterEvent : MonoBehaviour
     {

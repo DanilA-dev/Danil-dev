@@ -3,7 +3,7 @@ using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace D_Dev.UtilScripts.Tween_Animations
+namespace D_Dev.TweenAnimations
 {
     public class AnimationTweenPlayer : BaseAnimationTweenPlayable
     {

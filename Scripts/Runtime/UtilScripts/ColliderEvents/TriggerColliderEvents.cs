@@ -1,8 +1,9 @@
-﻿using D_Dev.UtilScripts.ColliderChecker;
+﻿using D_Dev.ColliderChecker;
+using D_Dev.ColliderEvents;
 using UniRx;
 using UniRx.Triggers;
 
-namespace D_Dev.UtilScripts.ColliderEvents
+namespace D_Dev.ColliderEvents
 {
     public class TriggerColliderEvents : BaseColliderEvents
     {

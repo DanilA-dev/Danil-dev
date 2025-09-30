@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace D_Dev.Scripts.Runtime.UtilScripts.SimpleStateMachine
+namespace D_Dev.StateMachine
 {
     public class GroupAnyCondition : IStateCondition
     {

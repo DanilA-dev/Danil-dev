@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace D_Dev.UtilScripts.TimerSystem
+namespace D_Dev.TimerSystem
 {
     public class TimerComponent : MonoBehaviour
     {

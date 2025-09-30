@@ -2,12 +2,11 @@
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using D_Dev.UtilScripts.SheetsLoadableSystem;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 
-namespace D_Dev.UtilScripts.Editor.CSV.Writers
+namespace D_Dev.SheetsLoadableSystem.Writers
 {
     [CreateAssetMenu(menuName = "D-Dev/Editor/Sheets/Data Exporter")]
     public class SheetsDataCsvExporter : ScriptableObject

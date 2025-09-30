@@ -1,7 +1,7 @@
 ﻿#if DOTWEEN
 using DG.Tweening;
 
-namespace D_Dev.UtilScripts.Tween_Animations.Types
+namespace D_Dev.TweenAnimations.Types
 {
     [System.Serializable]
     public class DelayTween : BaseAnimationTween
@@ -26,5 +26,3 @@ namespace D_Dev.UtilScripts.Tween_Animations.Types
     }
 }
 #endif
-
-

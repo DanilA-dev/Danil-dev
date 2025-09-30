@@ -1,7 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;                    
 
-namespace D_Dev.UtilScripts.DamagableSystem
+namespace D_Dev.DamagableSystem
 {
     [System.Serializable]
     public class DamageInfo

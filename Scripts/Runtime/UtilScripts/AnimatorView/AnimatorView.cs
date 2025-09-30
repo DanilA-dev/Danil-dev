@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using D_Dev.Scripts.Runtime.UtilScripts.AnimatorView.AnimationPlayableHandler;
+using D_Dev.AnimatorView.AnimationPlayableHandler;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Playables;
 
-namespace D_Dev.Scripts.Runtime.UtilScripts.AnimatorView
+namespace D_Dev.AnimatorView
 {
     #region Enum
 

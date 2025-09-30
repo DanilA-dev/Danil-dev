@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using CustomCharacterController.Interfaces;
-using D_Dev.UtilScripts.ColliderEvents;
-using D_Dev.UtilScripts.Raycaster;
+using D_Dev.ColliderEvents;
+using D_Dev.Raycaster;
 using Sirenix.OdinInspector;
 using UnityEngine;
 

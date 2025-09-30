@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace D_dev.UtilScripts.RigidbodyUtils
+namespace D_Dev.RigidbodyUtils
 {
     public class RigidbodyCustomGravity : MonoBehaviour
     {

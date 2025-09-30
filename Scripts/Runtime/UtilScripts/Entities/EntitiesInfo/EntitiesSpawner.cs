@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 
-namespace D_Dev.UtilScripts.Entities.EntitiesInfo
+namespace D_Dev.Entities.EntitiesInfo
 {
     public class EntitiesSpawner : MonoBehaviour
     {

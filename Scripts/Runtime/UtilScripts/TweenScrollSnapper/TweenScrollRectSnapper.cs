@@ -8,7 +8,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace D_Dev.UtilScripts.TweenScrollSnapper
+namespace D_Dev.TweenScrollSnapper
 {
     [RequireComponent(typeof(ScrollRect))]
     public class TweenScrollRectSnapper : MonoBehaviour, IEndDragHandler, IBeginDragHandler, IDragHandler

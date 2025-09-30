@@ -1,6 +1,6 @@
 using System;
 
-namespace D_dev.SaveSystem
+namespace D_Dev.SaveSystem
 {
     public interface ISaveConfig
     {

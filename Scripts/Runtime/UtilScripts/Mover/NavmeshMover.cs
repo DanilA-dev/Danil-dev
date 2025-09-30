@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace D_Dev.UtilScripts.Mover
+namespace D_Dev.Mover
 {
     public class NavmeshMover : BaseMover
     {

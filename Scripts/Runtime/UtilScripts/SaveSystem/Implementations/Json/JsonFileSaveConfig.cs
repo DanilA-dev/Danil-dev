@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using D_dev.SaveSystem.Conventers;
+using D_Dev.SaveSystem.Converters;
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace D_dev.SaveSystem
+namespace D_Dev.SaveSystem
 {
     public class JsonFileSaveConfig : ISaveConfig
     {

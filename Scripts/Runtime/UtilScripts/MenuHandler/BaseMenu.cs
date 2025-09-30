@@ -3,10 +3,10 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 #if DOTWEEN
 using DG.Tweening;
-using D_Dev.UtilScripts.Tween_Animations.Types;
+using D_Dev.TweenAnimations.Types;
 #endif
 
-namespace D_Dev.UtilScripts.MenuHandler
+namespace D_Dev.MenuHandler
 {
     public abstract class BaseMenu : MonoBehaviour
     {

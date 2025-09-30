@@ -1,8 +1,8 @@
 #if DOTWEEN
 using UnityEngine;
-using D_Dev.UtilScripts.Tween_Animations;
+using D_Dev.TweenAnimations;
 
-namespace D_dev.Scripts.ScenarioSystem
+namespace D_Dev.ScenarioSystem
 {
     public class AnimationTweenExecutableNode : BaseScenarioExecutableNode
     {

@@ -1,7 +1,7 @@
 ﻿#if DOTWEEN
 using DG.Tweening;
 
-namespace D_Dev.UtilScripts.Tween_Animations
+namespace D_Dev.TweenAnimations
 {
     public class AnimationTweenSequencer : BaseAnimationTweenPlayable
     {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace D.dev.InteractableSystem
+namespace D_Dev.InteractableSystem
 {
     public interface IInteractable
     {

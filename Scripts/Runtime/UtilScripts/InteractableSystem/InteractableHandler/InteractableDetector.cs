@@ -1,17 +1,15 @@
 ﻿using System.Collections;
-using D_Dev.UtilScripts.Raycaster;
-using D_Dev.UtilScripts.ScriptableVaiables;
-using D.dev.InteractableSystem;
+using D_Dev.ScriptableVaiables;
 using UnityEngine;
 
-namespace D_dev.Scripts.InteractableSystem.InteractableHandler
+namespace D_Dev.InteractableSystem.InteractableHandler
 {
     public class InteractableDetector : MonoBehaviour
     {
         #region Fields
 
         [SerializeField] private GameObjectScriptableVariable _lastSpottedInteractable;
-        [SerializeField] private Raycaster _raycaster;
+        [SerializeField] private Raycaster.Raycaster _raycaster;
         [SerializeField] private float _updateRate = 0.1f;
 
         private IInteractable _currentInteractable;

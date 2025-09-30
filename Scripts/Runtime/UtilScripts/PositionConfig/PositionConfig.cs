@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace D_Dev.UtilScripts.PositionConfig
+namespace D_Dev.PositionConfig
 {
     #region Enums
 
