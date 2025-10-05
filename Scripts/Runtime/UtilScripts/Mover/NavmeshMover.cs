@@ -3,40 +3,36 @@ using UnityEngine.AI;
 
 namespace D_Dev.Mover
 {
-    public class NavmeshMover : BaseMover
+    [System.Serializable]
+    public class NavmeshMover : IMoverStrategy
     {
         #region Fields
 
-        [SerializeField] private NavMeshAgent _agent;
-        [SerializeField] private float _speed;
-
+        [SerializeField] private NavMeshAgent _owner;
+        
         #endregion
 
         #region Properties
 
-        public NavMeshAgent Agent
-        {
-            get => _agent;
-            set => _agent = value;
-        }
-
-        public float Speed
-        {
-            get => _speed;
-            set => _speed = value;
-        }
+        public bool IsPhysicsBased => false;
 
         #endregion
+        
+        #region Public
 
-        #region Protected
+        public Vector3 GetCurrentPosition() => _owner.transform.position;
 
-        protected override void OnMove(Vector3 direction)
+        public void MoveTowards(Vector3 target, float speed, float deltaTime)
         {
-            if (_agent != null)
-            {
-                _agent.speed = _speed;
-                _agent.SetDestination(_agent.transform.position + direction);
-            }
+            if (!Mathf.Approximately(_owner.speed, speed))
+                _owner.speed = speed;
+            
+            _owner.SetDestination(target);
+        }
+
+        public bool IsAtPosition(Vector3 target, float tolerance)
+        {
+            return Vector3.Distance(_owner.transform.position, target) <= tolerance;
         }
 
         #endregion

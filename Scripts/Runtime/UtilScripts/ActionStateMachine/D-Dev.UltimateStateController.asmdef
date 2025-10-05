@@ -1,0 +1,19 @@
+{
+    "name": "D-Dev.UltimateStateController",
+    "rootNamespace": "",
+    "references": [
+        "UniTask",
+        "D-Dev.ScriptableVariables",
+        "D.Dev.TargetInfo",
+        "D-Dev.Mover"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

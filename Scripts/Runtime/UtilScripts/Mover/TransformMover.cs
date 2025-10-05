@@ -1,38 +1,29 @@
-    using UnityEngine;
+using UnityEngine;
 
 namespace D_Dev.Mover
 {
-    public class TransformMover : BaseMover
+    [System.Serializable]
+    public class TransformMover : IMoverStrategy
     {
         #region Fields
 
-        [SerializeField] private Transform _target;
-        [SerializeField] private float _speed;
+        [SerializeField] private Transform _owner;
+        
         #endregion
 
         #region Properties
-
-        public Transform Target
-        {
-            get => _target;
-            set => _target = value;
-        }
-
-        public float Speed
-        {
-            get => _speed;
-            set => _speed = value;
-        }
-
+        public bool IsPhysicsBased => false;
 
         #endregion
 
-        #region Protected
+        #region Public
 
-        protected override void OnMove(Vector3 direction)
-        {
-            transform.position += direction * _speed * Time.deltaTime;
-        }
+        public Vector3 GetCurrentPosition() => _owner.position;
+        
+        public void MoveTowards(Vector3 target, float speed, float deltaTime) =>
+            _owner.position = Vector3.MoveTowards(_owner.position, target, speed * deltaTime);
+        public bool IsAtPosition(Vector3 target, float tolerance) =>
+            Vector3.Distance(_owner.position, target) <= tolerance;
 
         #endregion
     }

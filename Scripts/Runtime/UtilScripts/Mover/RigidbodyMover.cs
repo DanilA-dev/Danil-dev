@@ -3,7 +3,8 @@ using UnityEngine;
 
 namespace D_Dev.Mover
 {
-    public class RigidbodyMover : BaseMover
+    [System.Serializable]
+    public class RigidbodyMover : IMoverStrategy
     {
         #region Enums
         public enum RigidbodyMoverType
@@ -17,10 +18,8 @@ namespace D_Dev.Mover
 
         #region Fields
 
-        [SerializeField] private Rigidbody _rigidbody;
+        [SerializeField] private Rigidbody _owner;
         [SerializeField] private RigidbodyMoverType _moveType;
-        [SerializeField] private float _forceAmount = 10f;
-
         [ShowIf(nameof(_moveType), RigidbodyMoverType.AddForce)]
         [SerializeField] private ForceMode _forceMode;
 
@@ -28,30 +27,31 @@ namespace D_Dev.Mover
 
         #region Properties
 
-        public Rigidbody Rigidbody => _rigidbody;
+        public bool IsPhysicsBased => true;
         public RigidbodyMoverType MoveType { get => _moveType; set => _moveType = value; }
-        public float ForceAmount { get => _forceAmount; set => _forceAmount = value; }
 
         #endregion
 
-        #region Protected
+        #region Public
 
+        public Vector3 GetCurrentPosition() => _owner.position;
 
-        protected override void OnMove(Vector3 direction)
+        public void MoveTowards(Vector3 target, float speed, float deltaTime)
         {
             switch (_moveType)
             {
                 case RigidbodyMoverType.AddForce:
-                    _rigidbody.AddForce(direction * _forceAmount, _forceMode);
+                    _owner.AddForce(target * speed, _forceMode);
                     break;
                 case RigidbodyMoverType.Velocity:
-                    _rigidbody.velocity = direction * _forceAmount * Time.deltaTime;
+                    _owner.linearVelocity = target * speed * Time.deltaTime;
                     break;
                 case RigidbodyMoverType.MovePosition:
-                    _rigidbody.MovePosition(_rigidbody.position + direction * _forceAmount * Time.deltaTime);
+                    _owner.MovePosition(Vector3.MoveTowards(_owner.position, target, speed * deltaTime));
                     break;
             }
         }
+        public bool IsAtPosition(Vector3 target, float tolerance) => Vector3.Distance(_owner.position, target) <= tolerance;
 
         #endregion
     }

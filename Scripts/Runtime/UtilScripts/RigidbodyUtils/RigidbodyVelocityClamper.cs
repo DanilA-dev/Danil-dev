@@ -48,8 +48,8 @@ namespace D_Dev.RigidbodyUtils
         {
             if (_body != null)
             {
-                _clampedVelocity = Vector3.ClampMagnitude(_body.velocity, _maxVelocity);
-                _body.velocity = _clampedVelocity;
+                _clampedVelocity = Vector3.ClampMagnitude(_body.linearVelocity, _maxVelocity);
+                _body.linearVelocity = _clampedVelocity;
             }
         }
 
