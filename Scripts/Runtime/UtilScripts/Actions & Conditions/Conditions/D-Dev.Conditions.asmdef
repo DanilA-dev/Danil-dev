@@ -1,0 +1,19 @@
+{
+    "name": "D-Dev.Conditions",
+    "rootNamespace": "",
+    "references": [
+        "GUID:6d0199508f23afb4692c5fcd34c5ce08",
+        "GUID:1469e3bfc96f914479f77f148a93f3c6",
+        "GUID:d789ad2b695405b409ea35b65e2bfca9",
+        "GUID:62e2659ebbd69444892cd9aa256f8240"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -51,7 +51,8 @@ namespace D_Dev.Mover
                     break;
             }
         }
-        public bool IsAtPosition(Vector3 target, float tolerance) => Vector3.Distance(_owner.position, target) <= tolerance;
+        public bool IsAtPosition(Vector3 target, float tolerance) 
+            => Vector3.Distance(_owner.position, target) <= tolerance;
 
         #endregion
     }
