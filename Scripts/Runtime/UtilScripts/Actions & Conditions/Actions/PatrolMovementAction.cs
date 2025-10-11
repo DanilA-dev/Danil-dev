@@ -45,6 +45,14 @@ namespace D_dev.Actions
 
             if (_movement.IsAtPosition(target, _reachDistance))
                 MoveToNextPoint();
+            
+            if(_currentIndex == _patrolPoints.Length - 1)
+                _isFinished = true;
+        }
+
+        public void Undo()
+        {
+            _isFinished = false;
         }
 
         public bool IsFinished => _isFinished;

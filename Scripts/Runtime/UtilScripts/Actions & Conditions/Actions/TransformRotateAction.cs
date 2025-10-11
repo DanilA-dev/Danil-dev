@@ -5,6 +5,8 @@ namespace D_dev.Actions
     [System.Serializable]
     public class TransformRotateAction : IAction
     {
+        #region Enums
+
         public enum RotationAxis
         {
             All,
@@ -12,6 +14,8 @@ namespace D_dev.Actions
             Y,
             Z
         }
+
+        #endregion
 
         #region Fields
 
@@ -22,10 +26,14 @@ namespace D_dev.Actions
         [SerializeField] private float _rotationSpeed = 180f;
         [SerializeField] private float _angleThreshold = 1f;
 
+        private bool _isFinished;
+
         #endregion
 
         #region IAction
 
+        public bool IsFinished => _isFinished;
+        
         public void Execute()
         {
             if (_transformToRotate == null)
@@ -39,8 +47,34 @@ namespace D_dev.Actions
 
             Quaternion targetRotation = GetTargetRotation(direction);
             _transformToRotate.rotation = Quaternion.RotateTowards(_transformToRotate.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
+            if(IsTargetRotationEnded())
+                _isFinished = true;
         }
 
+        public void Undo()
+        {
+            _isFinished = false;
+        }
+
+        #endregion
+
+        #region Private
+
+        private bool IsTargetRotationEnded()
+        {
+            if (_transformToRotate == null)
+                return true;
+
+            Vector3 targetPosition = _target.GetTargetPosition();
+            Vector3 direction = targetPosition - _transformToRotate.position;
+
+            if (direction == Vector3.zero)
+                return true;
+
+            Quaternion targetRotation = GetTargetRotation(direction);
+            return Quaternion.Angle(_transformToRotate.rotation, targetRotation) < _angleThreshold;
+        }
+        
         private Quaternion GetTargetRotation(Vector3 direction)
         {
             switch (_rotationAxis)
@@ -58,24 +92,6 @@ namespace D_dev.Actions
                     return Quaternion.Euler(0, 0, angleZ);
                 default:
                     return Quaternion.LookRotation(direction);
-            }
-        }
-
-        public bool IsFinished
-        {
-            get
-            {
-                if (_transformToRotate == null)
-                    return true;
-
-                Vector3 targetPosition = _target.GetTargetPosition();
-                Vector3 direction = targetPosition - _transformToRotate.position;
-
-                if (direction == Vector3.zero)
-                    return true;
-
-                Quaternion targetRotation = GetTargetRotation(direction);
-                return Quaternion.Angle(_transformToRotate.rotation, targetRotation) < _angleThreshold;
             }
         }
 

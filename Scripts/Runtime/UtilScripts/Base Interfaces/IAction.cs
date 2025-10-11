@@ -3,7 +3,8 @@ namespace D_dev
 {
     public interface IAction
     {
-        void Execute();
-        bool IsFinished { get; }
+        public bool IsFinished { get; }
+        public void Execute();
+        public void Undo();
     }
 }

@@ -32,6 +32,7 @@ namespace D_dev.ActionsStateController.Base
 
             public ActionState.Phase Phase => _phase;
             public ActionGroup.ActionGroup Group => _group;
+            public bool IsComplete => _group != null && _group.IsCompleted;
         }
 
     
@@ -134,9 +135,7 @@ namespace D_dev.ActionsStateController.Base
                     continue;
 
                 foreach (var action in entry.Group.Actions)
-                {
-                    // Assuming actions have Reset if needed
-                }
+                   action.Undo();
             }
         }
 
@@ -146,7 +145,7 @@ namespace D_dev.ActionsStateController.Base
                 return;
 
             foreach (var entry in _actionGroups.Where(e => e.Phase == phase))
-                entry.Group.Execute();
+                entry.Group.ExecuteActions();
         }
 
         private void CheckActionsCompletion()

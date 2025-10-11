@@ -16,6 +16,9 @@ namespace D_dev.Actions
         #endregion
 
         #region IAction
+        
+        public bool IsFinished => _isFinished;
+        
 
         public void Execute()
         {
@@ -31,7 +34,11 @@ namespace D_dev.Actions
                 _timer.Tick(Time.deltaTime);
         }
 
-        public bool IsFinished => _isFinished;
+        public void Undo()
+        {
+            _isFinished = false;
+        }
+
 
         #endregion
 

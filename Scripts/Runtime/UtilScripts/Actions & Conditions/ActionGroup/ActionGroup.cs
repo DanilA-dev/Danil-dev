@@ -24,7 +24,7 @@ namespace D_dev.ActionGroup
         
         #region Public
        
-        public void Execute()
+        public void ExecuteActions()
         {
             if (Actions == null || Actions.Length == 0)
                 return;

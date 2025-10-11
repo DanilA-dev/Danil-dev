@@ -37,6 +37,11 @@ namespace D_dev.Actions
                 _isFinished = true;
         }
 
+        public void Undo()
+        {
+            _isFinished = false;
+        }
+
         #endregion
     }
 }
