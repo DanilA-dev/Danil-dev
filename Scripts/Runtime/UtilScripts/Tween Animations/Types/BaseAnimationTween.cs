@@ -11,7 +11,6 @@ namespace D_Dev.TweenAnimations.Types
     {
         #region Fields
 
-        [SerializeField] protected int _index;
         [SerializeField] protected float _duration;
         [SerializeField] protected Ease _ease;
         [SerializeField] protected bool _ignoreTimeScale;
@@ -79,12 +78,6 @@ namespace D_Dev.TweenAnimations.Types
         {
             get => _loopType;
             set => _loopType = value;
-        }
-
-        public int Index
-        {
-            get => _index;
-            set => _index = value;
         }
 
         #endregion

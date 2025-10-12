@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using Cysharp.Threading.Tasks;
-using D_Dev.ScriptableVaiables;
+﻿using D_Dev.ScriptableVaiables;
 using UnityEngine;
 
 namespace D_dev.ActionsStateController.Base
