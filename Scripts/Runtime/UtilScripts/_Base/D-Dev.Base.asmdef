@@ -1,12 +1,7 @@
 {
-    "name": "D-Dev.ActionsStateController",
+    "name": "D-Dev.Base",
     "rootNamespace": "",
-    "references": [
-        "UniTask",
-        "D-Dev.Base",
-        "D-Dev.ScriptableVariables",
-        "D-Dev.ActionGroup"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
