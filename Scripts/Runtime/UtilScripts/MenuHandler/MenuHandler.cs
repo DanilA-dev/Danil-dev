@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using D_Dev.EventHandler;
 using UnityEngine;
 
 namespace D_Dev.MenuHandler
@@ -25,8 +24,8 @@ namespace D_Dev.MenuHandler
         private void Awake()
         {
             _instance = this;
-            CustomEventHandler.AddListener<MenuInfo>(CustomEventType.OpenMenu, OpenMenu);
-            CustomEventHandler.AddListener<MenuInfo>(CustomEventType.CloseMenu, CloseMenu);
+            //CustomEventHandler.EventManager.AddListener<MenuInfo>(BaseEventType.OpenMenu, OpenMenu);
+            //CustomEventHandler.EventManager.AddListener<MenuInfo>(BaseEventType.CloseMenu, CloseMenu);
         }
 
         private void OnEnable()
@@ -37,8 +36,8 @@ namespace D_Dev.MenuHandler
 
         private void OnDestroy()
         {
-            CustomEventHandler.RemoveListener<MenuInfo>(CustomEventType.OpenMenu, OpenMenu);
-            CustomEventHandler.RemoveListener<MenuInfo>(CustomEventType.CloseMenu, CloseMenu);
+            //CustomEventHandler.EventManager.RemoveListener<MenuInfo>(BaseEventType.OpenMenu, OpenMenu);
+            // CustomEventHandler.EventManager.RemoveListener<MenuInfo>(BaseEventType.CloseMenu, CloseMenu);
         }
 
         #endregion
