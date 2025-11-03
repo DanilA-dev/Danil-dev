@@ -8,7 +8,7 @@ namespace D_Dev.Singleton
         
         [SerializeField] private bool _dontDestroyOnLoad = true;
       
-        private static T _instance;
+        protected static T _instance;
         private static readonly object _lock = new object();
         
         #endregion

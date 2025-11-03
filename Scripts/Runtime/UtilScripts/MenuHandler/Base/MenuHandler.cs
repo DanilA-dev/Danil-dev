@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using D_Dev.CustomEventManager;
+using D_Dev.Singleton;
 using UnityEngine;
 
 namespace D_Dev.MenuHandler
 {
-    public class MenuHandler : MonoBehaviour
+    public class MenuHandler : BaseSingleton<MenuHandler>
     {
         #region Fields
 
@@ -14,18 +16,18 @@ namespace D_Dev.MenuHandler
         [SerializeField] private RectTransform _cameraCanvas;
         [SerializeField] private List<MenuInfo> _menuInfos = new();
 
-        private static MenuHandler _instance;
         private Dictionary<MenuInfo,BaseMenu> _createdMenus = new();
 
         #endregion
 
         #region Monobehaviour
 
-        private void Awake()
+        protected override void Awake()
         {
-            _instance = this;
-            //CustomEventHandler.EventManager.AddListener<MenuInfo>(BaseEventType.OpenMenu, OpenMenu);
-            //CustomEventHandler.EventManager.AddListener<MenuInfo>(BaseEventType.CloseMenu, CloseMenu);
+            base.Awake();
+            
+            EventManager.AddListener<MenuInfo>(EventNameConstants.MenuOpen.ToString(), OpenMenu);
+            EventManager.AddListener<MenuInfo>(EventNameConstants.MenuClose.ToString(), CloseMenu);
         }
 
         private void OnEnable()
@@ -36,8 +38,8 @@ namespace D_Dev.MenuHandler
 
         private void OnDestroy()
         {
-            //CustomEventHandler.EventManager.RemoveListener<MenuInfo>(BaseEventType.OpenMenu, OpenMenu);
-            // CustomEventHandler.EventManager.RemoveListener<MenuInfo>(BaseEventType.CloseMenu, CloseMenu);
+            EventManager.RemoveListener<MenuInfo>(EventNameConstants.MenuOpen.ToString(), OpenMenu);
+            EventManager.RemoveListener<MenuInfo>(EventNameConstants.MenuClose.ToString(), CloseMenu);
         }
 
         #endregion
