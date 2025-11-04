@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace D_Dev.Raycaster
@@ -8,7 +9,7 @@ namespace D_Dev.Raycaster
         Vector,
         Transform
     }
-            
+
     public enum LocalTransformDirection
     {
         Self = 0,
@@ -20,26 +21,42 @@ namespace D_Dev.Raycaster
         Back = 7
     }
 
+    public enum CastType
+    {
+        Ray = 0,
+        Sphere = 1,
+        Box = 2
+    }
+
     [System.Serializable]
     public class Raycaster
     {
         #region Fields
 
-        [Title("Ray settings")]
-        [SerializeField] private float _distance;
-        [SerializeField] private int _collidersBuffer;
+        [Title("Cast settings")]
+        [SerializeField] private CastType _castType;
+        [ValidateInput("@this._distance > 0", "Distance must be greater than 0")]
+        [SerializeField] private float _distance = 1f;
+        [ValidateInput("@this._collidersBuffer > 0", "Colliders buffer must be greater than 0")]
+        [SerializeField] private int _collidersBuffer = 10;
+        [ShowIf("@this._castType == CastType.Sphere", Animate = false)]
+        [ValidateInput("@this._castType != CastType.Sphere || this._radius > 0", "Radius must be greater than 0 for Sphere cast")]
+        [SerializeField] private float _radius = 0.5f;
+        [ShowIf("@this._castType == CastType.Box", Animate = false)]
+        [SerializeField] private Vector3 _halfExtents = Vector3.one * 0.5f;
         [SerializeField] private RaycastPoint _origin;
         [SerializeField] private RaycastPoint _direction;
         [SerializeField] private QueryTriggerInteraction _queryTriggerInteraction;
         [Title("Collider checker")]
+        [ValidateInput("@this._colliderChecker != null", "ColliderChecker cannot be null")]
         [SerializeField] private ColliderChecker.ColliderChecker _colliderChecker;
         [Space]
-        [Title("Gizmos")] 
-        [SerializeField] private Color _debugColor;
+        [Title("Gizmos")]
+        [SerializeField] private Color _debugColor = Color.green;
 
         private Ray _ray = new();
         private RaycastHit[] _hits;
-        
+
         #endregion
 
         #region Properties
@@ -70,19 +87,49 @@ namespace D_Dev.Raycaster
 
         #endregion
 
+        #region Private
+
+        private int PerformCast(Vector3 origin, Vector3 direction, out int hitCount)
+        {
+            if (_hits == null)
+                _hits = new RaycastHit[_collidersBuffer];
+
+            var layerMask = _colliderChecker.CheckLayer ? _colliderChecker.CheckLayerMask.value : ~0;
+
+            switch (_castType)
+            {
+                case CastType.Ray:
+                    _ray.origin = origin;
+                    _ray.direction = direction;
+                    hitCount = Physics.RaycastNonAlloc(_ray, _hits, _distance, layerMask, _queryTriggerInteraction);
+                    break;
+
+                case CastType.Sphere:
+                    hitCount = Physics.SphereCastNonAlloc(origin, _radius, direction, _hits, _distance, layerMask, _queryTriggerInteraction);
+                    break;
+
+                case CastType.Box:
+                    hitCount = Physics.BoxCastNonAlloc(origin, _halfExtents, direction, _hits, Quaternion.identity, _distance, layerMask, _queryTriggerInteraction);
+                    break;
+
+                default:
+                    hitCount = 0;
+                    break;
+            }
+
+            return hitCount;
+        }
+
+        #endregion
+
         #region Public
 
         public bool IsHit()
         {
-            _hits ??= new RaycastHit[_collidersBuffer];
-            _ray.origin = _origin.GetPoint();
-            _ray.direction = _direction.GetPoint();
-            var hitsAmount = Physics.RaycastNonAlloc(_ray, _hits, _distance,  _colliderChecker.CheckLayer 
-                ? _colliderChecker.CheckLayerMask 
-                : ~0, _queryTriggerInteraction);
+            PerformCast(_origin.GetPoint(), _direction.GetPoint(), out int hitsAmount);
             if (hitsAmount > 0)
             {
-                for (var i = 0; i < _hits.Length; i++)
+                for (var i = 0; i < hitsAmount; i++)
                 {
                     if (_hits[i].collider != null
                         && _colliderChecker.IsColliderPassed(_hits[i].collider))
@@ -94,15 +141,10 @@ namespace D_Dev.Raycaster
         
         public bool IsHit(Vector3 origin, Vector3 direction)
         {
-            _hits ??= new RaycastHit[_collidersBuffer];
-            _ray.origin = origin;
-            _ray.direction = direction;
-            var hitsAmount = Physics.RaycastNonAlloc(_ray, _hits, _distance,  _colliderChecker.CheckLayer 
-                ? _colliderChecker.CheckLayerMask 
-                : ~0, _queryTriggerInteraction);
+            PerformCast(origin, direction, out int hitsAmount);
             if (hitsAmount > 0)
             {
-                for (var i = 0; i < _hits.Length; i++)
+                for (var i = 0; i < hitsAmount; i++)
                 {
                     if (_hits[i].collider != null
                         && _colliderChecker.IsColliderPassed(_hits[i].collider))
@@ -111,18 +153,53 @@ namespace D_Dev.Raycaster
             }
             return false;
         }
-        
-        public bool IsHit(Vector3 origin, Vector3 direction, out Collider collider)
+
+        public bool IsHit(Vector3 origin, Vector3 direction, out Collider collider, out float distance)
         {
-            _hits ??= new RaycastHit[_collidersBuffer];
-            _ray.origin = origin;
-            _ray.direction = direction;
-            var hitsAmount = Physics.RaycastNonAlloc(_ray, _hits, _distance,  _colliderChecker.CheckLayer 
-                ? _colliderChecker.CheckLayerMask 
-                : ~0, _queryTriggerInteraction);
+            PerformCast(origin, direction, out int hitsAmount);
             if (hitsAmount > 0)
             {
-                for (var i = 0; i < _hits.Length; i++)
+                for (var i = 0; i < hitsAmount; i++)
+                {
+                    if (_hits[i].collider != null
+                        && _colliderChecker.IsColliderPassed(_hits[i].collider))
+                    {
+                        collider = _hits[i].collider;
+                        distance = _hits[i].distance;
+                        return true;
+                    }
+                }
+            }
+            collider = null;
+            distance = 0f;
+            return false;
+        }
+
+        public bool IsHit(Vector3 origin, Vector3 direction, out RaycastHit hit)
+        {
+            PerformCast(origin, direction, out int hitsAmount);
+            if (hitsAmount > 0)
+            {
+                for (var i = 0; i < hitsAmount; i++)
+                {
+                    if (_hits[i].collider != null
+                        && _colliderChecker.IsColliderPassed(_hits[i].collider))
+                    {
+                        hit = _hits[i];
+                        return true;
+                    }
+                }
+            }
+            hit = default;
+            return false;
+        }
+
+        public bool IsHit(Vector3 origin, Vector3 direction, out Collider collider)
+        {
+            PerformCast(origin, direction, out int hitsAmount);
+            if (hitsAmount > 0)
+            {
+                for (var i = 0; i < hitsAmount; i++)
                 {
                     if (_hits[i].collider != null
                         && _colliderChecker.IsColliderPassed(_hits[i].collider))
@@ -136,17 +213,52 @@ namespace D_Dev.Raycaster
             return false;
         }
 
-        public bool IsHit(out Collider collider)
+        public bool IsHit(out Collider collider, out float distance)
         {
-            _hits ??= new RaycastHit[_collidersBuffer];
-            _ray.origin = _origin.GetPoint();
-            _ray.direction = _direction.GetPoint();
-            var hitsAmount = Physics.RaycastNonAlloc(_ray, _hits, _distance,  _colliderChecker.CheckLayer 
-                ? _colliderChecker.CheckLayerMask 
-                : ~0, _queryTriggerInteraction);
+            PerformCast(_origin.GetPoint(), _direction.GetPoint(), out int hitsAmount);
             if (hitsAmount > 0)
             {
-                for (var i = 0; i < _hits.Length; i++)
+                for (var i = 0; i < hitsAmount; i++)
+                {
+                    if (_hits[i].collider != null
+                        && _colliderChecker.IsColliderPassed(_hits[i].collider))
+                    {
+                        collider = _hits[i].collider;
+                        distance = _hits[i].distance;
+                        return true;
+                    }
+                }
+            }
+            collider = null;
+            distance = 0f;
+            return false;
+        }
+
+        public bool IsHit(out RaycastHit hit)
+        {
+            PerformCast(_origin.GetPoint(), _direction.GetPoint(), out int hitsAmount);
+            if (hitsAmount > 0)
+            {
+                for (var i = 0; i < hitsAmount; i++)
+                {
+                    if (_hits[i].collider != null
+                        && _colliderChecker.IsColliderPassed(_hits[i].collider))
+                    {
+                        hit = _hits[i];
+                        return true;
+                    }
+                }
+            }
+            hit = default;
+            return false;
+        }
+
+        public bool IsHit(out Collider collider)
+        {
+            PerformCast(_origin.GetPoint(), _direction.GetPoint(), out int hitsAmount);
+            if (hitsAmount > 0)
+            {
+                for (var i = 0; i < hitsAmount; i++)
                 {
                     if (_hits[i].collider != null
                         && _colliderChecker.IsColliderPassed(_hits[i].collider))
@@ -158,6 +270,95 @@ namespace D_Dev.Raycaster
             }
             collider = null;
             return false;
+        }
+
+        public void GetAllValidColliders(out List<Collider> colliders)
+        {
+            colliders = new();
+            PerformCast(_origin.GetPoint(), _direction.GetPoint(), out int hitsAmount);
+            if (hitsAmount > 0)
+            {
+                for (var i = 0; i < hitsAmount; i++)
+                {
+                    if (_hits[i].collider != null
+                        && _colliderChecker.IsColliderPassed(_hits[i].collider))
+                    {
+                        colliders.Add(_hits[i].collider);
+                    }
+                }
+            }
+        }
+
+        public bool GetFirstHit(out RaycastHit hit)
+        {
+            PerformCast(_origin.GetPoint(), _direction.GetPoint(), out int hitsAmount);
+            if (hitsAmount > 0)
+            {
+                for (var i = 0; i < hitsAmount; i++)
+                {
+                    if(_hits[i].collider == null)
+                        continue;
+
+                    if(_colliderChecker.IsColliderPassed(_hits[i].collider))
+                    {
+                        hit = _hits[i];
+                        return true;
+                    }
+                }
+            }
+            hit = default;
+            return false;
+        }
+
+        public bool GetClosestHit(out RaycastHit hit)
+        {
+            PerformCast(_origin.GetPoint(), _direction.GetPoint(), out int hitsAmount);
+            if (hitsAmount > 0)
+            {
+                RaycastHit closestHit = new RaycastHit { distance = float.MaxValue };
+                bool found = false;
+
+                for (var i = 0; i < hitsAmount; i++)
+                {
+                    if (_hits[i].collider != null
+                        && _colliderChecker.IsColliderPassed(_hits[i].collider)
+                        && _hits[i].distance < closestHit.distance)
+                    {
+                        closestHit = _hits[i];
+                        found = true;
+                    }
+                }
+
+                if (found)
+                {
+                    hit = closestHit;
+                    return true;
+                }
+            }
+            hit = default;
+            return false;
+        }
+
+        public void GetAllHits(out List<RaycastHit> hits, bool sortByDistance = false)
+        {
+            hits = new();
+            PerformCast(_origin.GetPoint(), _direction.GetPoint(), out int hitsAmount);
+            if (hitsAmount > 0)
+            {
+                for (var i = 0; i < hitsAmount; i++)
+                {
+                    if (_hits[i].collider != null
+                        && _colliderChecker.IsColliderPassed(_hits[i].collider))
+                    {
+                        hits.Add(_hits[i]);
+                    }
+                }
+
+                if (sortByDistance)
+                {
+                    hits.Sort((a, b) => a.distance.CompareTo(b.distance));
+                }
+            }
         }
 
         #endregion
@@ -171,9 +372,29 @@ namespace D_Dev.Raycaster
                _direction.PointType == RaycastPointType.Transform &&
                _direction.RaycastTransformPoint == null)
                 return;
-            
+
             Gizmos.color = _debugColor;
-            Gizmos.DrawRay(_origin.GetPoint(), (_direction.GetPoint() * _distance));
+            var originPoint = _origin.GetPoint();
+            var directionVector = _direction.GetPoint();
+
+            switch (_castType)
+            {
+                case CastType.Ray:
+                    Gizmos.DrawRay(originPoint, directionVector * _distance);
+                    break;
+
+                case CastType.Sphere:
+                    var endPoint = originPoint + directionVector * _distance;
+                    Gizmos.DrawWireSphere(endPoint, _radius);
+                    Gizmos.DrawLine(originPoint, endPoint);
+                    break;
+
+                case CastType.Box:
+                    var boxEndPoint = originPoint + directionVector * _distance;
+                    Gizmos.DrawWireCube(boxEndPoint, _halfExtents * 2f);
+                    Gizmos.DrawLine(originPoint, boxEndPoint);
+                    break;
+            }
         }
 
         #endregion

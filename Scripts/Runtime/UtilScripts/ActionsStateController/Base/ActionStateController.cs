@@ -17,6 +17,8 @@ namespace D_dev.ActionsStateController.Base
         [SerializeField] private StringScriptableVariable _initialState;
         [SerializeField, ReadOnly] private StringScriptableVariable _currentStateID;
         [SerializeField] private float _transitionCheckInterval = 0.1f;
+        [Title("Debug")]
+        [SerializeField] private bool _debugStates;
         
         private Dictionary<StringScriptableVariable, ActionState> _statesDic;
         private CancellationTokenSource  _tokenSource;
@@ -153,9 +155,6 @@ namespace D_dev.ActionsStateController.Base
                 return;
 
             _tokenSource.Cancel();
-            _tokenSource.Dispose();
-            _tokenSource = new CancellationTokenSource();
-
             if (CurrentState.HasExitTime)
             {
                 try
@@ -171,7 +170,8 @@ namespace D_dev.ActionsStateController.Base
                 }
             }
 
-            Debug.Log($"[StateController : {gameObject.name}] {CurrentState.StateName} → {nextState.StateName}");
+            if(_debugStates)
+                Debug.Log($"[StateController : {gameObject.name}] {CurrentState.StateName} → {nextState.StateName}");
 
             CurrentState.Exit();
             CurrentState = nextState;

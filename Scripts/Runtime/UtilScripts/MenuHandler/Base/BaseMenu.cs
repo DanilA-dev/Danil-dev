@@ -2,13 +2,14 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 #if DOTWEEN
+using System.Collections.Generic;
 using DG.Tweening;
 using D_Dev.TweenAnimations.Types;
 #endif
 
 namespace D_Dev.MenuHandler
 {
-    public abstract class BaseMenu : MonoBehaviour
+    public class BaseMenu : MonoBehaviour
     {
         #region Fields
 
@@ -21,10 +22,11 @@ namespace D_Dev.MenuHandler
         [ShowIf(nameof(_hasCloseAniation))]
         [SerializeField] private bool _disableObjectOnComplete;
 #if DOTWEEN
-        [ShowIf(nameof(_hasOpenAnimation))]
-        [SerializeReference] private BaseAnimationTween[] _openAnimations;
-        [ShowIf(nameof(_hasCloseAniation))]
-        [SerializeReference] private BaseAnimationTween[] _closeAnimations;
+        [ShowIf(nameof(_hasOpenAnimation))] 
+        [SerializeReference] private List<BaseAnimationTween> _openAnimations = new();
+
+        [ShowIf(nameof(_hasCloseAniation))] 
+        [SerializeReference] private List<BaseAnimationTween> _closeAnimations = new();
 #endif
         #endregion
 
@@ -49,7 +51,7 @@ namespace D_Dev.MenuHandler
             gameObject.SetActive(true);
 #if DOTWEEN
             if (_hasOpenAnimation && _openAnimations != null
-                                  && _openAnimations.Length > 0)
+                                  && _openAnimations.Count > 0)
             {
                 var seq = DOTween.Sequence();
                 seq.Restart();
@@ -73,7 +75,7 @@ namespace D_Dev.MenuHandler
             
 #if DOTWEEN
             if (_hasCloseAniation && _closeAnimations != null
-                                  && _closeAnimations.Length > 0)
+                                  && _closeAnimations.Count > 0)
             {
                 var seq = DOTween.Sequence();
                 seq.Restart();

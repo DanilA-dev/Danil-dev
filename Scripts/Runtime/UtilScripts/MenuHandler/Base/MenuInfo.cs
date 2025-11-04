@@ -13,5 +13,6 @@ namespace D_Dev.MenuHandler
 
         [field: SerializeField] public CanvasType Canvas { get; private set; }
         [field: SerializeField] public BaseMenu MenuPrefab { get; private set; }
+        [field: SerializeField] public bool OpenOnCreate { get; private set; }
     }
 }

@@ -51,7 +51,6 @@ namespace CustomCharacterController.Cameras
         
         #region Public
 
-
         public void Init(IPlayerControllerContext playerControllerContext)
         {
             if (playerControllerContext.PlayerInputProvider != null)
@@ -63,7 +62,6 @@ namespace CustomCharacterController.Cameras
         }
 
         public void LockCamera() => _isLocked = true;
-
         public void UnlockCamera() => _isLocked = false;
 
         #endregion

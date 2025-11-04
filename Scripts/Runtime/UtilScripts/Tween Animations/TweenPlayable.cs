@@ -1,5 +1,6 @@
 ﻿#if DOTWEEN
 using System;
+using System.Collections.Generic;
 using DG.Tweening;
 using D_Dev.TweenAnimations.Types;
 using UnityEngine;
@@ -22,12 +23,11 @@ namespace D_Dev.TweenAnimations
         #region Fields
 
         [SerializeField] private PlayMode _playMode;
-        [SerializeReference] protected BaseAnimationTween[] _tweens;
+        [SerializeReference] protected List<BaseAnimationTween> _tweens = new();
         
         public event Action OnStart;
         public event Action OnComplete;
         #endregion
-
 
         #region Public
 
@@ -58,7 +58,7 @@ namespace D_Dev.TweenAnimations
 
         public void Play(int index)
         {
-            if (!HasTweensInArray() || index < 0 || index >= _tweens.Length)
+            if (!HasTweensInArray() || index < 0 || index >= _tweens.Count)
                 return;
 
             OnStart?.Invoke();
@@ -95,7 +95,7 @@ namespace D_Dev.TweenAnimations
         
         #region Private
 
-        private bool HasTweensInArray() => _tweens != null && _tweens.Length > 0;
+        private bool HasTweensInArray() => _tweens != null && _tweens.Count > 0;
 
         #endregion
     }

@@ -60,6 +60,9 @@ namespace D_Dev.MenuHandler
                                  MenuInfo.CanvasType.Overlay ? _overlayCanvas : _cameraCanvas;
                 var newMenu = Instantiate(menuInfo.MenuPrefab, menuParent);
                 newMenu.gameObject.SetActive(false);
+                if(menuInfo.OpenOnCreate)
+                    newMenu.Open();
+                
                 _createdMenus.Add(menuInfo,newMenu);
             }
         }
