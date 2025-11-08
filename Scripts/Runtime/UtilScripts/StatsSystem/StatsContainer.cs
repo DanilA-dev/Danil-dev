@@ -68,7 +68,7 @@ namespace D_Dev.StatsSystem
 
         public void RemoveStat(StringScriptableVariable statName)
         {
-            var stat = _stats.FirstOrDefault(s => s.StatName == statName);
+            var stat = _stats.FirstOrDefault(s => s.StatID == statName);
             if(stat == null)
                 return;
             
@@ -78,7 +78,7 @@ namespace D_Dev.StatsSystem
 
         public Stat GetStat(StringScriptableVariable statName)
         {
-            var stat = _stats.FirstOrDefault(s => s.StatName == statName);
+            var stat = _stats.FirstOrDefault(s => s.StatID == statName);
             return stat;
         }
         

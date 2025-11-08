@@ -1,4 +1,5 @@
 ﻿using D_Dev.ColliderEvents;
+using D_Dev.PositionRotationConfig;
 using D_Dev.Raycaster;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -15,7 +16,7 @@ namespace D_Dev.TargetSensor
         [ShowIf(nameof(_checkObstacleLinecast))]
         [SerializeField] private Linecaster _obstacleLinecaster;
 
-        private RaycastPoint _targetRayPoint;
+        private PositionConfig _targetPoint;
         
         #endregion
 
@@ -51,7 +52,7 @@ namespace D_Dev.TargetSensor
             if(_trigger == null)
                 return;
             
-            _targetRayPoint = new();
+            _targetPoint = new();
             _trigger.OnEnter.AddListener(OnTargetEnter);
             _trigger.OnExit.AddListener(OnTargetExit);
         }
@@ -89,9 +90,9 @@ namespace D_Dev.TargetSensor
         private void OnTargetEnter(Collider target)
         {
             Target = target;
-            _targetRayPoint.PointType = RaycastPointType.Transform;
-            _targetRayPoint.RaycastTransformPoint = Target.transform;
-            _obstacleLinecaster.Direction = _targetRayPoint;
+            _targetPoint.Transform = Target.transform;
+            _targetPoint.Type = PositionConfig.PositionType.TransformDirection;
+            _obstacleLinecaster.Direction = _targetPoint;
         }
 
         private void OnTargetExit(Collider target) => Target = null;

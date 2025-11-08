@@ -11,7 +11,7 @@ namespace D_Dev.StatsSystem
     {
         #region Fields
 
-        [field: SerializeField] public StringScriptableVariable StatName { get; private set; }
+        [field: SerializeField] public StringScriptableVariable StatID { get; private set; }
         [field: SerializeField] public FloatValue StatValue { get; private set; }
 
         [FoldoutGroup("Events")]

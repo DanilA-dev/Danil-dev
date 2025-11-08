@@ -11,12 +11,10 @@ namespace CustomCharacterController.Core
     {
         #region Fields
 
-        [FoldoutGroup("Base")]
+        [Title("Base")]
         [GUIColor(nameof(GetActiveColor))]
         [SerializeField] private bool _isActive;
-        [FoldoutGroup("Base")]
         [SerializeField, ReadOnly] private bool _isExecuting;
-        [FoldoutGroup("Base")]
         [SerializeField] protected List<BasePlayerCharacterAbility> _blockedByExecutingAbilities = new();
         [FoldoutGroup("Events")]
         public UnityEvent OnAbilityActivated;

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using D_Dev.Base;
 using D_Dev.Extensions;
+using D_Dev.PositionRotationConfig;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -12,18 +13,18 @@ namespace D_Dev.EntitySpawner
     {
         #region Fields
 
-        [FoldoutGroup("Data")] 
+        [Title("Data")] 
         [SerializeField] private EntityInfo _data;
-        [FoldoutGroup("Data")] 
         [SerializeField] private bool _createOnStart;
         [ShowIf(nameof(_createOnStart))]
-        [FoldoutGroup("Data")] 
         [SerializeField, Min(1)] private int _startEntitiesAmount;
-        [FoldoutGroup("Data")] 
         [SerializeField] private bool _setActiveOnStart;
         [FoldoutGroup("Position and Rotation")]
         [HideLabel]
-        [SerializeField] private PositionConfig.PositionConfig _posConfig;
+        [SerializeField] private PositionConfig _posConfig;
+        [FoldoutGroup("Position and Rotation")]
+        [HideLabel]
+        [SerializeField] private RotationConfig _rotConfig;
         [FoldoutGroup("Pool")]
         [SerializeField] private bool _usePool;
         [FoldoutGroup("Pool")]
@@ -70,10 +71,16 @@ namespace D_Dev.EntitySpawner
             set => _setActiveOnStart = value;
         }
 
-        public PositionConfig.PositionConfig PosConfig
+        public PositionConfig PosConfig
         {
             get => _posConfig;
             set => _posConfig = value;
+        }
+        
+        public RotationConfig RotConfig
+        {
+            get => _rotConfig;
+            set => _rotConfig = value;
         }
 
         public bool UsePool
@@ -154,7 +161,7 @@ namespace D_Dev.EntitySpawner
                 if (returnObj != null && _applyPosConfigOnGet)
                 {
                     returnObj.transform.position = _posConfig.GetPosition();
-                    returnObj.transform.rotation = _posConfig.GetRotation();
+                    returnObj.transform.rotation = _rotConfig.GetRotation();
                 }
 
             }
@@ -196,7 +203,7 @@ namespace D_Dev.EntitySpawner
         {
             GameObject obj = null;
             var entity = Data.EntityPrefab;
-            obj = GameObject.Instantiate(entity, _posConfig.GetPosition(), _posConfig.GetRotation());
+            obj = GameObject.Instantiate(entity, _posConfig.GetPosition(), _rotConfig.GetRotation());
             obj.SetActive(_setActiveOnStart);
             if (_usePool && obj.TryGetComponent(out PoolableObject poolableEntity))
             {

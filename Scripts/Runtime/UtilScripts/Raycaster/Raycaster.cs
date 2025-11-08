@@ -1,36 +1,25 @@
 ﻿using System.Collections.Generic;
+using D_Dev.PositionRotationConfig;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace D_Dev.Raycaster
 {
-    public enum RaycastPointType
-    {
-        Vector,
-        Transform
-    }
-
-    public enum LocalTransformDirection
-    {
-        Self = 0,
-        Up = 1,
-        Down = 2,
-        Right = 3,
-        Left = 4,
-        Forward = 5,
-        Back = 7
-    }
-
-    public enum CastType
-    {
-        Ray = 0,
-        Sphere = 1,
-        Box = 2
-    }
 
     [System.Serializable]
     public class Raycaster
     {
+        #region Enums
+
+        public enum CastType
+        {
+            Ray = 0,
+            Sphere = 1,
+            Box = 2
+        }
+
+        #endregion
+        
         #region Fields
 
         [Title("Cast settings")]
@@ -44,14 +33,15 @@ namespace D_Dev.Raycaster
         [SerializeField] private float _radius = 0.5f;
         [ShowIf("@this._castType == CastType.Box", Animate = false)]
         [SerializeField] private Vector3 _halfExtents = Vector3.one * 0.5f;
-        [SerializeField] private RaycastPoint _origin;
-        [SerializeField] private RaycastPoint _direction;
+        [SerializeField] private PositionConfig _origin;
+        [SerializeField] private PositionConfig _direction;
         [SerializeField] private QueryTriggerInteraction _queryTriggerInteraction;
         [Title("Collider checker")]
         [ValidateInput("@this._colliderChecker != null", "ColliderChecker cannot be null")]
         [SerializeField] private ColliderChecker.ColliderChecker _colliderChecker;
         [Space]
         [Title("Gizmos")]
+        [SerializeField] private bool _drawGizmos;
         [SerializeField] private Color _debugColor = Color.green;
 
         private Ray _ray = new();
@@ -61,13 +51,13 @@ namespace D_Dev.Raycaster
 
         #region Properties
 
-        public RaycastPoint Origin
+        public PositionConfig Origin
         {
             get => _origin;
             set => _origin = value;
         }
 
-        public RaycastPoint Direction
+        public PositionConfig Direction
         {
             get => _direction;
             set => _direction = value;
@@ -126,7 +116,7 @@ namespace D_Dev.Raycaster
 
         public bool IsHit()
         {
-            PerformCast(_origin.GetPoint(), _direction.GetPoint(), out int hitsAmount);
+            PerformCast(_origin.GetPosition(), _direction.GetPosition(), out int hitsAmount);
             if (hitsAmount > 0)
             {
                 for (var i = 0; i < hitsAmount; i++)
@@ -215,7 +205,7 @@ namespace D_Dev.Raycaster
 
         public bool IsHit(out Collider collider, out float distance)
         {
-            PerformCast(_origin.GetPoint(), _direction.GetPoint(), out int hitsAmount);
+            PerformCast(_origin.GetPosition(), _direction.GetPosition(), out int hitsAmount);
             if (hitsAmount > 0)
             {
                 for (var i = 0; i < hitsAmount; i++)
@@ -236,7 +226,7 @@ namespace D_Dev.Raycaster
 
         public bool IsHit(out RaycastHit hit)
         {
-            PerformCast(_origin.GetPoint(), _direction.GetPoint(), out int hitsAmount);
+            PerformCast(_origin.GetPosition(), _direction.GetPosition(), out int hitsAmount);
             if (hitsAmount > 0)
             {
                 for (var i = 0; i < hitsAmount; i++)
@@ -255,7 +245,7 @@ namespace D_Dev.Raycaster
 
         public bool IsHit(out Collider collider)
         {
-            PerformCast(_origin.GetPoint(), _direction.GetPoint(), out int hitsAmount);
+            PerformCast(_origin.GetPosition(), _direction.GetPosition(), out int hitsAmount);
             if (hitsAmount > 0)
             {
                 for (var i = 0; i < hitsAmount; i++)
@@ -275,7 +265,7 @@ namespace D_Dev.Raycaster
         public void GetAllValidColliders(out List<Collider> colliders)
         {
             colliders = new();
-            PerformCast(_origin.GetPoint(), _direction.GetPoint(), out int hitsAmount);
+            PerformCast(_origin.GetPosition(), _direction.GetPosition(), out int hitsAmount);
             if (hitsAmount > 0)
             {
                 for (var i = 0; i < hitsAmount; i++)
@@ -291,7 +281,7 @@ namespace D_Dev.Raycaster
 
         public bool GetFirstHit(out RaycastHit hit)
         {
-            PerformCast(_origin.GetPoint(), _direction.GetPoint(), out int hitsAmount);
+            PerformCast(_origin.GetPosition(), _direction.GetPosition(), out int hitsAmount);
             if (hitsAmount > 0)
             {
                 for (var i = 0; i < hitsAmount; i++)
@@ -312,7 +302,7 @@ namespace D_Dev.Raycaster
 
         public bool GetClosestHit(out RaycastHit hit)
         {
-            PerformCast(_origin.GetPoint(), _direction.GetPoint(), out int hitsAmount);
+            PerformCast(_origin.GetPosition(), _direction.GetPosition(), out int hitsAmount);
             if (hitsAmount > 0)
             {
                 RaycastHit closestHit = new RaycastHit { distance = float.MaxValue };
@@ -342,7 +332,7 @@ namespace D_Dev.Raycaster
         public void GetAllHits(out List<RaycastHit> hits, bool sortByDistance = false)
         {
             hits = new();
-            PerformCast(_origin.GetPoint(), _direction.GetPoint(), out int hitsAmount);
+            PerformCast(_origin.GetPosition(), _direction.GetPosition(), out int hitsAmount);
             if (hitsAmount > 0)
             {
                 for (var i = 0; i < hitsAmount; i++)
@@ -367,16 +357,27 @@ namespace D_Dev.Raycaster
 
         public void OnGizmos()
         {
-            if(_origin.PointType == RaycastPointType.Transform &&
-               _origin.RaycastTransformPoint == null ||
-               _direction.PointType == RaycastPointType.Transform &&
-               _direction.RaycastTransformPoint == null)
+            if(!_drawGizmos)
                 return;
+            
+            if(_origin.Type == PositionConfig.PositionType.Transform 
+               || _origin.Type == PositionConfig.PositionType.TransformDirection)
+            {
+                if(_origin.Transform == null)
+                    return;
+            }
 
+            if (_direction.Type == PositionConfig.PositionType.Transform
+                || _direction.Type == PositionConfig.PositionType.TransformDirection)
+            {
+                if(_direction.Transform == null)
+                    return;
+            }
+            
             Gizmos.color = _debugColor;
-            var originPoint = _origin.GetPoint();
-            var directionVector = _direction.GetPoint();
-
+            var originPoint = _origin.GetPosition();
+            var directionVector = _direction.GetPosition();
+            
             switch (_castType)
             {
                 case CastType.Ray:

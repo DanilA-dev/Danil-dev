@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace D_Dev.RigidbodyUtils
 {
-    public class RigidbodyPusher : MonoBehaviour
+    public class RigidbodyPusherFromPoint : MonoBehaviour
     {
         #region Fields
 

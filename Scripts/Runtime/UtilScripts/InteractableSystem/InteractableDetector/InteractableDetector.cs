@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using D_Dev.ScriptableVaiables;
+using D_Dev.ColliderEvents;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,11 +8,26 @@ namespace D_Dev.InteractableSystem.InteractableDetector
 {
     public class InteractableDetector : MonoBehaviour
     {
+        #region Enums
+
+        private enum InteractableDetectType
+        {
+            Raycaster = 0,
+            Trigger = 1,
+        }
+
+        #endregion
+        
         #region Fields
 
-        [SerializeField] private GameObjectScriptableVariable _lastSpottedInteractable;
-        [SerializeField] private Raycaster.Raycaster _raycaster;
+        [SerializeField] private InteractableDetectType _interactableDetectType;
+        [ShowIf(nameof(_interactableDetectType), InteractableDetectType.Trigger)]
+        [SerializeField] private TriggerColliderEvents _triggerColliderEvents;
+        [ShowIf(nameof(_interactableDetectType), InteractableDetectType.Raycaster)]
         [SerializeField] private float _updateRate = 0.1f;
+        [ShowIf(nameof(_interactableDetectType), InteractableDetectType.Raycaster)]
+        [HideLabel]
+        [SerializeField] private Raycaster.Raycaster _raycaster;
 
         [FoldoutGroup("Events")]
         public UnityEvent<IInteractable> OnInteractableFound;
@@ -35,11 +50,20 @@ namespace D_Dev.InteractableSystem.InteractableDetector
         private void Awake()
         {
             _interval = new WaitForSeconds(_updateRate);
+            _triggerColliderEvents?.OnEnter.AddListener(OnTriggerInteractableEnter);
+            _triggerColliderEvents?.OnExit.AddListener(OnTriggerInteractableExit);
         }
 
         private void Start()
         {
-            StartCoroutine(DetectInteractableRoutine());
+            if(_interactableDetectType == InteractableDetectType.Raycaster)
+                StartCoroutine(DetectInteractableRoutine());
+        }
+
+        private void OnDisable()
+        {
+            _triggerColliderEvents?.OnEnter.RemoveListener(OnTriggerInteractableEnter);
+            _triggerColliderEvents?.OnExit.RemoveListener(OnTriggerInteractableExit);
         }
 
         #endregion
@@ -57,27 +81,55 @@ namespace D_Dev.InteractableSystem.InteractableDetector
 
         #endregion
 
+        #region Listeners
+
+        private void OnTriggerInteractableEnter(Collider collider)
+        {
+            SetInteractable(collider);
+        }
+
+        private void OnTriggerInteractableExit(Collider collider)
+        {
+            ResetInteractable();
+        }
+
+        #endregion
+        
         #region Private
 
         private void DetectInteractable()
         {
             if (_raycaster.IsHit(out RaycastHit hit))
-            {
-                if (hit.collider.TryGetComponent(out _currentInteractable) && _currentInteractable.CanInteract(gameObject))
-                    _lastSpottedInteractable.Value = hit.collider.gameObject;
-            }
+                SetInteractable(hit.collider);
             else
+                ResetInteractable();
+        }
+
+        private void SetInteractable(Collider collider)
+        {
+            if (collider.TryGetComponent(out IInteractable interactable) &&
+                interactable.CanInteract(gameObject))
             {
-                _currentInteractable = null;
-                _lastSpottedInteractable.Value = null;
+                _currentInteractable = interactable;
+                OnInteractableFound?.Invoke(_currentInteractable);
             }
+        }
+        
+        private void ResetInteractable()
+        {
+            _currentInteractable = null;
+            OnInteractableLost?.Invoke();
         }
 
         #endregion
 
         #region Gizmos
 
-        private void OnDrawGizmos() => _raycaster.OnGizmos();
+        private void OnDrawGizmos()
+        {
+            if(_interactableDetectType == InteractableDetectType.Raycaster)
+                _raycaster.OnGizmos();
+        }
 
         #endregion
     }

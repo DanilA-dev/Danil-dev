@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using D_Dev.PositionRotationConfig;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace D_Dev.Raycaster
@@ -9,23 +10,26 @@ namespace D_Dev.Raycaster
         #region Fields
 
         [Title("Ray settings")]
-        [SerializeField] private RaycastPoint _origin;
-        [SerializeField] private RaycastPoint _direction;
+        [SerializeField] private PositionConfig _origin;
+        [SerializeField] private PositionConfig _direction;
         [SerializeField] private QueryTriggerInteraction _queryTriggerInteraction;
         [Title("Collider checker")]
         [SerializeField] private ColliderChecker.ColliderChecker _colliderChecker;
+        [Title("Gizmos")]
+        [SerializeField] private bool _drawGizmos;
+        [SerializeField] private Color _debugColor = Color.yellow;
         
         #endregion
         
         #region Properties
 
-        public RaycastPoint Origin
+        public PositionConfig Origin
         {
             get => _origin;
             set => _origin = value;
         }
 
-        public RaycastPoint Direction
+        public PositionConfig Direction
         {
             get => _direction;
             set => _direction = value;
@@ -37,7 +41,7 @@ namespace D_Dev.Raycaster
 
         public bool IsIntersect()
         {
-            return Physics.Linecast(_origin.GetPoint(), _direction.GetPoint(), out RaycastHit hit,  _colliderChecker.CheckLayer 
+            return Physics.Linecast(_origin.GetPosition(), _direction.GetPosition(), out RaycastHit hit,  _colliderChecker.CheckLayer 
                        ? _colliderChecker.CheckLayerMask 
                        : ~0, _queryTriggerInteraction) 
                    && _colliderChecker.IsColliderPassed(hit.collider);
@@ -49,6 +53,29 @@ namespace D_Dev.Raycaster
                        ? _colliderChecker.CheckLayerMask 
                        : ~0, _queryTriggerInteraction) 
                    && _colliderChecker.IsColliderPassed(hit.collider);
+        }
+
+        #endregion
+        
+        #region Gizmos
+
+        public void OnGizmos()
+        {
+            if(!_drawGizmos)
+                return;
+            
+            if(_origin.Type == PositionConfig.PositionType.Transform 
+               || _origin.Type == PositionConfig.PositionType.TransformDirection && _origin.Transform == null)
+                return;
+            
+            if(_direction.Type == PositionConfig.PositionType.Transform 
+               || _direction.Type == PositionConfig.PositionType.TransformDirection && _direction.Transform == null)
+                return;
+            
+            var originPoint = _origin.GetPosition();
+            var directionVector = _direction.GetPosition();
+            Gizmos.color = _debugColor;
+            Gizmos.DrawRay(originPoint, directionVector);
         }
 
         #endregion

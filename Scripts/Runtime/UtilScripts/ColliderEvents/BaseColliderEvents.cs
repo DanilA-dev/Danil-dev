@@ -22,24 +22,20 @@ namespace D_Dev.ColliderEvents
         [SerializeField] protected bool _checkEnter;
         [SerializeField] protected bool _checkExit;
         [Space]
-        [ShowIf(nameof(_checkEnter))]
-        [ShowIf(nameof(_collisionDimension), CollisionDimension.Collider3d)]
+        [ShowIf("@this._collisionDimension == CollisionDimension.Collider3d && this._checkEnter")]
         [SerializeField] protected UnityEvent<Collider> _onEnter;
-        [ShowIf(nameof(_checkExit))]
-        [ShowIf(nameof(_collisionDimension), CollisionDimension.Collider3d)]
+        [ShowIf("@this._collisionDimension == CollisionDimension.Collider3d && this._checkExit")]
         [SerializeField] protected UnityEvent<Collider> _onExit;
-        [ShowIf(nameof(_checkEnter))]
-        [ShowIf(nameof(_collisionDimension), CollisionDimension.Collider2d)]
+        [ShowIf("@this._collisionDimension == CollisionDimension.Collider2d && this._checkEnter")]
         [SerializeField] protected UnityEvent<Collider2D> _onEnter2D;
-        [ShowIf(nameof(_checkExit))]
-        [ShowIf(nameof(_collisionDimension), CollisionDimension.Collider2d)]
+        [ShowIf("@this._collisionDimension == CollisionDimension.Collider2d && this._checkExit")]
         [SerializeField] protected UnityEvent<Collider2D> _onExit2D;
 
         #endregion
 
         #region Properties
 
-        public CollisionDimension CollisionDimension
+        public CollisionDimension Dimension
         {
             get => _collisionDimension;
             set => _collisionDimension = value;

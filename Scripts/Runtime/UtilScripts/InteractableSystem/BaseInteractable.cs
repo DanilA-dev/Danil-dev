@@ -8,19 +8,27 @@ namespace D_Dev.InteractableSystem
     {
         #region Fields
 
-        [Header("Interaction Settings")]
+        [Title("Interaction Settings")]
         [SerializeField] protected bool _isInteractable = true;
+        [SerializeField] protected bool _isDistanceBased;
+        [ShowIf(nameof(_isDistanceBased))]
         [SerializeField] protected float _interactionDistance = 2f;
+        [SerializeField] protected bool _canBeStopped;
         [FoldoutGroup("Events")]
         public UnityEvent<GameObject> OnInteractStart;
         [FoldoutGroup("Events")]
-        public UnityEvent OnInteractEnd;
+        [ShowIf(nameof(_canBeStopped))]
+        public UnityEvent OnInteractStop;
+        [FoldoutGroup("Debug")]
+        [SerializeField] protected bool _debug;
         
         #endregion
 
         #region Properties
 
         public bool IsInteracting { get; protected set; }
+        public bool CanBeStopped => _canBeStopped;
+        public bool IsDistanceBased => _isDistanceBased;
 
         #endregion
         
@@ -34,9 +42,13 @@ namespace D_Dev.InteractableSystem
             if (interactor == null)
                 return false;
 
-            float distance = Vector3.Distance(transform.position, interactor.transform.position);
-            return distance <= _interactionDistance;
+            var distance = Vector3.Distance(transform.position, interactor.transform.position);
+            if(_isDistanceBased)
+                return distance <= _interactionDistance;
+            
+            return true;
         }
+
 
         public void StartInteract(GameObject interactor)
         {
@@ -46,16 +58,24 @@ namespace D_Dev.InteractableSystem
             IsInteracting = true;
             OnInteract(interactor);
             OnInteractStart?.Invoke(interactor);
+            if(_debug)
+                Debug.Log($"[Interactable : {gameObject.name}] <color=green> Start interacting with </color> {interactor.name}");
         }
 
         public void StopInteract(GameObject interactor)
         {
             if (!IsInteracting)
                 return;
+            
+            if(!_canBeStopped)
+                return;
 
             IsInteracting = false;
             OnStopInteract(interactor);
-            OnInteractEnd?.Invoke();
+            OnInteractStop?.Invoke();
+            
+            if(_debug)
+                Debug.Log($"[Interactable : {gameObject.name}] <color=red> Stop interacting with </color> {interactor.name}");
         }
 
         protected virtual void OnInteract(GameObject interactor) {}

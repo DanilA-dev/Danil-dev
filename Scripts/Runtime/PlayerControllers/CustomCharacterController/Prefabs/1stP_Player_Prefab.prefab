@@ -334,7 +334,6 @@ GameObject:
   - component: {fileID: 2497857706212029633}
   - component: {fileID: 5155725379595774429}
   - component: {fileID: 843430491090247190}
-  - component: {fileID: 5994973097249530231}
   m_Layer: 3
   m_Name: 1stP_Player_Prefab
   m_TagString: Player
@@ -459,15 +458,29 @@ MonoBehaviour:
     _radius: 0.5
     _halfExtents: {x: 0.5, y: 0.5, z: 0.5}
     _origin:
-      _raycastPointType: 0
-      _raycastVectorPoint: {x: 0, y: 0, z: 0}
-      _raycastTransformPoint: {fileID: 0}
-      _localTransformDirection: 0
+      _positionType: 0
+      _vectorPos: {x: 0, y: 0, z: 0}
+      _local: 0
+      _transform: {fileID: 0}
+      _transformDirection: 0
+      _randomVectorPos: []
+      _randomTransforms: []
+      _positionRandomizeType: 0
+      _randomRadius: 0
+      _setParent: 0
+      _parent: {fileID: 0}
     _direction:
-      _raycastPointType: 0
-      _raycastVectorPoint: {x: 0, y: 0, z: 0}
-      _raycastTransformPoint: {fileID: 0}
-      _localTransformDirection: 0
+      _positionType: 0
+      _vectorPos: {x: 0, y: 0, z: 0}
+      _local: 0
+      _transform: {fileID: 0}
+      _transformDirection: 0
+      _randomVectorPos: []
+      _randomTransforms: []
+      _positionRandomizeType: 0
+      _randomRadius: 0
+      _setParent: 0
+      _parent: {fileID: 0}
     _queryTriggerInteraction: 0
     _colliderChecker:
       _collisionDimension: 0
@@ -488,6 +501,7 @@ MonoBehaviour:
       _ignoreTag: 0
       _ignoreTags: []
       _debugColliders: 0
+    _drawGizmos: 0
     _debugColor: {r: 0, g: 0, b: 0, a: 0}
   _groundTriggerEvents: {fileID: 6105562662287875627}
   _isGrounded: 0
@@ -650,66 +664,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tags:
   - {fileID: 11400000, guid: 5ad0c1bec739a1b4698734b340af9781, type: 2}
---- !u!114 &5994973097249530231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6105562663605199327}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73d1d60f48ae494aba9965a3459d2b9f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _lastSpottedInteractable: {fileID: 11400000, guid: 6826bd368ab0364468a7078ed4cd7fcb,
-    type: 2}
-  _raycaster:
-    _castType: 0
-    _distance: 5
-    _collidersBuffer: 3
-    _radius: 1.73
-    _halfExtents: {x: 0.5, y: 0.5, z: 0.5}
-    _origin:
-      _raycastPointType: 1
-      _raycastVectorPoint: {x: 0, y: 0.5, z: 1}
-      _raycastTransformPoint: {fileID: 5405550067178740186}
-      _localTransformDirection: 0
-    _direction:
-      _raycastPointType: 1
-      _raycastVectorPoint: {x: 0, y: 0, z: 1}
-      _raycastTransformPoint: {fileID: 5405550067178740186}
-      _localTransformDirection: 5
-    _queryTriggerInteraction: 1
-    _colliderChecker:
-      _collisionDimension: 0
-      _checkLayer: 0
-      _checkLayerMask:
-        serializedVersion: 2
-        m_Bits: 0
-      _checkTag: 1
-      _checkTags:
-      - {fileID: 11400000, guid: 5fed83a0422708248b3387ee424d1b2b, type: 2}
-      _ignoreTrigger: 1
-      _ignoreColliders: 1
-      _ignoredColliders:
-      - {fileID: 6105562663605199298}
-      _ignoredColliders2D: []
-      _ignoreLayer: 0
-      _ignoreLayerMask:
-        serializedVersion: 2
-        m_Bits: 0
-      _ignoreTag: 0
-      _ignoreTags: []
-      _debugColliders: 0
-    _debugColor: {r: 0.8773585, g: 0, b: 0, a: 1}
-  _updateRate: 0.1
-  OnInteractableFound:
-    m_PersistentCalls:
-      m_Calls: []
-  OnInteractableLost:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &7204032319304311176
 GameObject:
   m_ObjectHideFlags: 0
