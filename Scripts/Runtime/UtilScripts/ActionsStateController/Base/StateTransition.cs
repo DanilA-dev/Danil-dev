@@ -1,4 +1,5 @@
-﻿using D_Dev.ScriptableVaiables;
+﻿using System.Collections.Generic;
+using D_Dev.ScriptableVaiables;
 using UnityEngine;
 
 namespace D_dev.ActionsStateController.Base
@@ -21,14 +22,14 @@ namespace D_dev.ActionsStateController.Base
         [SerializeField] private string _transitionName;
         [SerializeField] private ConditionsState _conditionState;
         [SerializeField] private int _priority;
-        [SerializeReference] private D_dev.ICondition[] _conditions;
+        [SerializeReference] private List<ICondition> _conditions = new();
         [SerializeField] private StringScriptableVariable _transitionStateId;
 
         #endregion
 
         #region Properties
 
-        public D_dev.ICondition[] Conditions => _conditions;
+        public List<ICondition> Conditions => _conditions;
 
         public ConditionsState ConditionState => _conditionState;
         public StringScriptableVariable TransitionStateId => _transitionStateId;
@@ -41,7 +42,7 @@ namespace D_dev.ActionsStateController.Base
 
         public bool CanTransition()
         {
-            if (_conditions == null || _conditions.Length == 0)
+            if (_conditions == null || _conditions.Count == 0)
                 return false;
 
             if (_conditionState == ConditionsState.Any)

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -10,14 +11,14 @@ namespace D_dev.ActionGroup
 
         [SerializeField] private bool _executeInParallel = true;
         [Space]
-        [SerializeReference] private IAction[] _actions;
+        [SerializeReference] private List<IAction> _actions = new();
         
         #endregion
 
         #region Properties
 
         public bool ExecuteInParallel => _executeInParallel;
-        public IAction[] Actions => _actions;
+        public List<IAction> Actions => _actions;
         public bool IsCompleted => Actions.All(a => a == null || a.IsFinished);
         
         #endregion
@@ -26,7 +27,7 @@ namespace D_dev.ActionGroup
        
         public void ExecuteActions()
         {
-            if (Actions == null || Actions.Length == 0)
+            if (Actions == null || Actions.Count == 0)
                 return;
             
             if (ExecuteInParallel)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using D_Dev.ScriptableVaiables;
 using Sirenix.OdinInspector;
@@ -28,7 +29,7 @@ namespace D_dev.ActionsStateController.Base
         public class StateActionPhase
         {
             [SerializeField] private ActionState.Phase _phase;
-            [SerializeReference] private ActionGroup.ActionGroup _group;
+            [SerializeReference] private ActionGroup.ActionGroup _group = new();
 
             public ActionState.Phase Phase => _phase;
             public ActionGroup.ActionGroup Group => _group;
@@ -45,8 +46,9 @@ namespace D_dev.ActionsStateController.Base
         [SerializeField] private bool _hasExitTime;
         [ShowIf("_hasExitTime")]
         [SerializeField] private float _exitTime;
-        [FoldoutGroup("Actions", HideWhenChildrenAreInvisible = true), PropertyOrder(1)]
-        [SerializeReference] private StateActionPhase[] _actionGroups;
+
+        [FoldoutGroup("Actions", HideWhenChildrenAreInvisible = true), PropertyOrder(1)] 
+        [SerializeReference] private List<StateActionPhase> _actionGroups = new();
         [FoldoutGroup("Actions", HideWhenChildrenAreInvisible = true), PropertyOrder(0)] 
         [SerializeField] private bool _waitForActionsCompletion;
         [FoldoutGroup("Actions", HideWhenChildrenAreInvisible = true), PropertyOrder(0)] 

@@ -12,8 +12,8 @@ namespace D_dev.ActionsStateController.Base
     {
         #region Fields
 
-        [PropertySpace(10)]
-        [SerializeReference, PropertyOrder(1)] private ActionState[] _states;
+        [PropertySpace(10)] 
+        [SerializeReference, PropertyOrder(1)] private List<ActionState> _states = new();
         [SerializeField] private StringScriptableVariable _initialState;
         [SerializeField, ReadOnly] private StringScriptableVariable _currentStateID;
         [SerializeField] private float _transitionCheckInterval = 0.1f;
@@ -68,7 +68,7 @@ namespace D_dev.ActionsStateController.Base
             _tokenSource?.Cancel();
             _tokenSource?.Dispose();
             
-            if(_states == null || _states.Length == 0)
+            if(_states == null || _states.Count == 0)
                 return;
             
             foreach (var actionState in _states)
@@ -91,10 +91,10 @@ namespace D_dev.ActionsStateController.Base
 
         private void InitStatesDictionary()
         {
-            if(_states == null || _states.Length == 0)
+            if(_states == null || _states.Count == 0)
                 return;
 
-            _statesDic = new Dictionary<StringScriptableVariable, ActionState>(_states.Length);
+            _statesDic = new Dictionary<StringScriptableVariable, ActionState>(_states.Count);
             foreach (var state in _states)
             {
                 if (state?.StateID != null && !_statesDic.ContainsKey(state.StateID))
@@ -108,7 +108,7 @@ namespace D_dev.ActionsStateController.Base
         
         private void SetInitialState()
         {
-            if (_states == null || _states.Length == 0)
+            if (_states == null || _states.Count == 0)
                 return;
 
             if (_statesDic.TryGetValue(_initialState, out var initialState))

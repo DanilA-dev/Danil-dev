@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,9 +15,12 @@ namespace D_Dev.ActionFlowController
         [SerializeField] private bool _saveState;
         [ShowIf(nameof(_saveState))]
         [SerializeField] private string _saveID;
+
         [Space]
-        [SerializeReference] private ActionGroup[] _actionGroups;
-        [SerializeReference] private ICondition[] _breakConditions;
+        [Title("Actions")]
+        [SerializeReference] private List<ActionGroup> _actionGroups = new();
+        [Title("Breakers")]
+        [SerializeReference] private List<ICondition> _breakConditions = new();
         [Space]
         [FoldoutGroup("Events")]
         [SerializeField] private UnityEvent _onStarted;
@@ -50,7 +54,7 @@ namespace D_Dev.ActionFlowController
         public bool IsPaused => _isPaused;
         public int CurrentGroupIndex => _currentGroupIndex;
         public ActionGroup CurrentGroup =>
-            _actionGroups != null && _currentGroupIndex < _actionGroups.Length
+            _actionGroups != null && _currentGroupIndex < _actionGroups.Count
                 ? _actionGroups[_currentGroupIndex]
                 : null;
 
@@ -79,7 +83,7 @@ namespace D_Dev.ActionFlowController
             if (IsFinished || _started)
                 return;
 
-            if (_actionGroups == null || _actionGroups.Length == 0)
+            if (_actionGroups == null || _actionGroups.Count == 0)
                 return;
 
             if (GetSavedState())
@@ -92,7 +96,7 @@ namespace D_Dev.ActionFlowController
                 ? GetLastSavedGroup()
                 : 0;
 
-            _currentGroupIndex = Mathf.Clamp(_currentGroupIndex, 0, _actionGroups.Length - 1);
+            _currentGroupIndex = Mathf.Clamp(_currentGroupIndex, 0, _actionGroups.Count - 1);
 
             _started = true;
             _onStarted?.Invoke();
@@ -147,13 +151,13 @@ namespace D_Dev.ActionFlowController
             if (CheckBreakers())
                 return;
 
-            if (_actionGroups == null || _actionGroups.Length == 0)
+            if (_actionGroups == null || _actionGroups.Count == 0)
             {
                 Finish();
                 return;
             }
 
-            if (_currentGroupIndex >= _actionGroups.Length)
+            if (_currentGroupIndex >= _actionGroups.Count)
             {
                 Finish();
                 return;
@@ -219,7 +223,7 @@ namespace D_Dev.ActionFlowController
 
         private bool CheckBreakers()
         {
-            if (_breakConditions == null || _breakConditions.Length == 0)
+            if (_breakConditions == null || _breakConditions.Count == 0)
                 return false;
 
             foreach (var condition in _breakConditions)

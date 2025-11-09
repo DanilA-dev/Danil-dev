@@ -52,37 +52,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isOpen: 0
-  _hasOpenAnimation: 1
+  _hasOpenAnimation: 0
   _hasCloseAniation: 1
   _disableObjectOnComplete: 1
-  _openAnimations:
-  - rid: 3111621308153069662
+  _openAnimations: []
   _closeAnimations:
   - rid: 3111621308153069663
   references:
     version: 2
     RefIds:
-    - rid: 3111621308153069662
-      type: {class: FadeTween, ns: D_Dev.TweenAnimations.Types, asm: D-Dev.TweenAnimations}
-      data:
-        _duration: 0.5
-        _ease: 0
-        _ignoreTimeScale: 1
-        _loops: 0
-        _loopType: 0
-        OnStart:
-          m_PersistentCalls:
-            m_Calls: []
-        OnComplete:
-          m_PersistentCalls:
-            m_Calls: []
-        _fadeObject: 1
-        _image: {fileID: 0}
-        _meshMaterial: {fileID: 0}
-        _canvasGroup: {fileID: 6801190052931942163}
-        _spriteRenderer: {fileID: 0}
-        _startValue: 0
-        _endValue: 1
     - rid: 3111621308153069663
       type: {class: FadeTween, ns: D_Dev.TweenAnimations.Types, asm: D-Dev.TweenAnimations}
       data:
@@ -315,19 +293,7 @@ MonoBehaviour:
       m_Calls: []
   OnComplete:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2423839462355056866}
-        m_TargetAssemblyTypeName: D_Dev.MenuHandler.BaseMenu, D-Dev.Menu
-        m_MethodName: Close
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   references:
     version: 2
     RefIds:
