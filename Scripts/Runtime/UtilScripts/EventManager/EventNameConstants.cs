@@ -9,6 +9,7 @@
         MenuOpen = 4,
         MenuClose = 5,
         SceneLoad = 6,
-        SceneReload = 7
+        SceneReload = 7,
+        SceneAdd = 8,
     }
 }

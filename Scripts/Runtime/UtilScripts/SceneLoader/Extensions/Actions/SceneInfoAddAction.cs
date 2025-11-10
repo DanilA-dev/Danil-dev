@@ -5,7 +5,7 @@ using UnityEngine;
 namespace D_Dev.SceneLoader.Extensions.Actions
 {
     [System.Serializable]
-    public class SceneInfoLoadAction : IAction
+    public class SceneInfoAddAction : IAction
     {
         #region Fields
 
@@ -23,7 +23,7 @@ namespace D_Dev.SceneLoader.Extensions.Actions
 
         public void Execute()
         {
-            EventManager.Invoke(EventNameConstants.SceneLoad.ToString(), _sceneInfo.SceneName);
+            EventManager.Invoke(EventNameConstants.SceneAdd.ToString(), _sceneInfo.SceneName);
             IsFinished = true;
         }
 

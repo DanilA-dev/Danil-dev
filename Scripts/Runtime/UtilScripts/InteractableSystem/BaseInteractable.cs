@@ -37,15 +37,24 @@ namespace D_Dev.InteractableSystem
         public virtual bool CanInteract(GameObject interactor)
         {
             if (!_isInteractable)
+            {
+                Debug.Log($"<color=yellow> [Interactable : {gameObject.name}] Can't interact with {interactor.name} because it's not interactable.</color>");   
                 return false;
+            }
 
             if (interactor == null)
                 return false;
 
             var distance = Vector3.Distance(transform.position, interactor.transform.position);
-            if(_isDistanceBased)
-                return distance <= _interactionDistance;
-            
+            var isWithinDistance = distance <= _interactionDistance;
+            if (_isDistanceBased)
+            {
+                if (isWithinDistance)
+                    return true;
+                
+                Debug.Log($"<color=yellow> [Interactable : {gameObject.name}] Can't interact with {interactor.name} because it's too far away.</color>");
+                return false;
+            }
             return true;
         }
 

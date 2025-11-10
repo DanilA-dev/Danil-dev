@@ -14,22 +14,26 @@ namespace D_Dev.SceneLoader
         [SerializeField, OnValueChanged(nameof(GetSceneName))] private SceneAsset sceneAsset;
         #endif
         [SerializeField, ReadOnly] private string _sceneName;
-
+        [SerializeField] private bool _addSceneOnStartup;
+        [SerializeField] private bool _isUnloadable;
 
         #endregion
 
         #region Properties
 
         public string SceneName => _sceneName;
+        public bool IsUnloadable => _isUnloadable;
+
+        public bool AddSceneOnStartup => _addSceneOnStartup;
 
         #endregion
 #if UNITY_EDITOR
         #region Editor
 
-        
+        [Button("Update Scene Name")]
         private void GetSceneName()
         {
-            if (string.IsNullOrEmpty(_sceneName) && sceneAsset != null)
+            if (sceneAsset != null)
             {
                 _sceneName = sceneAsset.name;
                 EditorUtility.SetDirty(this);

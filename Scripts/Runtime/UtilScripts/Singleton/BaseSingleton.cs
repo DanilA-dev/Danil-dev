@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace D_Dev.Singleton
 {
@@ -7,6 +8,7 @@ namespace D_Dev.Singleton
         #region Fields
         
         [SerializeField] private bool _dontDestroyOnLoad = true;
+        [ShowInInspector] private static bool _createInstanceIfNotFound = true;
       
         protected static T _instance;
         private static readonly object _lock = new object();
@@ -24,7 +26,7 @@ namespace D_Dev.Singleton
                     {
                         _instance = FindObjectOfType<T>();
 
-                        if (_instance == null)
+                        if (_instance == null && !_createInstanceIfNotFound)
                         {
                             var singletonObject = new GameObject();
                             _instance = singletonObject.AddComponent<T>();
@@ -32,13 +34,12 @@ namespace D_Dev.Singleton
                             
                             Debug.Log($"[Singleton] Created new instance of {typeof(T)}");
                         }
-                        else
-                            Debug.Log($"[Singleton] Using existing instance of {typeof(T)}");
                     }
                     return _instance;
                 }
             }
         }
+
         #endregion
 
         #region Monobehaviour

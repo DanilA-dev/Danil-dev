@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c52f0bf328f744929f703d89378f3833, type: 3}
+  m_Name: Project Unloadable Scenes Config
+  m_EditorClassIdentifier: 
+  _scenes:
+  - {fileID: 11400000, guid: 158a7fff4686a4b47aa42dc8dc640bed, type: 2}
+  - {fileID: 11400000, guid: 98239fbe6c775ac498c468c3685ae022, type: 2}
+  - {fileID: 11400000, guid: 03f485dc52126f7479dc28635cfe0f59, type: 2}
+  - {fileID: 11400000, guid: 21dc29c101f129749bbec3c0aef9ad5a, type: 2}
