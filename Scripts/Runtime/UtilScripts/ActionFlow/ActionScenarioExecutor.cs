@@ -5,9 +5,9 @@ using UnityEngine.Events;
 using D_dev.ActionGroup;
 using D_dev;
 
-namespace D_Dev.ActionFlowController
+namespace D_Dev.ActionFlow
 {
-    public class ActionFlowController : MonoBehaviour
+    public class ActionScenarioExecutor : MonoBehaviour
     {
         #region Fields
 
@@ -215,7 +215,7 @@ namespace D_Dev.ActionFlowController
                 _isFinished = true;
                 _started = false;
                 _onFinished?.Invoke();
-
+                
                 if (_saveState)
                     SaveState();
             }

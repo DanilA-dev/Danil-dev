@@ -12,6 +12,7 @@ namespace D_dev.Scripts.MenuHandler.Extensions.Actions
         [SerializeField] private MenuInfo _menuInfo;
 
         #endregion
+        
         #region Properties
         public bool IsFinished { get; set; }
         

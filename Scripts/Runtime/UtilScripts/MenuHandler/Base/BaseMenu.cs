@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Events;
 #if DOTWEEN
 using System.Collections.Generic;
 using DG.Tweening;
@@ -28,6 +29,11 @@ namespace D_Dev.MenuHandler
         [ShowIf(nameof(_hasCloseAniation))] 
         [SerializeReference] private List<BaseAnimationTween> _closeAnimations = new();
 #endif
+        [FoldoutGroup("Events")]
+        public UnityEvent OnOpenEvent;
+        [FoldoutGroup("Events")]
+        public UnityEvent OnCloseEvent;
+        
         #endregion
 
         #region Properties
@@ -66,6 +72,7 @@ namespace D_Dev.MenuHandler
             }
 #endif
             _isOpen = true;
+            OnOpenEvent?.Invoke();
         }
 
         public async void Close()
@@ -87,6 +94,7 @@ namespace D_Dev.MenuHandler
                 await seq.AsyncWaitForCompletion().AsUniTask();
                 _isOpen = false;
                 gameObject.SetActive(!_disableObjectOnComplete);
+                OnCloseEvent?.Invoke();
                 return;
             }
 #endif
@@ -103,6 +111,7 @@ namespace D_Dev.MenuHandler
         {
             _isOpen = false;
             gameObject.SetActive(IsOpen);
+            OnCloseEvent?.Invoke();
         }
 
         #endregion
