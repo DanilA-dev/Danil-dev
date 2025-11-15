@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace D_Dev.MenuHandler
 {
-    public class MenuHandler : BaseSingleton<MenuHandler>
+    public class MenuController : BaseSingleton<MenuController>
     {
         #region Fields
 

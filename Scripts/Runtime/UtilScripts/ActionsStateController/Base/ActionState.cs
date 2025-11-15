@@ -33,7 +33,7 @@ namespace D_dev.ActionsStateController.Base
 
             public ActionState.Phase Phase => _phase;
             public ActionGroup.ActionGroup Group => _group;
-            public bool IsComplete => _group != null && _group.IsCompleted;
+            public bool IsComplete => _group != null && _group.IsAllActionsCompleted;
         }
 
     
@@ -155,7 +155,7 @@ namespace D_dev.ActionsStateController.Base
             if (!_waitForActionsCompletion || _actionGroups == null || OnActionsCompleted == null)
                 return;
 
-            if (_actionGroups.All(e => e.Group.IsCompleted))
+            if (_actionGroups.All(e => e.Group.IsAllActionsCompleted))
                 OnActionsCompleted?.Invoke(_nextStateAfterCompletion);
         }
 

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -7,11 +8,12 @@ using D_dev;
 
 namespace D_Dev.ActionFlow
 {
-    public class ActionScenarioExecutor : MonoBehaviour
+    public class ActionExecutorFlow : MonoBehaviour
     {
         #region Fields
 
         [SerializeField] private bool _executeOnStart;
+        [SerializeField] private bool _resetOnFinish;
         [SerializeField] private bool _saveState;
         [ShowIf(nameof(_saveState))]
         [SerializeField] private string _saveID;
@@ -44,7 +46,8 @@ namespace D_Dev.ActionFlow
 
         private int _currentGroupIndex;
         private float _currentGroupStartTime;
-        private bool _started;
+        private bool _isStarted;
+        private Coroutine _executionCoroutine;
 
         #endregion
 
@@ -68,19 +71,25 @@ namespace D_Dev.ActionFlow
                 StartExecution();
         }
 
-        private void Update()
+        private void OnDisable()
         {
-            if (!IsFinished && !_isPaused)
-                Execute();
+            if (_executionCoroutine != null)
+            {
+                StopCoroutine(_executionCoroutine);
+                _executionCoroutine = null;
+            }
+            _isStarted = false;
         }
 
         #endregion
 
         #region Public
 
+        [FoldoutGroup("Debug")]
+        [Button]
         public void StartExecution()
         {
-            if (IsFinished || _started)
+            if (IsFinished || _isStarted)
                 return;
 
             if (_actionGroups == null || _actionGroups.Count == 0)
@@ -98,7 +107,8 @@ namespace D_Dev.ActionFlow
 
             _currentGroupIndex = Mathf.Clamp(_currentGroupIndex, 0, _actionGroups.Count - 1);
 
-            _started = true;
+            _isStarted = true;
+            _executionCoroutine = StartCoroutine(ExecuteCoroutine());
             _onStarted?.Invoke();
         }
 
@@ -123,7 +133,14 @@ namespace D_Dev.ActionFlow
         public void Stop()
         {
             _isFinished = true;
-            _started = false;
+            _isStarted = false;
+
+            if (_executionCoroutine != null)
+            {
+                StopCoroutine(_executionCoroutine);
+                _executionCoroutine = null;
+            }
+
             _onFinished?.Invoke();
 
             if (_saveState)
@@ -139,49 +156,77 @@ namespace D_Dev.ActionFlow
                 condition?.Reset();
         }
 
+        public void ResetActions()
+        {
+            if(_actionGroups == null)
+                return;
+
+            foreach (var group in _actionGroups)
+            {
+                foreach (var groupAction in group.Actions)
+                    groupAction.Undo();
+            }
+        }
+
+        public void FullReset()
+        {
+            _isFinished = false;
+            _isStarted = false;
+            
+            ResetActions();
+            ResetBreakers();
+        }
+
         #endregion
 
         #region Private
 
-        private void Execute()
+        private IEnumerator ExecuteCoroutine()
         {
-            if (!_started)
-                return;
-
-            if (CheckBreakers())
-                return;
-
-            if (_actionGroups == null || _actionGroups.Count == 0)
+            while (true)
             {
-                Finish();
-                return;
+                if (CheckBreakers())
+                    yield break;
+
+                if (_actionGroups == null || _actionGroups.Count == 0)
+                {
+                    Finish();
+                    yield break;
+                }
+
+                if (_currentGroupIndex >= _actionGroups.Count)
+                {
+                    Finish();
+                    yield break;
+                }
+
+                ActionGroup currentGroup = _actionGroups[_currentGroupIndex];
+                if (currentGroup == null)
+                {
+                    MoveToNext();
+                    continue;
+                }
+
+                if (currentGroup.IsAllActionsCompleted)
+                {
+                    OnGroupFinished();
+                    MoveToNext();
+                    continue;
+                }
+
+                if (_currentGroupStartTime == 0)
+                    StartCurrent();
+
+                currentGroup.ExecuteActions();
+
+                if (_isPaused)
+                {
+                    while (_isPaused)
+                        yield return null;
+                }
+
+                yield return null;
             }
-
-            if (_currentGroupIndex >= _actionGroups.Count)
-            {
-                Finish();
-                return;
-            }
-
-            ActionGroup currentGroup = _actionGroups[_currentGroupIndex];
-
-            if (currentGroup == null)
-            {
-                MoveToNext();
-                return;
-            }
-
-            if (currentGroup.IsCompleted)
-            {
-                OnGroupFinished();
-                MoveToNext();
-                return;
-            }
-
-            if (_currentGroupStartTime == 0)
-                StartCurrent();
-
-            currentGroup.ExecuteActions();
         }
 
         private void StartCurrent()
@@ -213,8 +258,12 @@ namespace D_Dev.ActionFlow
             if (!IsFinished)
             {
                 _isFinished = true;
-                _started = false;
+                _isStarted = false;
+                _currentGroupIndex = 0;
                 _onFinished?.Invoke();
+                
+                if(_resetOnFinish)
+                    FullReset();
                 
                 if (_saveState)
                     SaveState();

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace D_dev.Actions
 {
     [System.Serializable]
-    public class TargetMovementAction : IAction
+    public class TargetMovementAction : BaseAction
     {
         #region Fields
 
@@ -14,19 +14,11 @@ namespace D_dev.Actions
         [SerializeField] private float _speed;
         [SerializeField] private float _reachDistance;
 
-        private bool _isFinished;
-        
-        #endregion
-
-        #region Properties
-
-        public bool IsFinished => _isFinished;
-
         #endregion
 
         #region IAction
 
-        public void Execute()
+        public override void Execute()
         {
             if (_movement == null)
                 return;
@@ -34,12 +26,7 @@ namespace D_dev.Actions
             var target = _target.GetTargetPosition();
             _movement.MoveTowards(target, _speed, Time.deltaTime);
             if (_movement.IsAtPosition(target, _reachDistance))
-                _isFinished = true;
-        }
-
-        public void Undo()
-        {
-            _isFinished = false;
+                IsFinished = true;
         }
 
         #endregion

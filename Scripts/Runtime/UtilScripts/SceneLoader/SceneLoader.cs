@@ -18,19 +18,25 @@ namespace D_Dev.SceneLoader
         #region Public
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        public static async UniTask InitializeScenesAsync()
+        public static UniTask InitializeScenesAsync()
         {
             Scenes = new();
-            var projectScenes = Resources.Load<ProjectUnloadableScenesConfig>("Project Unloadable Scenes Config");
+            var path = "Project Scenes Config";
+            var projectScenes = Resources.Load<ProjectScenesConfig>(path);
             if (projectScenes != null)
             {
                 foreach (var scene in projectScenes.Scenes)
                 {
                     Scenes.Add(scene.SceneName, scene.IsUnloadable);
                     if (scene.AddSceneOnStartup)
-                        await LoadSceneAsync(scene.SceneName, LoadSceneMode.Additive);
+                        LoadSceneAsync(scene.SceneName, LoadSceneMode.Additive).Forget();
                 }
             }
+            else
+            {
+                Debug.LogError($"[SceneLoader] Failed to load project scenes config at path: Resources/{path}");
+            }
+            return UniTask.CompletedTask;
         }
         
         public static async UniTask LoadSceneAsync(string sceneName, LoadSceneMode mode = LoadSceneMode.Single,

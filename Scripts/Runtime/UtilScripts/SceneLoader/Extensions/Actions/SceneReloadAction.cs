@@ -4,23 +4,15 @@ using D_Dev.CustomEventManager;
 namespace D_Dev.SceneLoader.Extensions.Actions
 {
     [System.Serializable]
-    public class SceneReloadAction :IAction
+    public class SceneReloadAction : BaseAction
     {
-        #region Properties
-
-        public bool IsFinished { get; set; }
-
-        #endregion
-
         #region IAction
 
-        public void Execute()
+        public override void Execute()
         {
             EventManager.Invoke(EventNameConstants.SceneReload.ToString());
             IsFinished = true;
         }
-
-        public void Undo() {}
 
         #endregion
     }

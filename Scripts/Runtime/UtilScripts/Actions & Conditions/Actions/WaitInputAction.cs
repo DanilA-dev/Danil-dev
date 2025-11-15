@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 namespace D_dev.Actions
 {
     [System.Serializable]
-    public class WaitInputAction : IAction
+    public class WaitInputAction : BaseAction
     {
         #region Enums
 
@@ -22,16 +22,13 @@ namespace D_dev.Actions
         [SerializeField] private InputActionReference _inputAction;
         [SerializeField] private InputActionPhase _desiredPhase = InputActionPhase.Performed;
 
-        private bool _isFinished;
         private bool _isSubscribed;
 
         #endregion
 
         #region IAction
 
-        public bool IsFinished => _isFinished;
-
-        public void Execute()
+        public override void Execute()
         {
             if (_inputAction?.action == null)
                 return;
@@ -55,35 +52,13 @@ namespace D_dev.Actions
             }
         }
 
-        public void Undo()
-        {
-            _isFinished = false;
-            if (_isSubscribed && _inputAction?.action != null)
-            {
-                switch (_desiredPhase)
-                {
-                    case InputActionPhase.Started:
-                        _inputAction.action.started -= OnInputTriggered;
-                        break;
-                    case InputActionPhase.Performed:
-                        _inputAction.action.performed -= OnInputTriggered;
-                        break;
-                    case InputActionPhase.Canceled:
-                        _inputAction.action.canceled -= OnInputTriggered;
-                        break;
-                }
-                _inputAction.action.Disable();
-                _isSubscribed = false;
-            }
-        }
-
         #endregion
 
         #region Listeners
 
         private void OnInputTriggered(InputAction.CallbackContext context)
         {
-            _isFinished = true;
+            IsFinished = true;
             if (_inputAction?.action != null)
             {
                 switch (_desiredPhase)

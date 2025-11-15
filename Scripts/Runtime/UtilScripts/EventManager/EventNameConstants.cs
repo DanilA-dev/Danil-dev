@@ -10,6 +10,5 @@
         MenuClose = 5,
         SceneLoad = 6,
         SceneReload = 7,
-        SceneAdd = 8,
     }
 }

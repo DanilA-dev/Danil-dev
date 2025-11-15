@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c52f0bf328f744929f703d89378f3833, type: 3}
-  m_Name: Project Unloadable Scenes Config
+  m_Name: Project Scenes Config
   m_EditorClassIdentifier: 
   _scenes:
   - {fileID: 11400000, guid: 158a7fff4686a4b47aa42dc8dc640bed, type: 2}

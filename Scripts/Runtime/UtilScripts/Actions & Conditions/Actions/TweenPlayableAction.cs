@@ -5,22 +5,19 @@ using D_Dev.TweenAnimations;
 namespace D_dev.Actions
 {
     [System.Serializable]
-    public class TweenPlayableAction : IAction
+    public class TweenPlayableAction : BaseAction
     {
         #region Fields
 
         [SerializeField] private TweenPlayable _tweenPlayable;
 
-        private bool _isFinished;
         private bool _isPlaying;
 
         #endregion
 
         #region IAction
 
-        public bool IsFinished => _isFinished;
-
-        public void Execute()
+        public override void Execute()
         {
             if (_tweenPlayable == null)
                 return;
@@ -33,9 +30,9 @@ namespace D_dev.Actions
             _isPlaying = true;
         }
 
-        public void Undo()
+        public override void Undo()
         {
-            _isFinished = false;
+            base.Undo();
             _isPlaying = false;
         }
 
@@ -45,7 +42,7 @@ namespace D_dev.Actions
 
         private void OnComplete()
         {
-            _isFinished = true;
+            IsFinished = true;
             _isPlaying = false;
             if (_tweenPlayable != null)
                 _tweenPlayable.OnComplete -= OnComplete;

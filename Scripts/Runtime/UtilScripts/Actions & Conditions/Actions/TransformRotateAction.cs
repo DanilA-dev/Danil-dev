@@ -3,7 +3,7 @@ using UnityEngine;
 namespace D_dev.Actions
 {
     [System.Serializable]
-    public class TransformRotateAction : IAction
+    public class TransformRotateAction : BaseAction
     {
         #region Enums
 
@@ -26,15 +26,11 @@ namespace D_dev.Actions
         [SerializeField] private float _rotationSpeed = 180f;
         [SerializeField] private float _angleThreshold = 1f;
 
-        private bool _isFinished;
-
         #endregion
 
         #region IAction
-
-        public bool IsFinished => _isFinished;
         
-        public void Execute()
+        public override void Execute()
         {
             if (_transformToRotate == null)
                 return;
@@ -48,12 +44,7 @@ namespace D_dev.Actions
             Quaternion targetRotation = GetTargetRotation(direction);
             _transformToRotate.rotation = Quaternion.RotateTowards(_transformToRotate.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
             if(IsTargetRotationEnded())
-                _isFinished = true;
-        }
-
-        public void Undo()
-        {
-            _isFinished = false;
+                IsFinished = true;
         }
 
         #endregion

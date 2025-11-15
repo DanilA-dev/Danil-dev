@@ -5,7 +5,7 @@ using UnityEngine;
 namespace D_Dev.SceneLoader.Extensions.Actions
 {
     [System.Serializable]
-    public class SceneInfoLoadAction : IAction
+    public class SceneInfoLoadAction : BaseAction
     {
         #region Fields
 
@@ -13,21 +13,13 @@ namespace D_Dev.SceneLoader.Extensions.Actions
 
         #endregion
 
-        #region Properties
-
-        public bool IsFinished { get; set; }
-
-        #endregion
-
         #region IAction
 
-        public void Execute()
+        public override void Execute()
         {
             EventManager.Invoke(EventNameConstants.SceneLoad.ToString(), _sceneInfo.SceneName);
             IsFinished = true;
         }
-
-        public void Undo() {}
 
         #endregion
     }

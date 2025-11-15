@@ -4,22 +4,19 @@ using UnityEngine.UI;
 namespace D_dev.Actions
 {
     [System.Serializable]
-    public class WaitUIButtonAction : IAction
+    public class WaitUIButtonAction : BaseAction
     {
         #region Fields
 
         [SerializeField] private Button _button;
 
-        private bool _isFinished;
         private bool _isSubscribed;
 
         #endregion
 
         #region IAction
 
-        public bool IsFinished => _isFinished;
-
-        public void Execute()
+        public override void Execute()
         {
             if (_button == null)
                 return;
@@ -31,23 +28,13 @@ namespace D_dev.Actions
             }
         }
 
-        public void Undo()
-        {
-            _isFinished = false;
-            if (_isSubscribed && _button != null)
-            {
-                _button.onClick.RemoveListener(OnButtonClicked);
-                _isSubscribed = false;
-            }
-        }
-
         #endregion
 
         #region Listeners
 
         private void OnButtonClicked()
         {
-            _isFinished = true;
+            IsFinished = true;
             if (_button != null)
                 _button.onClick.RemoveListener(OnButtonClicked);
             _isSubscribed = false;

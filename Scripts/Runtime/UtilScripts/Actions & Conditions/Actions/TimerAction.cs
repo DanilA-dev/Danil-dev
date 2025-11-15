@@ -4,23 +4,19 @@ using UnityEngine;
 namespace D_dev.Actions
 {
     [System.Serializable]
-    public class TimerAction : IAction
+    public class TimerAction : BaseAction
     {
         #region Fields
 
         [SerializeField] private float _delay;
         
         private CountdownTimer _timer;
-        private bool _isFinished;
 
         #endregion
 
         #region IAction
         
-        public bool IsFinished => _isFinished;
-        
-
-        public void Execute()
+        public override void Execute()
         {
             if(_timer == null)
                 _timer = new CountdownTimer(_delay);
@@ -34,12 +30,6 @@ namespace D_dev.Actions
                 _timer.Tick(Time.deltaTime);
         }
 
-        public void Undo()
-        {
-            _isFinished = false;
-        }
-
-
         #endregion
 
         #region Listeners
@@ -47,7 +37,7 @@ namespace D_dev.Actions
         private void OnTimerEnd()
         {
             _timer.OnTimerEnd -= OnTimerEnd;
-            _isFinished = true;
+            IsFinished = true;
             _timer.Reset();
             _timer.Stop();
         }

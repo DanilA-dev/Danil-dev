@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace D_dev.ActionGroup
@@ -11,15 +12,15 @@ namespace D_dev.ActionGroup
 
         [SerializeField] private bool _executeInParallel = true;
         [Space]
-        [SerializeReference] private List<IAction> _actions = new();
+        [SerializeReference] private List<BaseAction> _actions = new();
         
         #endregion
 
         #region Properties
 
         public bool ExecuteInParallel => _executeInParallel;
-        public List<IAction> Actions => _actions;
-        public bool IsCompleted => Actions.All(a => a == null || a.IsFinished);
+        public List<BaseAction> Actions => _actions;
+        public bool IsAllActionsCompleted => Actions.All(a => a == null || a.IsFinished);
         
         #endregion
         

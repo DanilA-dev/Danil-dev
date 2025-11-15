@@ -26,14 +26,12 @@ namespace D_Dev.SceneLoader
             _tokenSource = new CancellationTokenSource();
 
             EventManager.AddListener<string>(EventNameConstants.SceneLoad.ToString(), OnSceneLoad);
-            EventManager.AddListener<string>(EventNameConstants.SceneAdd.ToString(), OnSceneAdd);
             EventManager.AddListener(EventNameConstants.SceneReload.ToString(), OnSceneReload);
         }
 
         private void OnDestroy()
         {
             EventManager.RemoveListener<string>(EventNameConstants.SceneLoad.ToString(), OnSceneLoad);
-            EventManager.RemoveListener<string>(EventNameConstants.SceneAdd.ToString(), OnSceneAdd);
             EventManager.RemoveListener(EventNameConstants.SceneReload.ToString(), OnSceneReload);
             _tokenSource?.Cancel();
         }
@@ -96,16 +94,6 @@ namespace D_Dev.SceneLoader
             {
                 Debug.LogError($"[SceneLoader] Scene '{sceneName}' not found in config.");
             }
-        }
-
-        private void OnSceneAdd(string sceneName)
-        {
-            if (string.IsNullOrEmpty(sceneName))
-            {
-                Debug.LogError("[SceneLoader] Scene name is null or empty");
-                return;
-            }
-            SceneLoader.LoadSceneAsync(sceneName, LoadSceneMode.Additive, cancellationToken: _tokenSource.Token).Forget();
         }
 
         private void OnSceneReload()

@@ -16,7 +16,7 @@ namespace D_dev.Actions
     #endregion
 
     [System.Serializable]
-    public class PatrolMovementAction : IAction
+    public class PatrolMovementAction : BaseAction
     {
         #region Fields
 
@@ -28,14 +28,12 @@ namespace D_dev.Actions
         [SerializeField] private float _reachDistance;
         [SerializeField, ReadOnly] private int _currentIndex;
         [SerializeField] private bool _isReversing;
-
-        private bool _isFinished;
         
         #endregion
 
         #region IAction
 
-        public void Execute()
+        public override void Execute()
         {
             if (_movement == null || _patrolPoints.Length == 0)
                 return;
@@ -47,15 +45,8 @@ namespace D_dev.Actions
                 MoveToNextPoint();
             
             if(_currentIndex == _patrolPoints.Length - 1)
-                _isFinished = true;
+                IsFinished = true;
         }
-
-        public void Undo()
-        {
-            _isFinished = false;
-        }
-
-        public bool IsFinished => _isFinished;
 
         #endregion
 
