@@ -47,7 +47,7 @@ namespace D_Dev
                 "Assets/Danil-dev/Scripts"
             } ;
             var exportDirectory =  "Assets/Danil-dev/Package/Danil-Dev.unitypackage";
-            AssetDatabase.ExportPackage(paths, exportDirectory, ExportPackageOptions.Recurse | ExportPackageOptions.IncludeDependencies);
+            AssetDatabase.ExportPackage(paths, exportDirectory, ExportPackageOptions.Recurse);
             Debug.Log($"Exported package to {exportDirectory}");
         }
 
