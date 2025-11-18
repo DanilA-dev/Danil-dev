@@ -23,7 +23,7 @@ namespace D_Dev.SceneLoader
             Scenes = new();
             var path = "Project Scenes Config";
             var projectScenes = Resources.Load<ProjectScenesConfig>(path);
-            if (projectScenes != null)
+            if (projectScenes != null && projectScenes.Scenes.Count > 0)
             {
                 foreach (var scene in projectScenes.Scenes)
                 {
