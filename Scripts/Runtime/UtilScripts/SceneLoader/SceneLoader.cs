@@ -23,8 +23,11 @@ namespace D_Dev.SceneLoader
             Scenes = new();
             var path = "Project Scenes Config";
             var projectScenes = Resources.Load<ProjectScenesConfig>(path);
-            if (projectScenes != null && projectScenes.Scenes.Count > 0)
+            if (projectScenes != null)
             {
+                if(projectScenes.Scenes.Count <= 0)
+                    return UniTask.CompletedTask;
+                
                 foreach (var scene in projectScenes.Scenes)
                 {
                     Scenes.Add(scene.SceneName, scene.IsUnloadable);
@@ -33,9 +36,7 @@ namespace D_Dev.SceneLoader
                 }
             }
             else
-            {
                 Debug.LogError($"[SceneLoader] Failed to load project scenes config at path: Resources/{path}");
-            }
             return UniTask.CompletedTask;
         }
         
