@@ -203,7 +203,10 @@ namespace D_Dev.EntitySpawner
         {
             GameObject obj = null;
             var entity = Data.EntityPrefab;
-            obj = GameObject.Instantiate(entity, _posConfig.GetPosition(), _rotConfig.GetRotation());
+            obj = GameObject.Instantiate(entity);
+            var entityTransform = obj.transform;
+            _posConfig.SetPosition(ref entityTransform);
+            _rotConfig.SetRotation(ref entityTransform);
             obj.SetActive(_setActiveOnStart);
             if (_usePool && obj.TryGetComponent(out PoolableObject poolableEntity))
             {
