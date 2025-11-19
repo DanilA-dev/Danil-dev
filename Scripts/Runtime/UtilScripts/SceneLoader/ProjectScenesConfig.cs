@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using Sirenix.OdinInspector;
-using UnityEditor;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+using System.IO;
+#endif
 
 namespace D_Dev.SceneLoader
 {
@@ -36,6 +39,25 @@ namespace D_Dev.SceneLoader
             }
             EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssets();
+        }
+        
+        [MenuItem("Tools/D_Dev/Project Scenes Config")]
+        private static void OpenScenesConfig()
+        {
+            ProjectScenesConfig projectScenesConfig = Resources.Load<ProjectScenesConfig>("ProjectScenesConfig");
+            var resourcesDirFullPath = Path.Combine(Application.dataPath, "_Project", "Resources");
+            var assetRelativePath = "Assets/_Project/Resources/ProjectScenesConfig.asset";
+
+            if (projectScenesConfig == null)
+            {
+                if (!Directory.Exists(resourcesDirFullPath))
+                    Directory.CreateDirectory(resourcesDirFullPath);
+
+                projectScenesConfig = ScriptableObject.CreateInstance<ProjectScenesConfig>();
+                AssetDatabase.CreateAsset(projectScenesConfig, assetRelativePath);
+                AssetDatabase.Refresh();
+            }
+            EditorUtility.OpenPropertyEditor(projectScenesConfig);
         }
 
         #endregion

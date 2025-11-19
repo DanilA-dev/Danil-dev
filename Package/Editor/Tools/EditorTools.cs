@@ -31,6 +31,7 @@ namespace D_Dev
                 "Audio",
                 "Scripts",
                 "Scenes",
+                "Resources",
                 "Prefabs",
                 "ScriptableObjects"
             });
