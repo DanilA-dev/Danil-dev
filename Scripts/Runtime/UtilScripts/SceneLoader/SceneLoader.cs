@@ -21,7 +21,7 @@ namespace D_Dev.SceneLoader
         public static UniTask InitializeScenesAsync()
         {
             Scenes = new();
-            var path = "Project Scenes Config";
+            var path = "ProjectScenesConfig";
             var projectScenes = Resources.Load<ProjectScenesConfig>(path);
             if (projectScenes != null)
             {
