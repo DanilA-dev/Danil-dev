@@ -11,7 +11,7 @@ namespace D_Dev.SceneLoader
         #region Fields
 
         #if UNITY_EDITOR
-        [SerializeField, OnValueChanged(nameof(GetSceneName))] private SceneAsset sceneAsset;
+        [SerializeField, OnValueChanged(nameof(GetSceneName))] private SceneAsset _sceneAsset;
         #endif
         [SerializeField, ReadOnly] private string _sceneName;
         [SerializeField] private bool _addSceneOnStartup;
@@ -30,12 +30,18 @@ namespace D_Dev.SceneLoader
 #if UNITY_EDITOR
         #region Editor
 
+        public void ApplySceneAsset(SceneAsset sceneAsset)
+        {
+            _sceneAsset = sceneAsset;
+            GetSceneName();
+        }
+
         [Button("Update Scene Name")]
         private void GetSceneName()
         {
-            if (sceneAsset != null)
+            if (_sceneAsset != null)
             {
-                _sceneName = sceneAsset.name;
+                _sceneName = _sceneAsset.name;
                 EditorUtility.SetDirty(this);
                 AssetDatabase.SaveAssets();
             }

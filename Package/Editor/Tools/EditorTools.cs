@@ -100,9 +100,11 @@ namespace D_Dev
         {
             var manifest = "Packages/manifest.json";
             var text = File.ReadAllText(manifest, Encoding.Default);
+            if(text.Contains(package) || text.Contains(url))
+                return;
+            
             var addedPackagePath = text.Replace("\"dependencies\": {", "\"dependencies\": {" + Environment.NewLine + " " +
                                                                        '"' + package + '"'+ ":" + " " + '"' + url + '"' + ",");
-            
             File.WriteAllText(manifest, addedPackagePath, Encoding.Default);
         }
 
