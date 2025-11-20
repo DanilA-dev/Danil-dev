@@ -36,17 +36,20 @@ namespace D_Dev.EntitySpawner
 
         #region Public
 
-        public GameObject CreateEntity(EntityInfo data)
+        public GameObject GetEntity(EntityInfo data)
         {
             var spawnSettings = _spawnSettings.FirstOrDefault(s => s.Data == data);
             return spawnSettings?.Get();
         }
         
-        public GameObject CreateEntity(int settingsIndex)
+        public GameObject GetEntity(int settingsIndex)
         {
             var spawnSettings = _spawnSettings[settingsIndex];
             return spawnSettings?.Get();
         }
+
+        public void CreateEntity(int settingsIndex) => GetEntity(settingsIndex);
+        public void CreateEntity(EntityInfo data) => GetEntity(data);
 
         #endregion
     }
