@@ -1,0 +1,19 @@
+{
+    "name": "D-Dev.ActionsStateController",
+    "rootNamespace": "",
+    "references": [
+        "UniTask",
+        "D-Dev.Base",
+        "D-Dev.ScriptableVariables",
+        "D-Dev.ActionGroup"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

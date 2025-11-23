@@ -1,8 +1,0 @@
-using UnityEngine;
-
-namespace D_Dev.ScriptableVaiables
-{
-    [CreateAssetMenu(menuName = "D-Dev/Variables/BoolVariable")]
-    public class BoolScriptableVariable : BaseScriptableVariable<bool> {}
-
-}

@@ -1,0 +1,18 @@
+{
+    "name": "D-Dev.StatsSystem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:6d0199508f23afb4692c5fcd34c5ce08",
+        "GUID:bca94c6d884a7ab4f89267dd3bf8bd41",
+        "GUID:8f7d4ec3caeccbb4e81592a534a0fdf6"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
