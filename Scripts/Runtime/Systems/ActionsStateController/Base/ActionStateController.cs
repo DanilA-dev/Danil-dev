@@ -6,7 +6,7 @@ using D_Dev.ScriptableVaiables;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace D_dev.ActionsStateController.Base
+namespace D_Dev.ActionsStateController.Base
 {
     public class ActionStateController : MonoBehaviour
     {

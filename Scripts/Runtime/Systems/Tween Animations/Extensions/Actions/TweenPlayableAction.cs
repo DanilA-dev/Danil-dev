@@ -1,8 +1,8 @@
 #if DOTWEEN
+using D_Dev.Base;
 using UnityEngine;
-using D_Dev.TweenAnimations;
 
-namespace D_dev.Actions
+namespace D_Dev.TweenAnimations.Extensions.Actions
 {
     [System.Serializable]
     public class TweenPlayableAction : BaseAction
@@ -15,7 +15,7 @@ namespace D_dev.Actions
 
         #endregion
 
-        #region IAction
+        #region Overrides
 
         public override void Execute()
         {

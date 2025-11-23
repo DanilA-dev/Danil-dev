@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace D_dev.InventorySystem
+namespace D_Dev.InventorySystem
 {
     public class InventoryCell : IInventoryCell
     {

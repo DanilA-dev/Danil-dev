@@ -1,8 +1,9 @@
-﻿using D_Dev.CustomEventManager;
+﻿using D_Dev.Base;
+using D_Dev.CustomEventManager;
 using D_Dev.MenuHandler;
 using UnityEngine;
 
-namespace D_dev.Scripts.MenuHandler.Extensions.Actions
+namespace D_Dev.Scripts.MenuHandler.Extensions.Actions
 {
     [System.Serializable]
     public class OpenMenuInfoAction : BaseAction

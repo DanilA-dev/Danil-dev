@@ -1,7 +1,8 @@
+using D_Dev.Base;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace D_dev.Conditions
+namespace D_Dev.InputSystem.Extensions.Conditions
 {
     [System.Serializable]
     public class WaitInputCondition : ICondition

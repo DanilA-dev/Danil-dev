@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace D_dev.ActionGroup
+namespace D_Dev.Base
 {
     [System.Serializable]
     public class ActionGroup

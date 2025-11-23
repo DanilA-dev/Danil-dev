@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using D_Dev.Base;
 using D_Dev.ScriptableVaiables;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace D_dev.ActionsStateController.Base
+namespace D_Dev.ActionsStateController.Base
 {
     [System.Serializable]
     public class ActionState
@@ -29,10 +30,10 @@ namespace D_dev.ActionsStateController.Base
         public class StateActionPhase
         {
             [SerializeField] private ActionState.Phase _phase;
-            [SerializeReference] private ActionGroup.ActionGroup _group = new();
+            [SerializeReference] private ActionGroup _group = new();
 
             public ActionState.Phase Phase => _phase;
-            public ActionGroup.ActionGroup Group => _group;
+            public ActionGroup Group => _group;
             public bool IsComplete => _group != null && _group.IsAllActionsCompleted;
         }
 

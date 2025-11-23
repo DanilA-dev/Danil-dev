@@ -1,7 +1,7 @@
-using D_Dev.Mover;
+using D_Dev.Base;
 using UnityEngine;
 
-namespace D_dev.Actions
+namespace D_Dev.Mover.Extensions.Actions
 {
     [System.Serializable]
     public class TargetMovementAction : BaseAction
@@ -16,7 +16,7 @@ namespace D_dev.Actions
 
         #endregion
 
-        #region IAction
+        #region Overrides
 
         public override void Execute()
         {

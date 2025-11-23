@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using D_Dev.Base;
 using D_Dev.ScriptableVaiables;
 using UnityEngine;
 
-namespace D_dev.ActionsStateController.Base
+namespace D_Dev.ActionsStateController.Base
 {
     [System.Serializable]
     public class StateTransition

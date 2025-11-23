@@ -1,7 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine.Events;
 
-namespace D_dev
+namespace D_Dev.Base
 {
     [System.Serializable]
     public abstract class BaseAction

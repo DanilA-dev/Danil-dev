@@ -1,7 +1,8 @@
+using D_Dev.Base;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace D_dev.Actions
+namespace D_Dev.InputSystem.Extensions.Actions
 {
     [System.Serializable]
     public class InputToggleAction : BaseAction
@@ -13,7 +14,7 @@ namespace D_dev.Actions
 
         #endregion
 
-        #region IAction
+        #region Overrides
 
         public override void Execute()
         {

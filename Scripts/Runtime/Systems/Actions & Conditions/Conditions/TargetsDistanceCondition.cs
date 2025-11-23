@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using D_Dev.Base;
+using UnityEngine;
 
-namespace D_dev.Conditions
+namespace D_Dev.Conditions
 {
     [System.Serializable]
     public class TargetsDistanceCondition : ICondition

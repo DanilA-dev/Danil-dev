@@ -2,7 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace D_dev.InventorySystem
+namespace D_Dev.InventorySystem
 {
     [CreateAssetMenu(menuName = "D-Dev/Info/InventoryItemEntityInfo")]
     public class InventoryItemEntityInfo : EntityInfo

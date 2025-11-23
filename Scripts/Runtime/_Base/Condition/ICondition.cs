@@ -1,4 +1,4 @@
-namespace D_dev
+namespace D_Dev.Base
 {
     public interface ICondition
     {

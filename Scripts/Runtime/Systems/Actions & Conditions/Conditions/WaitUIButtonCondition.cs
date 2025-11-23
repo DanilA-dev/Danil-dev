@@ -1,7 +1,8 @@
+using D_Dev.Base;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace D_dev.Conditions
+namespace D_Dev.Conditions
 {
     [System.Serializable]
     public class WaitUIButtonCondition : ICondition

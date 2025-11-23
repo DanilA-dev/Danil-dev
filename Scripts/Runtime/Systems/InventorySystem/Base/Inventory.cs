@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace D_dev.InventorySystem
+namespace D_Dev.InventorySystem
 {
     public class Inventory : MonoBehaviour, IInventory
     {

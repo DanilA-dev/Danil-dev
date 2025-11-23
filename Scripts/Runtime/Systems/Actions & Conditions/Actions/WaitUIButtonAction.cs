@@ -1,7 +1,8 @@
+using D_Dev.Base;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace D_dev.Actions
+namespace D_Dev.Actions
 {
     [System.Serializable]
     public class WaitUIButtonAction : BaseAction

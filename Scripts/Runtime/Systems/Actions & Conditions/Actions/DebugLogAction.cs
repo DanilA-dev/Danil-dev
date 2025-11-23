@@ -1,7 +1,8 @@
 ﻿using System;
+using D_Dev.Base;
 using UnityEngine;
 
-namespace D_dev.Actions
+namespace D_Dev.Actions
 {
     [System.Serializable]
     public class DebugLogAction : BaseAction

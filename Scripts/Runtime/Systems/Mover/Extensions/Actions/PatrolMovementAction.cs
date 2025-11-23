@@ -1,8 +1,8 @@
-using D_Dev.Mover;
+using D_Dev.Base;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace D_dev.Actions
+namespace D_Dev.Mover.Extensions.Actions
 {
     #region Enums
 
@@ -31,7 +31,7 @@ namespace D_dev.Actions
         
         #endregion
 
-        #region IAction
+        #region Overrides
 
         public override void Execute()
         {

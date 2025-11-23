@@ -2,7 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace D_dev.TargetInfo
+namespace D_Dev.TargetInfo
 {
     #region Enums
 

@@ -1,7 +1,8 @@
-﻿using D_Dev.Raycaster;
+﻿using D_Dev.Base;
+using D_Dev.Raycaster;
 using UnityEngine;
 
-namespace D_dev.Conditions
+namespace D_Dev.Conditions
 {
     [System.Serializable]
     public class TargetCastBlockCondition : ICondition
