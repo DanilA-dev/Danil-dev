@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEditor;
@@ -12,10 +13,11 @@ namespace D_Dev
     {
         #region Const
 
-        private static readonly string UniTaskPackage = "com.cysharp.unitask";
-
-        private static readonly string UniTaskURL =
-            "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask";
+        private static readonly Dictionary<string, string> CustomPackages = new()
+        {
+            {"com.cysharp.unitask", "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"},
+            {"com.annulusgames.lit-motion","https://github.com/annulusgames/LitMotion.git?path=src/LitMotion/Assets/LitMotion"}
+        };
 
         #endregion
         
@@ -62,7 +64,8 @@ namespace D_Dev
         [MenuItem("Tools/D_Dev/Setup/Import Dependencies")]
         public static void ImportDependencies()
         {
-            AddPackageToManifest(UniTaskPackage, UniTaskURL);
+            foreach (var (packageName, packageURL) in CustomPackages)
+                AddPackageToManifest(packageName, packageURL);
         }
 
         [MenuItem("Tools/D_Dev/Open PersistentDataPath")]
@@ -102,10 +105,11 @@ namespace D_Dev
             var text = File.ReadAllText(manifest, Encoding.Default);
             if(text.Contains(package) || text.Contains(url))
                 return;
-            
-            var addedPackagePath = text.Replace("\"dependencies\": {", "\"dependencies\": {" + Environment.NewLine + " " +
-                                                                       '"' + package + '"'+ ":" + " " + '"' + url + '"' + ",");
+
+            var newPackageLine = ",\n    \"" + package + "\": \"" + url + "\"";
+            var addedPackagePath = text.Replace("\n  }\n}", newPackageLine + "\n  }\n}");
             File.WriteAllText(manifest, addedPackagePath, Encoding.Default);
+            AssetDatabase.Refresh();
         }
 
         #endregion
