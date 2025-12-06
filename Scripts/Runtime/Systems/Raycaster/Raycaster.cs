@@ -33,8 +33,8 @@ namespace D_Dev.Raycaster
         [SerializeField] private float _radius = 0.5f;
         [ShowIf("@this._castType == CastType.Box", Animate = false)]
         [SerializeField] private Vector3 _halfExtents = Vector3.one * 0.5f;
-        [SerializeField] private PositionConfig _origin;
-        [SerializeField] private PositionConfig _direction;
+        [SerializeReference] private BasePositionSettings _origin = new();
+        [SerializeReference] private BasePositionSettings _direction = new();
         [SerializeField] private QueryTriggerInteraction _queryTriggerInteraction;
         [Title("Collider checker")]
         [ValidateInput("@this._colliderChecker != null", "ColliderChecker cannot be null")]
@@ -51,13 +51,13 @@ namespace D_Dev.Raycaster
 
         #region Properties
 
-        public PositionConfig Origin
+        public BasePositionSettings Origin
         {
             get => _origin;
             set => _origin = value;
         }
 
-        public PositionConfig Direction
+        public BasePositionSettings Direction
         {
             get => _direction;
             set => _direction = value;
@@ -359,20 +359,6 @@ namespace D_Dev.Raycaster
         {
             if(!_drawGizmos)
                 return;
-            
-            if(_origin.Type == PositionConfig.PositionType.Transform 
-               || _origin.Type == PositionConfig.PositionType.TransformDirection)
-            {
-                if(_origin.Transform == null)
-                    return;
-            }
-
-            if (_direction.Type == PositionConfig.PositionType.Transform
-                || _direction.Type == PositionConfig.PositionType.TransformDirection)
-            {
-                if(_direction.Transform == null)
-                    return;
-            }
             
             Gizmos.color = _debugColor;
             var originPoint = _origin.GetPosition();

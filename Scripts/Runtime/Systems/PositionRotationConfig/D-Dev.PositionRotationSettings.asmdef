@@ -1,0 +1,17 @@
+{
+    "name": "D-Dev.PositionRotationSettings",
+    "rootNamespace": "",
+    "references": [
+        "D-Dev.ValueSystem",
+        "D-Dev.ScriptableVariables"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

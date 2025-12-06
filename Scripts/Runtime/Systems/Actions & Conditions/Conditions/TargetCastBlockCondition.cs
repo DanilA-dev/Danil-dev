@@ -1,4 +1,5 @@
 ﻿using D_Dev.Base;
+using D_Dev.PositionRotationConfig;
 using D_Dev.Raycaster;
 using UnityEngine;
 
@@ -9,8 +10,8 @@ namespace D_Dev.Conditions
     {
         #region Fields
 
-        [SerializeField] private TargetInfo.TargetInfo _from;
-        [SerializeField] private TargetInfo.TargetInfo _to;
+        [SerializeReference] private BasePositionSettings _from = new();
+        [SerializeReference] private BasePositionSettings _to  = new();
         [Space]
         [SerializeField] private Linecaster _linecaster;
         [SerializeField] private bool _inverse;
@@ -22,9 +23,9 @@ namespace D_Dev.Conditions
         public bool IsConditionMet()
         {
             if (!_inverse)
-                return _linecaster.IsIntersect(_from.GetTargetPosition(), _to.GetTargetPosition());
+                return _linecaster.IsIntersect(_from.GetPosition(), _to.GetPosition());
             else
-                return!_linecaster.IsIntersect(_from.GetTargetPosition(), _to.GetTargetPosition());
+                return!_linecaster.IsIntersect(_from.GetPosition(), _to.GetPosition());
         }
 
         public void Reset() {}

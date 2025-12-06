@@ -1,4 +1,5 @@
 ﻿using D_Dev.Base;
+using D_Dev.PositionRotationConfig;
 using UnityEngine;
 
 namespace D_Dev.Conditions
@@ -19,8 +20,8 @@ namespace D_Dev.Conditions
         #region Fields
 
         [SerializeField] private DistanceCheckType _checkType;
-        [SerializeField] private TargetInfo.TargetInfo _fromTarget;
-        [SerializeField] private TargetInfo.TargetInfo _toTarget;
+        [SerializeReference] private BasePositionSettings _fromTarget = new();
+        [SerializeReference] private BasePositionSettings _toTarget = new();
         [SerializeField] private float _distance;
 
         #endregion
@@ -30,9 +31,9 @@ namespace D_Dev.Conditions
         public bool IsConditionMet()
         {
             if(_checkType == DistanceCheckType.Less)
-                return Vector3.Distance(_fromTarget.GetTargetPosition(), _toTarget.GetTargetPosition()) <= _distance;
+                return Vector3.Distance(_fromTarget.GetPosition(), _toTarget.GetPosition()) <= _distance;
             else
-                return Vector3.Distance(_fromTarget.GetTargetPosition(), _toTarget.GetTargetPosition()) >= _distance;
+                return Vector3.Distance(_fromTarget.GetPosition(), _toTarget.GetPosition()) >= _distance;
         }
 
         public void Reset() {}

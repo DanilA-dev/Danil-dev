@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using D_Dev.ValueSystem;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,7 +9,7 @@ namespace D_Dev.Utility
     {
         #region Fields
 
-        [SerializeField, ReadOnly] private bool _value;
+        [SerializeField] private BoolValue _value;
         [Space]
         [FoldoutGroup("Events")]
         public UnityEvent OnTrue;
@@ -21,8 +22,8 @@ namespace D_Dev.Utility
 
         public void Invert()
         {
-            _value = !_value;
-            if (_value)
+            _value.Value = !_value.Value;
+            if (_value.Value)
                 OnTrue.Invoke();
             else
                 OnFalse.Invoke();

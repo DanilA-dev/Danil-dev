@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using D_Dev.Base;
+using D_Dev.PositionRotationConfig;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -23,7 +25,7 @@ namespace D_Dev.Mover.Extensions.Actions
         [SerializeReference] private IMoverStrategy _movement;
         [Space]
         [SerializeField] private PatrolMode _patrolMode;
-        [SerializeField] private TargetInfo.TargetInfo[] _patrolPoints;
+        [SerializeReference] private List<BasePositionSettings> _patrolPoints = new();
         [SerializeField] private float _speed;
         [SerializeField] private float _reachDistance;
         [SerializeField, ReadOnly] private int _currentIndex;
@@ -35,16 +37,16 @@ namespace D_Dev.Mover.Extensions.Actions
 
         public override void Execute()
         {
-            if (_movement == null || _patrolPoints.Length == 0)
+            if (_movement == null || _patrolPoints.Count == 0)
                 return;
 
-            var target = _patrolPoints[_currentIndex].GetTargetPosition();
+            var target = _patrolPoints[_currentIndex].GetPosition();
             _movement.MoveTowards(target, _speed, Time.deltaTime);
 
             if (_movement.IsAtPosition(target, _reachDistance))
                 MoveToNextPoint();
             
-            if(_currentIndex == _patrolPoints.Length - 1)
+            if(_currentIndex == _patrolPoints.Count - 1)
                 IsFinished = true;
         }
 
@@ -57,7 +59,7 @@ namespace D_Dev.Mover.Extensions.Actions
             switch (_patrolMode)
             {
                 case PatrolMode.Loop:
-                    _currentIndex = (_currentIndex + 1) % _patrolPoints.Length;
+                    _currentIndex = (_currentIndex + 1) % _patrolPoints.Count;
                     break;
                 case PatrolMode.PingPong:
                     if (_isReversing)
@@ -72,9 +74,9 @@ namespace D_Dev.Mover.Extensions.Actions
                     else
                     {
                         _currentIndex++;
-                        if (_currentIndex >= _patrolPoints.Length)
+                        if (_currentIndex >= _patrolPoints.Count)
                         {
-                            _currentIndex = _patrolPoints.Length - 2;
+                            _currentIndex = _patrolPoints.Count - 2;
                             _isReversing = true;
                         }
                     }

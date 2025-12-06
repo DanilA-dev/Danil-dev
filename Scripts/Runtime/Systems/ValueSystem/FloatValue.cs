@@ -1,13 +1,15 @@
-﻿using UnityEngine;
+﻿using D_Dev.ScriptableVaiables;
+using D_Dev.ValueSystem.RandomMethods;
+using UnityEngine;
 
 namespace D_Dev.ValueSystem
 {
     [System.Serializable]
-    public class FloatValue : BaseValue<float>
+    public class FloatValue : BaseValue<float, FloatScriptableVariable,FloatRandomValueMethod>
     {
         public override float Value
         {
-            get => _value;
+            get => base.Value;
             set
             {
                 _value = Mathf.Clamp(value, 0, Mathf.Infinity);

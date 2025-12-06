@@ -1,5 +1,4 @@
-﻿using D_Dev.ScriptableVaiables;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 

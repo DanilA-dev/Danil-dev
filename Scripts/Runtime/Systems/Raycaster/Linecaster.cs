@@ -1,4 +1,5 @@
 ﻿using D_Dev.PositionRotationConfig;
+using D_Dev.PositionRotationConfig.RotationSettings;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -9,9 +10,9 @@ namespace D_Dev.Raycaster
     {
         #region Fields
 
-        [Title("Ray settings")]
-        [SerializeField] private PositionConfig _origin;
-        [SerializeField] private PositionConfig _direction;
+        [Title("Ray settings")] 
+        [SerializeReference] private BasePositionSettings _origin = new();
+        [SerializeReference] private BasePositionSettings _direction = new();
         [SerializeField] private QueryTriggerInteraction _queryTriggerInteraction;
         [Title("Collider checker")]
         [SerializeField] private ColliderChecker.ColliderChecker _colliderChecker;
@@ -23,13 +24,13 @@ namespace D_Dev.Raycaster
         
         #region Properties
 
-        public PositionConfig Origin
+        public BasePositionSettings Origin
         {
             get => _origin;
             set => _origin = value;
         }
 
-        public PositionConfig Direction
+        public BasePositionSettings Direction
         {
             get => _direction;
             set => _direction = value;
@@ -64,16 +65,9 @@ namespace D_Dev.Raycaster
             if(!_drawGizmos)
                 return;
             
-            if(_origin.Type == PositionConfig.PositionType.Transform 
-               || _origin.Type == PositionConfig.PositionType.TransformDirection && _origin.Transform == null)
-                return;
-            
-            if(_direction.Type == PositionConfig.PositionType.Transform 
-               || _direction.Type == PositionConfig.PositionType.TransformDirection && _direction.Transform == null)
-                return;
-            
             var originPoint = _origin.GetPosition();
             var directionVector = _direction.GetPosition();
+            
             Gizmos.color = _debugColor;
             Gizmos.DrawRay(originPoint, directionVector);
         }

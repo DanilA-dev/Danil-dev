@@ -1,5 +1,4 @@
 #if UNITY_EDITOR
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -16,7 +15,6 @@ namespace D_Dev
         private static readonly Dictionary<string, string> CustomPackages = new()
         {
             {"com.cysharp.unitask", "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"},
-            {"com.annulusgames.lit-motion","https://github.com/annulusgames/LitMotion.git?path=src/LitMotion/Assets/LitMotion"}
         };
 
         #endregion

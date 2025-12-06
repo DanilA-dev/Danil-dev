@@ -1,4 +1,5 @@
 using D_Dev.Base;
+using D_Dev.PositionRotationConfig;
 using UnityEngine;
 
 namespace D_Dev.Actions
@@ -22,21 +23,21 @@ namespace D_Dev.Actions
 
         [SerializeField] private Transform _transformToRotate;
         [Space]
-        [SerializeField] private TargetInfo.TargetInfo _target;
+        [SerializeReference] private BasePositionSettings _target = new();
         [SerializeField] private RotationAxis _rotationAxis = RotationAxis.All;
         [SerializeField] private float _rotationSpeed = 180f;
         [SerializeField] private float _angleThreshold = 1f;
 
         #endregion
 
-        #region IAction
+        #region Overrides
         
         public override void Execute()
         {
             if (_transformToRotate == null)
                 return;
 
-            Vector3 targetPosition = _target.GetTargetPosition();
+            Vector3 targetPosition = _target.GetPosition();
             Vector3 direction = targetPosition - _transformToRotate.position;
 
             if (direction == Vector3.zero)
@@ -57,7 +58,7 @@ namespace D_Dev.Actions
             if (_transformToRotate == null)
                 return true;
 
-            Vector3 targetPosition = _target.GetTargetPosition();
+            Vector3 targetPosition = _target.GetPosition();
             Vector3 direction = targetPosition - _transformToRotate.position;
 
             if (direction == Vector3.zero)

@@ -1,4 +1,5 @@
 using D_Dev.Base;
+using D_Dev.PositionRotationConfig;
 using UnityEngine;
 
 namespace D_Dev.Mover.Extensions.Actions
@@ -10,7 +11,7 @@ namespace D_Dev.Mover.Extensions.Actions
 
         [SerializeReference] private IMoverStrategy _movement;
         [Space]
-        [SerializeField] private TargetInfo.TargetInfo _target;
+        [SerializeReference] private BasePositionSettings _target = new();
         [SerializeField] private float _speed;
         [SerializeField] private float _reachDistance;
 
@@ -23,7 +24,7 @@ namespace D_Dev.Mover.Extensions.Actions
             if (_movement == null)
                 return;
 
-            var target = _target.GetTargetPosition();
+            var target = _target.GetPosition();
             _movement.MoveTowards(target, _speed, Time.deltaTime);
             if (_movement.IsAtPosition(target, _reachDistance))
                 IsFinished = true;
