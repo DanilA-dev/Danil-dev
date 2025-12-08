@@ -20,11 +20,19 @@ namespace D_Dev.TweenAnimations.Types
             Transform
         }
 
+        public enum MoveMotionType
+        {
+            None = 0,
+            Shake = 1,
+            Punch = 2
+        }
+
         #endregion
 
         #region Fields
 
         [SerializeField] private MoveObjectType _moveObjectType;
+        [SerializeField] private MoveMotionType _moveMotionType;
         [SerializeField] private Transform _movedObject;
         [SerializeField] private bool _useInitialPositionAsStart;
         [ShowIf("@!_useInitialPositionAsStart && this._moveObjectType == MoveObjectType.Transform")]
@@ -35,6 +43,20 @@ namespace D_Dev.TweenAnimations.Types
         [SerializeField] private Vector3 _positionStart;
         [ShowIf("@this._moveObjectType != MoveObjectType.Transform")]
         [SerializeField] private Vector3 _positionEnd;
+        [ShowIf(nameof(_moveMotionType), MoveMotionType.Shake)]
+        [SerializeField] private Vector3 _shakeStrength = Vector3.one;
+        [ShowIf(nameof(_moveMotionType), MoveMotionType.Shake)]
+        [SerializeField] private int _vibratoShake = 10;
+        [ShowIf(nameof(_moveMotionType), MoveMotionType.Shake)]
+        [SerializeField] private float _randomnessShake = 90f;
+        [ShowIf(nameof(_moveMotionType), MoveMotionType.Shake)]
+        [SerializeField] private bool _fadeOutShake = true;
+        [ShowIf(nameof(_moveMotionType), MoveMotionType.Punch)]
+        [SerializeField] private Vector3 _punch = Vector3.one;
+        [ShowIf(nameof(_moveMotionType), MoveMotionType.Punch)]
+        [SerializeField] private int _vibratoPunch = 10;
+        [ShowIf(nameof(_moveMotionType), MoveMotionType.Punch)]
+        [SerializeField] private float _elasticityPunch = 1f;
 
         private Vector3 _initialStartPos;
 
@@ -46,6 +68,12 @@ namespace D_Dev.TweenAnimations.Types
         {
             get => _moveObjectType;
             set => _moveObjectType = value;
+        }
+
+        public MoveMotionType MotionType
+        {
+            get => _moveMotionType;
+            set => _moveMotionType = value;
         }
 
         public Transform MovedObject
@@ -84,30 +112,64 @@ namespace D_Dev.TweenAnimations.Types
             set => _positionEnd = value;
         }
 
+        public Vector3 ShakeStrength
+        {
+            get => _shakeStrength;
+            set => _shakeStrength = value;
+        }
+
+        public int VibratoShake
+        {
+            get => _vibratoShake;
+            set => _vibratoShake = value;
+        }
+
+        public float RandomnessShake
+        {
+            get => _randomnessShake;
+            set => _randomnessShake = value;
+        }
+
+        public bool FadeOutShake
+        {
+            get => _fadeOutShake;
+            set => _fadeOutShake = value;
+        }
+
+        public Vector3 Punch
+        {
+            get => _punch;
+            set => _punch = value;
+        }
+
+        public int VibratoPunch
+        {
+            get => _vibratoPunch;
+            set => _vibratoPunch = value;
+        }
+
+        public float ElasticityPunch
+        {
+            get => _elasticityPunch;
+            set => _elasticityPunch = value;
+        }
+
         #endregion
 
         #region Override
 
         public override Tween Play()
         {
-            RectTransform rect = _movedObject.GetComponent<RectTransform>();
-            _initialStartPos = rect ? rect.anchoredPosition : _movedObject.position;
-            switch (_moveObjectType)
+            switch (_moveMotionType)
             {
-                case MoveObjectType.Vector:
-                    Tween = VectorWorldTween();
+                case MoveMotionType.None:
+                    Tween = PlayMoveTween();
                     break;
-                case MoveObjectType.Transform:
-                    Tween = TransfromTween();
+                case MoveMotionType.Shake:
+                    Tween = _movedObject.DOShakePosition(Duration, _shakeStrength, _vibratoShake, _randomnessShake, _fadeOutShake);
                     break;
-                case MoveObjectType.X:
-                    Tween = XTween();
-                    break;
-                case MoveObjectType.Y:
-                    Tween = YTween();
-                    break;
-                case MoveObjectType.Z:
-                    Tween = ZTween();
+                case MoveMotionType.Punch:
+                    Tween = _movedObject.DOPunchPosition(_punch, Duration, _vibratoPunch, _elasticityPunch);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -118,6 +180,27 @@ namespace D_Dev.TweenAnimations.Types
         #endregion
 
         #region Private
+
+        private Tween PlayMoveTween()
+        {
+            RectTransform rect = _movedObject.GetComponent<RectTransform>();
+            _initialStartPos = rect ? rect.anchoredPosition : _movedObject.position;
+            switch (_moveObjectType)
+            {
+                case MoveObjectType.Vector:
+                    return VectorWorldTween();
+                case MoveObjectType.Transform:
+                    return TransfromTween();
+                case MoveObjectType.X:
+                    return XTween();
+                case MoveObjectType.Y:
+                    return YTween();
+                case MoveObjectType.Z:
+                    return ZTween();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
         private Tween TransfromTween()
         {

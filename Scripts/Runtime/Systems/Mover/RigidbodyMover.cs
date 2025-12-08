@@ -26,8 +26,6 @@ namespace D_Dev.Mover
         #endregion
 
         #region Properties
-
-        public bool IsPhysicsBased => true;
         public RigidbodyMoverType MoveType { get => _moveType; set => _moveType = value; }
 
         #endregion

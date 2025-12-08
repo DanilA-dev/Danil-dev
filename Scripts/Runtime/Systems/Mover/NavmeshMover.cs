@@ -12,12 +12,6 @@ namespace D_Dev.Mover
         
         #endregion
 
-        #region Properties
-
-        public bool IsPhysicsBased => false;
-
-        #endregion
-        
         #region Public
 
         public Vector3 GetCurrentPosition() => _owner.transform.position;

@@ -27,6 +27,7 @@ namespace D_Dev.TweenAnimations
         
         public event Action OnStart;
         public event Action OnComplete;
+        
         #endregion
 
         #region Public
