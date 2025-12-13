@@ -1,5 +1,4 @@
 ﻿using System;
-using D_Dev.ValueSystem;
 using UnityEngine;
 
 namespace D_Dev.PositionRotationConfig.RotationSettings
@@ -9,7 +8,7 @@ namespace D_Dev.PositionRotationConfig.RotationSettings
     {
         #region Fields
 
-        [SerializeField] private TransformValue _value;
+        [SerializeField] private Transform _value;
         [SerializeField] private bool _isLocal;
 
         #endregion
@@ -17,8 +16,8 @@ namespace D_Dev.PositionRotationConfig.RotationSettings
         #region Overrides
 
         public override Quaternion GetRotation() => _isLocal 
-            ? _value.Value.localRotation 
-            : _value.Value.rotation;
+            ? _value.localRotation 
+            : _value.rotation;
 
         #endregion
     }

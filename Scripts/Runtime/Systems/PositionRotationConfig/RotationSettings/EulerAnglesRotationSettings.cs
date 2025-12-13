@@ -1,5 +1,4 @@
 ﻿using System;
-using D_Dev.ValueSystem;
 using UnityEngine;
 
 namespace D_Dev.PositionRotationConfig.RotationSettings
@@ -9,13 +8,13 @@ namespace D_Dev.PositionRotationConfig.RotationSettings
     {
         #region Fields
 
-        [SerializeField] private Vector3Value _value;
+        [SerializeField] private Vector3 _value;
 
         #endregion
 
         #region Overrides
 
-        public override Quaternion GetRotation() => Quaternion.Euler(_value.Value);
+        public override Quaternion GetRotation() => Quaternion.Euler(_value);
 
         #endregion
     }

@@ -1,5 +1,4 @@
 ﻿using System;
-using D_Dev.ValueSystem;
 using UnityEngine;
 
 namespace D_Dev.PositionRotationConfig
@@ -23,7 +22,7 @@ namespace D_Dev.PositionRotationConfig
         
         #region Fields
 
-        [SerializeField] private TransformValue _value;
+        [SerializeField] private Transform _value;
         [SerializeField] private LocalDirection _direction;
 
         #endregion
@@ -34,12 +33,12 @@ namespace D_Dev.PositionRotationConfig
         {
             return _direction switch
             {
-                LocalDirection.Up => _value.Value.up,
-                LocalDirection.Down => -_value.Value.up,
-                LocalDirection.Right => _value.Value.right,
-                LocalDirection.Left => -_value.Value.right,
-                LocalDirection.Forward => _value.Value.forward,
-                LocalDirection.Back => -_value.Value.forward,
+                LocalDirection.Up => _value.up,
+                LocalDirection.Down => -_value.up,
+                LocalDirection.Right => _value.right,
+                LocalDirection.Left => -_value.right,
+                LocalDirection.Forward => _value.forward,
+                LocalDirection.Back => -_value.forward,
                 _ => throw new ArgumentOutOfRangeException()
             };
         }

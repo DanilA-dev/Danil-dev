@@ -1,5 +1,4 @@
 ﻿using D_Dev.PositionRotationConfig;
-using D_Dev.PositionRotationConfig.RotationSettings;
 using Sirenix.OdinInspector;
 using UnityEngine;
 

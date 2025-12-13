@@ -2,8 +2,8 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
-#if DOTWEEN
 using System.Collections.Generic;
+#if DOTWEEN
 using DG.Tweening;
 using D_Dev.TweenAnimations.Types;
 #endif

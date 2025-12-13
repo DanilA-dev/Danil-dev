@@ -1,5 +1,5 @@
 using Cinemachine;
-using D_Dev.ValueSystem;
+using D_Dev.ScriptableVaiables;
 using UnityEngine;
 
 namespace D_Dev.Utility
@@ -9,7 +9,7 @@ namespace D_Dev.Utility
         #region Fields
 
         [SerializeField] private CinemachineVirtualCamera _camera;
-        [SerializeField] private GameObjectValue _target;
+        [SerializeField] private TransformScriptableVariable _target;
         [Space]
         [SerializeField] private bool _isFollow;
         [SerializeField] private bool _isLookAt;
@@ -18,17 +18,17 @@ namespace D_Dev.Utility
 
         #region MonoBehaviour
 
-        private void Awake() => _target.OnValueChanged += SetTarget;
-        private void OnDestroy() => _target.OnValueChanged -= SetTarget;
+        private void Awake() => _target.OnValueUpdate += SetTarget;
+        private void OnDestroy() => _target.OnValueUpdate -= SetTarget;
 
         #endregion
 
         #region Listeners
 
-        private void SetTarget(GameObject target)
+        private void SetTarget(Transform target)
         {
-            _camera.Follow = _isFollow ? target.transform : null;
-            _camera.LookAt = _isLookAt ? target.transform : null;
+            _camera.Follow = _isFollow ? target : null;
+            _camera.LookAt = _isLookAt ? target : null;
         }
 
         #endregion
