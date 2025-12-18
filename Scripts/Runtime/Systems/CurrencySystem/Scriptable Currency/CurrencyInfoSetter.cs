@@ -20,7 +20,7 @@ namespace D_Dev.CurrencySystem
         #region Fields
 
         [SerializeField] private CurrencyInfo _currencyInfo;
-        [SerializeField] private int _amount;
+        [SerializeField] private decimal _amount;
         [SerializeField] private bool _setOnEnable;
         [ShowIf("_setOnEnable")]
         [SerializeField] private StartCurrencySetAction _startCurrencySetAction;
@@ -58,7 +58,7 @@ namespace D_Dev.CurrencySystem
 
         public void TrySet() => TrySetValue(_amount);
 
-        public bool TryDepositValue(int amount)
+        public bool TryDepositValue(decimal amount)
         {
             if (_currencyInfo != null && _currencyInfo.Currency.TryDeposit(amount))
             {
@@ -68,8 +68,8 @@ namespace D_Dev.CurrencySystem
             OnDepositFailed?.Invoke();
             return false;
         }
-        
-        public bool TryWithdrawValue(int amount)
+
+        public bool TryWithdrawValue(decimal amount)
         {
             if (_currencyInfo != null && _currencyInfo.Currency.TryWithdraw(amount))
             {
@@ -79,8 +79,8 @@ namespace D_Dev.CurrencySystem
             OnWithdrawFailed?.Invoke();
             return false;
         }
-        
-        public bool TrySetValue(int amount)
+
+        public bool TrySetValue(decimal amount)
         {
             if (_currencyInfo != null && _currencyInfo.Currency.TrySet(amount))
             {

@@ -47,7 +47,7 @@ namespace D_Dev.CurrencySystem
         
         [Title("Value comparison")]
         [ShowIf("@_comparisonType == ComparisonType.WithValue")]
-        [SerializeField] private int _valueToCompare;
+        [SerializeField] private decimal _valueToCompare;
         
         [Title("Currency comparison")]
         [ShowIf("@_comparisonType == ComparisonType.WithCurrencyItem")]
@@ -71,7 +71,7 @@ namespace D_Dev.CurrencySystem
         
         public CurrencyInfo CurrencyToCheck => _currencyToCheck;
         public ComparisonType CurrentComparisonType => _comparisonType;
-        public int ValueToCompare => _valueToCompare;
+        public decimal ValueToCompare => _valueToCompare;
         public CurrencyInfo OtherCurrencyItem => _otherCurrencyItem;
         
         #endregion
@@ -110,7 +110,7 @@ namespace D_Dev.CurrencySystem
             }
         }
        
-        public void CompareWithValue(int numberToCompare)
+        public void CompareWithValue(decimal numberToCompare)
         {
             _valueToCompare = numberToCompare;
             CompareWithValue();
@@ -133,11 +133,11 @@ namespace D_Dev.CurrencySystem
                 Debug.LogError("[CurrencyCompareEvents] CurrencyToCheck is null!");
                 return;
             }
-            
-            int currentValue = _currencyToCheck.Currency.Value;
-            int compareValue = _valueToCompare;
-            
-            PerformComparison(currentValue, compareValue, _valueComparisonEvents, 
+
+            decimal currentValue = _currencyToCheck.Currency.Value;
+            decimal compareValue = _valueToCompare;
+
+            PerformComparison(currentValue, compareValue, _valueComparisonEvents,
                 _currencyToCheck.name, compareValue.ToString());
         }
         
@@ -148,17 +148,17 @@ namespace D_Dev.CurrencySystem
                 Debug.LogError("[CurrencyCompareEvents] CurrencyToCheck is null!");
                 return;
             }
-            
+
             if (!_currencyToCheck.Currency.HasMaxValue)
             {
                 Debug.Log($"[CurrencyCompareEvents] {_currencyToCheck.name} не имеет максимального значения!");
                 return;
             }
-            
-            int currentValue = _currencyToCheck.Currency.Value;
-            int maxValue = _currencyToCheck.Currency.MaxValue;
-            
-            PerformComparison(currentValue, maxValue, _maxValueComparisonEvents, 
+
+            decimal currentValue = _currencyToCheck.Currency.Value;
+            decimal maxValue = _currencyToCheck.Currency.MaxValue;
+
+            PerformComparison(currentValue, maxValue, _maxValueComparisonEvents,
                 _currencyToCheck.name, $"MaxValue ({maxValue})");
         }
         
@@ -169,21 +169,21 @@ namespace D_Dev.CurrencySystem
                 Debug.LogError("[CurrencyCompareEvents] CurrencyToCheck is null!");
                 return;
             }
-            
+
             if (_otherCurrencyItem == null)
             {
                 Debug.LogError("[CurrencyCompareEvents] OtherCurrencyItem is null!");
                 return;
             }
-            
-            int currentValue = _currencyToCheck.Currency.Value;
-            int otherValue = _otherCurrencyItem.Currency.Value;
-            
-            PerformComparison(currentValue, otherValue, _currencyComparisonEvents, 
+
+            decimal currentValue = _currencyToCheck.Currency.Value;
+            decimal otherValue = _otherCurrencyItem.Currency.Value;
+
+            PerformComparison(currentValue, otherValue, _currencyComparisonEvents,
                 _currencyToCheck.name, $"{_otherCurrencyItem.name} ({otherValue})");
         }
         
-        private void PerformComparison(int currentValue, int compareValue, ComparisonEvents events, 
+        private void PerformComparison(decimal currentValue, decimal compareValue, ComparisonEvents events,
             string currentName, string compareName)
         {
             if (currentValue < compareValue)
@@ -201,13 +201,13 @@ namespace D_Dev.CurrencySystem
                 Debug.Log($"[CurrencyCompareEvents] {currentName} ({currentValue}) > {compareName}");
                 events.OnGreaterThan?.Invoke();
             }
-            
+
             if (currentValue <= compareValue)
             {
                 Debug.Log($"[CurrencyCompareEvents] {currentName} ({currentValue}) <= {compareName}");
                 events.OnLessOrEqualTo?.Invoke();
             }
-            
+
             if (currentValue >= compareValue)
             {
                 Debug.Log($"[CurrencyCompareEvents] {currentName} ({currentValue}) >= {compareName}");

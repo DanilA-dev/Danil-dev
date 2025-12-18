@@ -39,7 +39,7 @@ namespace D_Dev.CurrencySystem
         [FoldoutGroup("Events")]
         [SerializeField] private UnityEvent _onWithdrawFailed;
         
-        private int _currentDisplayValue;
+        private decimal _currentDisplayValue;
         private Coroutine _animationCoroutine;
 
         #endregion
@@ -119,7 +119,7 @@ namespace D_Dev.CurrencySystem
             }
         }
         
-        public void DisplayCurrencyValue(int value)
+        public void DisplayCurrencyValue(decimal value)
         {
             if (!_useAnimation)
             {
@@ -130,7 +130,7 @@ namespace D_Dev.CurrencySystem
             {
                 if (_animationCoroutine != null)
                     StopCoroutine(_animationCoroutine);
-                
+
                 _animationCoroutine = StartCoroutine(AnimateCurrencyCoroutine(value));
             }
         }
@@ -139,8 +139,9 @@ namespace D_Dev.CurrencySystem
 
         #region Listeners
 
-        private void UpdateCurrency(Currency.CurrencyEvent currencyEvent, int currencyValue)
+        private void UpdateCurrency(Currency.CurrencyEvent currencyEvent, long currencyValueInCents)
         {
+            decimal currencyValue = (decimal)currencyValueInCents / 100m;
             if (!_useAnimation)
             {
                 InvokeCurrencyUpdateEvent(currencyValue);
@@ -150,10 +151,10 @@ namespace D_Dev.CurrencySystem
             {
                 if (_animationCoroutine != null)
                     StopCoroutine(_animationCoroutine);
-                
+
                 _animationCoroutine = StartCoroutine(AnimateCurrencyCoroutine(currencyValue));
             }
-            
+
             switch (currencyEvent.ActionType)
             {
                 case Currency.CurrencyActionType.Deposit:
@@ -162,7 +163,7 @@ namespace D_Dev.CurrencySystem
                     else
                         _onDepositFailed?.Invoke();
                     break;
-                    
+
                 case Currency.CurrencyActionType.Withdraw:
                     if (currencyEvent.IsSuccess)
                         _onWithdrawSuccess?.Invoke();
@@ -175,34 +176,34 @@ namespace D_Dev.CurrencySystem
         #endregion
 
         #region Private
-        private void InvokeCurrencyUpdateEvent(int currencyValue)
+        private void InvokeCurrencyUpdateEvent(decimal currencyValue)
         {
             _onCurrencyUpdate?.Invoke(currencyValue.ToString(_format, System.Globalization.CultureInfo.GetCultureInfo(_cultureInfo)));
         }
         
-        private IEnumerator AnimateCurrencyCoroutine(int targetValue, float? customDuration = null, AnimationCurve customCurve = null)
+        private IEnumerator AnimateCurrencyCoroutine(decimal targetValue, float? customDuration = null, AnimationCurve customCurve = null)
         {
-            int startValue = _currentDisplayValue;
+            decimal startValue = _currentDisplayValue;
             float duration = customDuration ?? _animationSettings.AnimationDuration;
             AnimationCurve curve = customCurve ?? _animationSettings.AnimationCurve;
-            
+
             float elapsedTime = 0f;
-            
+
             while (elapsedTime < duration)
             {
                 elapsedTime += Time.deltaTime;
                 float progress = elapsedTime / duration;
-                
+
                 float curveValue = curve.Evaluate(progress);
-                
-                int currentValue = Mathf.RoundToInt(Mathf.Lerp(startValue, targetValue, curveValue));
-                
+
+                decimal currentValue = (decimal)Mathf.Lerp((float)startValue, (float)targetValue, curveValue);
+
                 _currentDisplayValue = currentValue;
                 InvokeCurrencyUpdateEvent(currentValue);
-                
+
                 yield return null;
             }
-            
+
             _currentDisplayValue = targetValue;
             InvokeCurrencyUpdateEvent(targetValue);
             _animationCoroutine = null;

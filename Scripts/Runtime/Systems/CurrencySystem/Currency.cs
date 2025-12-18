@@ -32,55 +32,56 @@ namespace D_Dev.CurrencySystem
 
         [SerializeField] private string _name;
         [Space]
-        [SerializeField, ReadOnly] private int _value;
-        [SerializeField] private int _defaultValue;
+        [SerializeField, ReadOnly] private long _value;
+        [SerializeField] private long _defaultValue;
         [SerializeField] private bool _hasMaxValue;
         [ShowIf(nameof(_hasMaxValue))]
-        [SerializeField] private int _maxValue;
+        [SerializeField] private long _maxValue;
 
-        public event Action<CurrencyEvent,int> OnCurrencyUpdate;
+        public event Action<CurrencyEvent,long> OnCurrencyUpdate;
             
         #endregion
 
         #region Properties
-        public int Value => _value;
+        public decimal Value => (decimal)_value / 100m;
 
         public bool HasMaxValue
         {
             get => _hasMaxValue;
             set => _hasMaxValue = value;
         }
-   
 
-        public int MaxValue
+
+        public decimal MaxValue
         {
-            get => _maxValue;
-            set => _maxValue = value;
+            get => (decimal)_maxValue / 100m;
+            set => _maxValue = (long)(value * 100m);
         }
 
-        public int DefaultValue
+        public decimal DefaultValue
         {
-            get => _defaultValue;
-            set => _defaultValue = value;
+            get => (decimal)_defaultValue / 100m;
+            set => _defaultValue = (long)(value * 100m);
         }
 
         #endregion
 
         #region Constructors
 
-        public Currency(string name, int initialValue)
+        public Currency(string name, decimal initialValue)
         {
             _name = name;
-            _value = initialValue;
+            _value = (long)(initialValue * 100m);
         }
 
         #endregion
         
         #region Public
 
-        public bool TryDeposit(int depositValue)
+        public bool TryDeposit(decimal depositValue)
         {
-            if (depositValue <= 0 || _hasMaxValue && _value >= MaxValue)
+            long depositInCents = (long)(depositValue * 100m);
+            if (depositValue <= 0 || _hasMaxValue && _value >= _maxValue)
             {
                 OnCurrencyUpdate?.Invoke(new CurrencyEvent
                 {
@@ -90,21 +91,22 @@ namespace D_Dev.CurrencySystem
                 Debug.Log($"[Currency : <color=pink>{_name}</color>] Deposit - {depositValue}, <color=red> Failed </color>");
                 return false;
             }
-            
-            var newValue = _value + depositValue;
-            if (_hasMaxValue && newValue >= MaxValue)
-                _value = MaxValue;
+
+            var newValue = _value + depositInCents;
+            if (_hasMaxValue && newValue >= _maxValue)
+                _value = _maxValue;
             else
-                _value += depositValue;
-            
+                _value += depositInCents;
+
             OnCurrencyUpdate?.Invoke(new CurrencyEvent{ActionType = CurrencyActionType.Deposit, IsSuccess = true }, _value);
             Debug.Log($"[Currency : <color=pink>{_name}</color>] Deposit - {depositValue}, <color=green> Success </color>");
             return true;
         }
 
-        public bool TryWithdraw(int withdrawValue)
+        public bool TryWithdraw(decimal withdrawValue)
         {
-            if (withdrawValue <= 0 || _value < withdrawValue)
+            long withdrawInCents = (long)(withdrawValue * 100m);
+            if (withdrawValue <= 0 || _value < withdrawInCents)
             {
                 OnCurrencyUpdate?.Invoke(new CurrencyEvent
                 {
@@ -113,16 +115,17 @@ namespace D_Dev.CurrencySystem
                 Debug.Log($"[Currency : <color=pink>{_name}</color>] Withdraw - {withdrawValue}, <color=red> Failed </color>");
                 return false;
             }
-            
-            _value -= withdrawValue;
+
+            _value -= withdrawInCents;
             OnCurrencyUpdate?.Invoke(new CurrencyEvent{ActionType = CurrencyActionType.Withdraw, IsSuccess = true }, _value);
             Debug.Log($"[Currency : <color=pink>{_name}</color>] Withdraw - {withdrawValue}, <color=green> Success </color>");
             return true;
         }
 
-        public bool TrySet(int value)
+        public bool TrySet(decimal value)
         {
-            if (value < 0 || _hasMaxValue && value >= MaxValue)
+            long setInCents = (long)(value * 100m);
+            if (value < 0 || _hasMaxValue && setInCents >= _maxValue)
             {
                 OnCurrencyUpdate?.Invoke(new CurrencyEvent
                 {
@@ -131,8 +134,8 @@ namespace D_Dev.CurrencySystem
                 Debug.Log($"[Currency : <color=pink>{_name}</color>] Set value - {value}, <color=red> Failed </color>");
                 return false;
             }
-            
-            _value = value;
+
+            _value = setInCents;
             OnCurrencyUpdate?.Invoke(new CurrencyEvent{ActionType = CurrencyActionType.Set, IsSuccess = true }, _value);
             Debug.Log($"[Currency : <color=pink>{_name}</color>] Set value - {value}, <color=green> Success </color>");
             return true;
