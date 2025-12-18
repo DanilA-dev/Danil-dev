@@ -2,5 +2,5 @@
 
 namespace D_Dev.ScriptableVaiables.Listeners
 {
-    public class Vector2ScriptableVariableListener : BaseScriptableVariableListener<Vector2> {}
+    public class Vector2ScriptableVariableListener : BaseScriptableVariableListener<Vector2,Vector2ScriptableVariable> {}
 }

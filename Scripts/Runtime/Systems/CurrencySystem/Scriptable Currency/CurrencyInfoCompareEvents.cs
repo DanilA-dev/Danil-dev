@@ -47,7 +47,7 @@ namespace D_Dev.CurrencySystem
         
         [Title("Value comparison")]
         [ShowIf("@_comparisonType == ComparisonType.WithValue")]
-        [SerializeField] private decimal _valueToCompare;
+        [SerializeField] private long _valueToCompare;
         
         [Title("Currency comparison")]
         [ShowIf("@_comparisonType == ComparisonType.WithCurrencyItem")]
@@ -71,7 +71,7 @@ namespace D_Dev.CurrencySystem
         
         public CurrencyInfo CurrencyToCheck => _currencyToCheck;
         public ComparisonType CurrentComparisonType => _comparisonType;
-        public decimal ValueToCompare => _valueToCompare;
+        public long ValueToCompare => _valueToCompare;
         public CurrencyInfo OtherCurrencyItem => _otherCurrencyItem;
         
         #endregion
@@ -110,7 +110,7 @@ namespace D_Dev.CurrencySystem
             }
         }
        
-        public void CompareWithValue(decimal numberToCompare)
+        public void CompareWithValue(long numberToCompare)
         {
             _valueToCompare = numberToCompare;
             CompareWithValue();
@@ -134,13 +134,13 @@ namespace D_Dev.CurrencySystem
                 return;
             }
 
-            decimal currentValue = _currencyToCheck.Currency.Value;
-            decimal compareValue = _valueToCompare;
+            long currentValue = _currencyToCheck.Currency.Value;
+            long compareValue = _valueToCompare;
 
             PerformComparison(currentValue, compareValue, _valueComparisonEvents,
                 _currencyToCheck.name, compareValue.ToString());
         }
-        
+
         private void CompareWithMaxValue()
         {
             if (_currencyToCheck == null)
@@ -155,13 +155,13 @@ namespace D_Dev.CurrencySystem
                 return;
             }
 
-            decimal currentValue = _currencyToCheck.Currency.Value;
-            decimal maxValue = _currencyToCheck.Currency.MaxValue;
+            long currentValue = _currencyToCheck.Currency.Value;
+            long maxValue = _currencyToCheck.Currency.MaxValue;
 
             PerformComparison(currentValue, maxValue, _maxValueComparisonEvents,
                 _currencyToCheck.name, $"MaxValue ({maxValue})");
         }
-        
+
         private void CompareWithCurrencyItem()
         {
             if (_currencyToCheck == null)
@@ -176,14 +176,14 @@ namespace D_Dev.CurrencySystem
                 return;
             }
 
-            decimal currentValue = _currencyToCheck.Currency.Value;
-            decimal otherValue = _otherCurrencyItem.Currency.Value;
+            long currentValue = _currencyToCheck.Currency.Value;
+            long otherValue = _otherCurrencyItem.Currency.Value;
 
             PerformComparison(currentValue, otherValue, _currencyComparisonEvents,
                 _currencyToCheck.name, $"{_otherCurrencyItem.name} ({otherValue})");
         }
-        
-        private void PerformComparison(decimal currentValue, decimal compareValue, ComparisonEvents events,
+
+        private void PerformComparison(long currentValue, long compareValue, ComparisonEvents events,
             string currentName, string compareName)
         {
             if (currentValue < compareValue)

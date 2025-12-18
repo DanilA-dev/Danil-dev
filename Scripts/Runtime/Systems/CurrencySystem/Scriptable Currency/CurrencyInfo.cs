@@ -23,10 +23,10 @@ namespace D_Dev.CurrencySystem
 
         [PropertySpace(10)]
         [Button]
-        private void DebugDepositValue(decimal depositValue) => _currency.TryDeposit(depositValue);
+        private void DebugDepositValue(long depositValue) => _currency.TryDeposit(depositValue);
 
         [Button]
-        private void DebugWithdrawValue(decimal withdrawValue) => _currency.TryWithdraw(withdrawValue);
+        private void DebugWithdrawValue(long withdrawValue) => _currency.TryWithdraw(withdrawValue);
 
         [Button]
         public void ResetToZero() => _currency.TrySet(0);

@@ -4,11 +4,12 @@ using UnityEngine.Events;
 
 namespace D_Dev.ScriptableVaiables.Listeners
 {
-    public abstract class BaseScriptableVariableListener<T> : MonoBehaviour
+    public abstract class BaseScriptableVariableListener<T,TVariable> : MonoBehaviour
+    where TVariable : BaseScriptableVariable<T>
     {
         #region Fields
 
-        [SerializeField] private BaseScriptableVariable<T> _variable;
+        [SerializeField] private TVariable _variable;
         
         [FoldoutGroup("Events")]
         public UnityEvent<T> OnValueChanged;
@@ -17,8 +18,21 @@ namespace D_Dev.ScriptableVaiables.Listeners
 
         #region Monobehaviour
 
-        private void Awake() => _variable.OnValueUpdate += OnVariableValueChanged;
-        private void OnDestroy() => _variable.OnValueUpdate -= OnVariableValueChanged;
+        private void Awake()
+        {
+            if(_variable == null)
+                return;
+            
+            _variable.OnValueUpdate += OnVariableValueChanged;
+        }
+
+        private void OnDestroy()
+        {
+            if(_variable == null)
+                return;
+            
+            _variable.OnValueUpdate -= OnVariableValueChanged;
+        }
 
         #endregion
 

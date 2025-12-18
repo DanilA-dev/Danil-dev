@@ -39,7 +39,7 @@ namespace D_Dev.CurrencySystem
         [FoldoutGroup("Events")]
         [SerializeField] private UnityEvent _onWithdrawFailed;
         
-        private decimal _currentDisplayValue;
+        private long _currentDisplayValue;
         private Coroutine _animationCoroutine;
 
         #endregion
@@ -119,7 +119,7 @@ namespace D_Dev.CurrencySystem
             }
         }
         
-        public void DisplayCurrencyValue(decimal value)
+        public void DisplayCurrencyValue(long value)
         {
             if (!_useAnimation)
             {
@@ -141,7 +141,7 @@ namespace D_Dev.CurrencySystem
 
         private void UpdateCurrency(Currency.CurrencyEvent currencyEvent, long currencyValueInCents)
         {
-            decimal currencyValue = (decimal)currencyValueInCents / 100m;
+            long currencyValue = currencyValueInCents;
             if (!_useAnimation)
             {
                 InvokeCurrencyUpdateEvent(currencyValue);
@@ -176,14 +176,15 @@ namespace D_Dev.CurrencySystem
         #endregion
 
         #region Private
-        private void InvokeCurrencyUpdateEvent(decimal currencyValue)
+        private void InvokeCurrencyUpdateEvent(long currencyValue)
         {
             _onCurrencyUpdate?.Invoke(currencyValue.ToString(_format, System.Globalization.CultureInfo.GetCultureInfo(_cultureInfo)));
         }
         
-        private IEnumerator AnimateCurrencyCoroutine(decimal targetValue, float? customDuration = null, AnimationCurve customCurve = null)
+        private IEnumerator AnimateCurrencyCoroutine(long targetValue, float? customDuration = null, AnimationCurve customCurve = null)
         {
-            decimal startValue = _currentDisplayValue;
+            long startValue = _currentDisplayValue;
+            long target = targetValue;
             float duration = customDuration ?? _animationSettings.AnimationDuration;
             AnimationCurve curve = customCurve ?? _animationSettings.AnimationCurve;
 
@@ -196,7 +197,7 @@ namespace D_Dev.CurrencySystem
 
                 float curveValue = curve.Evaluate(progress);
 
-                decimal currentValue = (decimal)Mathf.Lerp((float)startValue, (float)targetValue, curveValue);
+                long currentValue = (long)Mathf.Lerp((float)startValue, (float)target, curveValue);
 
                 _currentDisplayValue = currentValue;
                 InvokeCurrencyUpdateEvent(currentValue);
