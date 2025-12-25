@@ -1,0 +1,104 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace D_dev.UpdateManager
+{
+    public class LateUpdateManager : MonoBehaviour
+    {
+        #region Fields
+
+        private static readonly Queue<ILateTickable> _lateTickables = new();
+        private static readonly Queue<ILateTickable> _pendingAdd = new();
+        private static readonly Queue<ILateTickable> _pendingRemove = new();
+        
+        private static readonly List<ILateTickable> _sortedTickables = new();
+        private static bool _isSorted = true;
+
+        #endregion
+
+        #region Properties
+
+        public static int Count => _lateTickables.Count + _pendingAdd.Count;
+
+        #endregion
+
+        #region Monobehavior
+
+        private void LateUpdate()
+        {
+            ProcessPending();
+            EnsureSorted();
+            
+            foreach (var tickable in _sortedTickables)
+            {
+                tickable?.LateTick();
+            }
+        }
+
+        #endregion
+
+        #region Public
+
+        public static void Add(ILateTickable tickable)
+        {
+            if (tickable != null)
+                _pendingAdd.Enqueue(tickable);
+        }
+        
+        public static void AddWithPriority(ILateTickable tickable, int priority)
+        {
+            if (tickable != null)
+            {
+                tickable.SetPriority(priority);
+                Add(tickable);
+            }
+        }
+        
+        public static void Remove(ILateTickable tickable)
+        {
+            if (tickable != null)
+                _pendingRemove.Enqueue(tickable);
+        }
+        
+        public static void Clear()
+        {
+            _lateTickables.Clear();
+            _pendingAdd.Clear();
+            _pendingRemove.Clear();
+            _sortedTickables.Clear();
+            _isSorted = true;
+        }
+
+        #endregion
+
+        #region Private
+
+        private static void ProcessPending()
+        {
+            while (_pendingAdd.Count > 0)
+            {
+                var tickable = _pendingAdd.Dequeue();
+                _lateTickables.Enqueue(tickable);
+                _isSorted = false;
+            }
+            
+            while (_pendingRemove.Count > 0)
+            {
+                var tickable = _pendingRemove.Dequeue();
+                _sortedTickables.Remove(tickable);
+            }
+        }
+        
+        private static void EnsureSorted()
+        {
+            if (_isSorted) return;
+            
+            _sortedTickables.Clear();
+            _sortedTickables.AddRange(_lateTickables);
+            _sortedTickables.Sort((a, b) => b.GetPriority().CompareTo(a.GetPriority()));
+            _isSorted = true;
+        }
+
+        #endregion
+    }
+}
