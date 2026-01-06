@@ -156,7 +156,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6105562662307944169}
-  - component: {fileID: 8200444358186620350}
+  - component: {fileID: 2246434262481629501}
   m_Layer: 3
   m_Name: CameraRoot
   m_TagString: Untagged
@@ -180,7 +180,7 @@ Transform:
   - {fileID: 5405550067178740186}
   m_Father: {fileID: 6105562663605199326}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8200444358186620350
+--- !u!114 &2246434262481629501
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -189,13 +189,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 6105562662307944166}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e721d43bfed54866be0d4c6ec24c4c38, type: 3}
+  m_Script: {fileID: 11500000, guid: 93d91bcdbf394471a72e0ac95d7ca543, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _variable: {fileID: 11400000, guid: b0d747ba8f37f0e44a2b0434a7ce67e8, type: 2}
-  _object: {fileID: 6105562662307944166}
-  _attachOnAwake: 1
-  _attachOnStart: 0
+  _variable: {fileID: 11400000, guid: 938b42674d7916c4c8c8d0aa30f77bfd, type: 2}
+  _value: {fileID: 6105562662307944169}
+  _setOnAwake: 0
+  _setOnStart: 1
 --- !u!1 &6105562662330576784
 GameObject:
   m_ObjectHideFlags: 0
@@ -458,29 +458,9 @@ MonoBehaviour:
     _radius: 0.5
     _halfExtents: {x: 0.5, y: 0.5, z: 0.5}
     _origin:
-      _positionType: 0
-      _vectorPos: {x: 0, y: 0, z: 0}
-      _local: 0
-      _transform: {fileID: 0}
-      _transformDirection: 0
-      _randomVectorPos: []
-      _randomTransforms: []
-      _positionRandomizeType: 0
-      _randomRadius: 0
-      _setParent: 0
-      _parent: {fileID: 0}
+      rid: 3180810240958398536
     _direction:
-      _positionType: 0
-      _vectorPos: {x: 0, y: 0, z: 0}
-      _local: 0
-      _transform: {fileID: 0}
-      _transformDirection: 0
-      _randomVectorPos: []
-      _randomTransforms: []
-      _positionRandomizeType: 0
-      _randomRadius: 0
-      _setParent: 0
-      _parent: {fileID: 0}
+      rid: 3180810240958398537
     _queryTriggerInteraction: 0
     _colliderChecker:
       _collisionDimension: 0
@@ -505,6 +485,15 @@ MonoBehaviour:
     _debugColor: {r: 0, g: 0, b: 0, a: 0}
   _groundTriggerEvents: {fileID: 6105562662287875627}
   _isGrounded: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 3180810240958398536
+      type: {class: BasePositionSettings, ns: D_Dev.PositionRotationConfig, asm: D-Dev.PositionRotationSettings}
+      data: 
+    - rid: 3180810240958398537
+      type: {class: BasePositionSettings, ns: D_Dev.PositionRotationConfig, asm: D-Dev.PositionRotationSettings}
+      data: 
 --- !u!114 &258083957203590086
 MonoBehaviour:
   m_ObjectHideFlags: 0
