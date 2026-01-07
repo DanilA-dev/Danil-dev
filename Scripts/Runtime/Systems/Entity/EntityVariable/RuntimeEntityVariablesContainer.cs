@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using D_Dev.ScriptableVaiables;
 using UnityEngine;
 
@@ -11,6 +12,8 @@ namespace D_Dev.EntityVariable
         [SerializeReference] private List<BaseEntityVariable> _variables = new();
 
         private Dictionary<StringScriptableVariable, BaseEntityVariable> _variableMap;
+        
+        public event Action OnInitialized;
             
         #endregion
 
@@ -33,6 +36,7 @@ namespace D_Dev.EntityVariable
                 _variables.Add(clonedVar);
                 _variableMap.TryAdd(variable.VariableID, clonedVar);
             }
+            OnInitialized?.Invoke();
         }
 
         public T GetVariable<T>(StringScriptableVariable variableID) where T : BaseEntityVariable
@@ -42,7 +46,7 @@ namespace D_Dev.EntityVariable
                 return variable as T;
             }
         
-            Debug.Log($"Variable '{variableID}' not found in RuntimeEntityVariablesContainer on GameObject {gameObject.name}");
+            Debug.LogError($"Variable '{variableID}' not found in RuntimeEntityVariablesContainer on GameObject {gameObject.name}");
             return null;
         }
 
