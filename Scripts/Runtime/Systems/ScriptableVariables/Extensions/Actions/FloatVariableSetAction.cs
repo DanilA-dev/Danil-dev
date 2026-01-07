@@ -3,7 +3,7 @@ using D_Dev.ScriptableVaiables;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace D_dev.ScriptableVariables.Extensions.Actions
+namespace D_Dev.ScriptableVariables.Extensions.Actions
 {
     [System.Serializable]
     public class FloatVariableSetAction : BaseAction

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace D_dev.UpdateManager
+namespace D_Dev.UpdateManager
 {
     public static class FixedTickableExtensions
     {

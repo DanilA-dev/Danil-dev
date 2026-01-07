@@ -3,7 +3,7 @@ using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 
-namespace D_dev.ValueViewProvider
+namespace D_Dev.ValueViewProvider
 {
     public abstract class GenericValueViewProvider<TValue, TAnimation> : MonoBehaviour where TAnimation : BaseTweenValueAnimation<TValue>
     {

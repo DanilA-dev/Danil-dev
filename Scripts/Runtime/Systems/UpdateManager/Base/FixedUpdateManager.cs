@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace D_dev.UpdateManager
+namespace D_Dev.UpdateManager
 {
     public class FixedUpdateManager : MonoBehaviour
     {

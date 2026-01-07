@@ -1,12 +1,11 @@
 ﻿using System;
-using D_Dev.CurrencySystem;
 using D_Dev.TweenAnimations;
-using D_dev.ValueViewProvider;
+using D_Dev.ValueViewProvider;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace D_dev.CurrencySystem.Extensions
+namespace D_Dev.CurrencySystem.Extensions
 {
     public class CurrencyViewProvider : GenericValueViewProvider<int, IntTweenAnimation>
     {
@@ -46,7 +45,6 @@ namespace D_dev.CurrencySystem.Extensions
         }
 
         #endregion
-       
 
         #region Listeners
 
@@ -76,8 +74,5 @@ namespace D_dev.CurrencySystem.Extensions
         }
 
         #endregion
-        
-        
-        
     }
 }

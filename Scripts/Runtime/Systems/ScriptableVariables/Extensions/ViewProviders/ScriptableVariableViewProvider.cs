@@ -1,9 +1,9 @@
 using D_Dev.ScriptableVaiables;
 using D_Dev.TweenAnimations;
-using D_dev.ValueViewProvider;
+using D_Dev.ValueViewProvider;
 using UnityEngine;
 
-namespace D_dev.ScriptableVariables.Extensions.ViewProviders
+namespace D_Dev.ScriptableVariables.Extensions.ViewProviders
 {
     public abstract class ScriptableVariableViewProvider<TValue, TVariable, TAnimation> : GenericValueViewProvider<TValue, TAnimation>
         where TVariable : BaseScriptableVariable<TValue>

@@ -1,0 +1,25 @@
+using D_Dev.ScriptableVaiables;
+using UnityEngine;
+
+namespace D_Dev.EntityVariable.Types
+{
+    [System.Serializable]
+    public class Vector2ArrayEntityVariable : EntityVariable<Vector2[]>
+    {
+        #region Constructor
+
+        public Vector2ArrayEntityVariable() { }
+        public Vector2ArrayEntityVariable(StringScriptableVariable id, Vector2[] value) : base(id, value) { }
+
+        #endregion
+
+        #region Overrides
+
+        public override BaseEntityVariable Clone()
+        {
+            return new Vector2ArrayEntityVariable(_variableID, _value);
+        }
+
+        #endregion
+    }
+}

@@ -1,6 +1,6 @@
 using System;
 
-namespace D_dev.UpdateManager
+namespace D_Dev.UpdateManager
 {
     public interface ILateTickable
     {
