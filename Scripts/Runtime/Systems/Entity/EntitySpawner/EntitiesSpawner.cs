@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Cysharp.Threading.Tasks;
 using D_Dev.Base;
 using UnityEngine;
 
@@ -14,13 +15,13 @@ namespace D_Dev.EntitySpawner
 
         #region Monobehaviour
 
-        private void Start()
+        private async void Start()
         {
             if(_spawnSettings.Length <= 0)
                 return;
-            
+
             foreach (var entitySpawnSettings in _spawnSettings)
-                entitySpawnSettings.Init();
+                await entitySpawnSettings.Init();
         }
 
         private void OnDisable()
@@ -36,20 +37,24 @@ namespace D_Dev.EntitySpawner
 
         #region Public
 
-        public GameObject GetEntity(EntityInfo data)
+        public async UniTask CreateEntityAsync(int settingsIndex) => await GetEntityAsync(settingsIndex);
+        public async UniTask CreateEntityAsync(EntityInfo data) => await GetEntityAsync(data);
+
+        #endregion
+
+        #region Private
+
+        private async UniTask<GameObject> GetEntityAsync(EntityInfo data)
         {
             var spawnSettings = _spawnSettings.FirstOrDefault(s => s.Data == data);
-            return spawnSettings?.Get();
-        }
-        
-        public GameObject GetEntity(int settingsIndex)
-        {
-            var spawnSettings = _spawnSettings[settingsIndex];
-            return spawnSettings?.Get();
+            return spawnSettings != null ? await spawnSettings.Get() : null;
         }
 
-        public void CreateEntity(int settingsIndex) => GetEntity(settingsIndex);
-        public void CreateEntity(EntityInfo data) => GetEntity(data);
+        private async UniTask<GameObject> GetEntityAsync(int settingsIndex)
+        {
+            var spawnSettings = _spawnSettings[settingsIndex];
+            return spawnSettings != null ? await spawnSettings.Get() : null;
+        }
 
         #endregion
     }

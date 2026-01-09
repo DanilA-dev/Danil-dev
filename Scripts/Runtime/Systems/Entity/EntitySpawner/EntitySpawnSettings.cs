@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using D_Dev.Base;
 using D_Dev.EntityVariable;
 using D_Dev.Extensions;
 using D_Dev.PositionRotationConfig;
 using D_Dev.PositionRotationConfig.RotationSettings;
 using Sirenix.OdinInspector;
+using Sirenix.OdinInspector.Editor;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -110,23 +112,16 @@ namespace D_Dev.EntitySpawner
 
         #region Public
 
-        public void Init()
+        public async UniTask Init()
         {
             if (_usePool)
             {
-                _poolableEntities = new();
-                _pool = new ObjectPool<PoolableObject>(
-                    createFunc:() => CreateEntity().GetComponent<PoolableObject>(),
-                    actionOnGet: _ => _.gameObject.SetActive(true),
-                    actionOnRelease: _ => _.gameObject.SetActive(false),
-                    actionOnDestroy: _ => GameObject.Destroy(_.gameObject),
-                    collectionCheck: _poolCollectionCheck,
-                    defaultCapacity: _poolDefaultCapacity,
-                    maxSize: _poolMaxSize);
+                await PrewarmPool();
+                CreatePool();
             }
 
             if (_createOnStart)
-                PreCreateEntities();
+                await PreCreateEntities();
         }
 
         public void DisposePool()
@@ -145,7 +140,7 @@ namespace D_Dev.EntitySpawner
             _poolableEntities.Clear();
         }
 
-        public GameObject Get()
+        public async UniTask<GameObject> Get()
         {
             GameObject returnObj = null;
             if (_usePool)
@@ -156,10 +151,9 @@ namespace D_Dev.EntitySpawner
                     returnObj.transform.position = _positionSettings.GetPosition();
                     returnObj.transform.rotation = _rotationSettings.GetRotation();
                 }
-
             }
             else
-                returnObj = CreateEntity();
+                returnObj = await CreateEntity();
             
             return returnObj;
         }
@@ -174,29 +168,54 @@ namespace D_Dev.EntitySpawner
 
         #region Private
 
-        private void PreCreateEntities()
+        private async UniTask PreCreateEntities()
         {
             for (int i = 0; i < _startEntitiesAmount; i++)
             {
                 if (!_usePool)
-                    CreateEntity();
+                    await CreateEntity();
                 else
                 {
-                    var pooledObj = _pool?.Get();
+                    var obj = await CreateEntity();
+                    var pooledObj = obj.GetComponent<PoolableObject>();
+                    _pool.Release(pooledObj);
                     _poolableEntities.Add(pooledObj);
                 }
             }
-            
-            if(_poolableEntities != null && _poolableEntities.Count > 0)
-                foreach (var poolableEntity in _poolableEntities)
-                    poolableEntity.Release();
         }
         
-        private GameObject CreateEntity()
+        private void CreatePool()
         {
+            int index = 0;
+
+            _pool = new ObjectPool<PoolableObject>(
+                createFunc: () => _poolableEntities[index++],
+                actionOnGet: p => p.gameObject.SetActive(true),
+                actionOnRelease: p => p.gameObject.SetActive(false),
+                actionOnDestroy: p => Object.Destroy(p.gameObject),
+                collectionCheck: false,
+                defaultCapacity: _poolableEntities.Count,
+                maxSize: _poolableEntities.Count
+            );
+        }
+        
+        private async UniTask PrewarmPool()
+        {
+            for (int i = 0; i < _startEntitiesAmount; i++)
+            {
+                var go = await CreateEntity();
+                var poolable = go.GetComponent<PoolableObject>();
+                go.SetActive(false);
+                _poolableEntities.Add(poolable);
+            }
+        }
+        
+        private async UniTask<GameObject> CreateEntity()
+        {
+            
             GameObject obj = null;
-            var entity = Data.EntityPrefab;
-            obj = GameObject.Instantiate(entity);
+            var entityAsset = Data.EntityPrefab;
+            obj = await entityAsset.InstantiateAsync();
             var entityTransform = obj.transform;
             if(_setParent && _parentTransform != null)
                 entityTransform.SetParent(_parentTransform);

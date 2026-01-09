@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using D_Dev.AddressablesExstensions;
 using D_Dev.EntityVariable;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -13,7 +14,7 @@ namespace D_Dev.Base
         [InlineButton(nameof(CreateID)), PropertyOrder(-1)]
         [SerializeField] protected string _id;
         [PropertySpace(10)]
-        [SerializeField] protected GameObject _entityPrefab;
+        [SerializeField] protected AddressablesGameObjectLoadData _entityPrefab;
         [SerializeReference] protected List<BaseEntityVariable> _variables = new();
 
         #endregion
@@ -21,7 +22,7 @@ namespace D_Dev.Base
         #region Properties
 
         public string ID => _id;
-        public GameObject EntityPrefab => _entityPrefab;
+        public AddressablesGameObjectLoadData EntityPrefab => _entityPrefab;
 
         public List<BaseEntityVariable> Variables => _variables;
 
