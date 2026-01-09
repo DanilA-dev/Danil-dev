@@ -171,17 +171,7 @@ namespace D_Dev.EntitySpawner
         private async UniTask PreCreateEntities()
         {
             for (int i = 0; i < _startEntitiesAmount; i++)
-            {
-                if (!_usePool)
-                    await CreateEntity();
-                else
-                {
-                    var obj = await CreateEntity();
-                    var pooledObj = obj.GetComponent<PoolableObject>();
-                    _pool.Release(pooledObj);
-                    _poolableEntities.Add(pooledObj);
-                }
-            }
+                await CreateEntity();
         }
         
         private void CreatePool()
