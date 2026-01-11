@@ -10,7 +10,7 @@ namespace D_Dev.AnimatorView.AnimationPlayableHandler
         #region Fields
 
         [SerializeField] private Animator _animator;
-        [SerializeField, Min(1)] private int _layerCount;
+        [SerializeField, Min(1)] private int _layerCount = 1;
 
         private AnimationPlayableOutput _animationPlayableOutput;
             
@@ -21,7 +21,6 @@ namespace D_Dev.AnimatorView.AnimationPlayableHandler
         public PlayableGraph PlayableGraph { get; private set; }
         public AnimationLayerMixerPlayable RootLayerMixer { get; private set; }
         public Animator Animator => _animator;
-        
         public bool IsPlayableGraphInitialized { get; private set; }
 
         #endregion
