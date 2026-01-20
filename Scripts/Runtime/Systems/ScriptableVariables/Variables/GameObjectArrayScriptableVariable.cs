@@ -1,0 +1,8 @@
+using UnityEngine;
+
+namespace D_Dev.ScriptableVaiables
+{
+    [CreateAssetMenu(menuName = "D-Dev/Variables/GameObjectArrayVariable")]
+    public class GameObjectArrayScriptableVariable : BaseScriptableVariable<GameObject[]> {}
+
+}
