@@ -25,6 +25,15 @@ namespace D_Dev.PolymorphicValueSystem
         }
 
         #endregion
+
+        #region Cloning
+
+        public override PolymorphicValue<Vector3[]> Clone()
+        {
+            return new Vector3ArrayConstantValue { _value = _value };
+        }
+
+        #endregion
     }
 
     [System.Serializable]
@@ -52,6 +61,15 @@ namespace D_Dev.PolymorphicValueSystem
         }
 
         public Vector3ArrayScriptableVariable Variable => _variable;
+
+        #endregion
+
+        #region Cloning
+
+        public override PolymorphicValue<Vector3[]> Clone()
+        {
+            return new Vector3ArrayScriptableVariableValue { _variable = _variable };
+        }
 
         #endregion
     }

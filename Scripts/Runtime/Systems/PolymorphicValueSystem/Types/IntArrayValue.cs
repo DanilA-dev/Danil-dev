@@ -25,6 +25,15 @@ namespace D_Dev.PolymorphicValueSystem
         }
 
         #endregion
+
+        #region Cloning
+
+        public override PolymorphicValue<int[]> Clone()
+        {
+            return new IntArrayConstantValue { _value = _value };
+        }
+
+        #endregion
     }
 
     [System.Serializable]
@@ -52,6 +61,15 @@ namespace D_Dev.PolymorphicValueSystem
         }
 
         public IntArrayScriptableVariable Variable => _variable;
+
+        #endregion
+
+        #region Cloning
+
+        public override PolymorphicValue<int[]> Clone()
+        {
+            return new IntArrayScriptableVariableValue { _variable = _variable };
+        }
 
         #endregion
     }

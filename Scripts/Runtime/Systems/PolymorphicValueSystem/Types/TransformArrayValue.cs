@@ -25,6 +25,15 @@ namespace D_Dev.PolymorphicValueSystem
         }
 
         #endregion
+
+        #region Cloning
+
+        public override PolymorphicValue<Transform[]> Clone()
+        {
+            return new TransformArrayConstantValue { _value = _value };
+        }
+
+        #endregion
     }
 
     [System.Serializable]
@@ -52,6 +61,15 @@ namespace D_Dev.PolymorphicValueSystem
         }
 
         public TransformArrayScriptableVariable Variable => _variable;
+
+        #endregion
+
+        #region Cloning
+
+        public override PolymorphicValue<Transform[]> Clone()
+        {
+            return new TransformArrayScriptableVariableValue { _variable = _variable };
+        }
 
         #endregion
     }

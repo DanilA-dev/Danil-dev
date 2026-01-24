@@ -25,6 +25,15 @@ namespace D_Dev.PolymorphicValueSystem
         }
 
         #endregion
+
+        #region Cloning
+
+        public override PolymorphicValue<GameObject[]> Clone()
+        {
+            return new GameObjectArrayConstantValue { _value = _value };
+        }
+
+        #endregion
     }
 
     [System.Serializable]
@@ -52,6 +61,15 @@ namespace D_Dev.PolymorphicValueSystem
         }
 
         public GameObjectArrayScriptableVariable Variable => _variable;
+
+        #endregion
+
+        #region Cloning
+
+        public override PolymorphicValue<GameObject[]> Clone()
+        {
+            return new GameObjectArrayScriptableVariableValue { _variable = _variable };
+        }
 
         #endregion
     }

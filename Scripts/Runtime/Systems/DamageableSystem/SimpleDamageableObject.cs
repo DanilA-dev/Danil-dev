@@ -1,4 +1,5 @@
 ﻿using D_Dev.DamageableSystem;
+using D_Dev.PolymorphicValueSystem;
 using UnityEngine;
 
 namespace D_Dev.Scripts.DamageableSystem.Types
@@ -7,16 +8,16 @@ namespace D_Dev.Scripts.DamageableSystem.Types
     {
         #region Fields
 
-        [SerializeField] private int _maxHealth;
+        [SerializeField] private PolymorphicValue<float> _maxHealth;
 
         #endregion
 
         #region Properties
 
-        public override int MaxHealth
+        public override float MaxHealth
         {
-            get => _maxHealth;
-            protected set => _maxHealth = value;
+            get => _maxHealth.Value;
+            protected set => _maxHealth.Value = value;
         }
         #endregion
     }

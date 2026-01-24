@@ -1,14 +1,15 @@
+using D_Dev.PolymorphicValueSystem;
 using D_Dev.ScriptableVaiables;
 
 namespace D_Dev.EntityVariable.Types
 {
     [System.Serializable]
-    public class FloatArrayEntityVariable : EntityVariable<float[]>
+    public class FloatArrayEntityVariable : PolymorphicEntityVariable<PolymorphicValue<float[]>>
     {
         #region Constructor
 
         public FloatArrayEntityVariable() { }
-        public FloatArrayEntityVariable(StringScriptableVariable id, float[] value) : base(id, value) { }
+        public FloatArrayEntityVariable(StringScriptableVariable id, PolymorphicValue<float[]> value) : base(id, value) { }
 
         #endregion
 
@@ -16,7 +17,7 @@ namespace D_Dev.EntityVariable.Types
 
         public override BaseEntityVariable Clone()
         {
-            return new FloatArrayEntityVariable(_variableID, _value);
+            return new FloatArrayEntityVariable(_variableID, _value?.Clone());
         }
 
         #endregion

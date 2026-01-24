@@ -1,14 +1,15 @@
+using D_Dev.PolymorphicValueSystem;
 using D_Dev.ScriptableVaiables;
 
 namespace D_Dev.EntityVariable.Types
 {
     [System.Serializable]
-    public class StringArrayEntityVariable : EntityVariable<string[]>
+    public class StringArrayEntityVariable : PolymorphicEntityVariable<PolymorphicValue<string[]>>
     {
         #region Constructor
 
         public StringArrayEntityVariable() { }
-        public StringArrayEntityVariable(StringScriptableVariable id, string[] value) : base(id, value) { }
+        public StringArrayEntityVariable(StringScriptableVariable id, PolymorphicValue<string[]> value) : base(id, value) { }
 
         #endregion
 
@@ -16,7 +17,7 @@ namespace D_Dev.EntityVariable.Types
 
         public override BaseEntityVariable Clone()
         {
-            return new StringArrayEntityVariable(_variableID, _value);
+            return new StringArrayEntityVariable(_variableID, _value?.Clone());
         }
 
         #endregion

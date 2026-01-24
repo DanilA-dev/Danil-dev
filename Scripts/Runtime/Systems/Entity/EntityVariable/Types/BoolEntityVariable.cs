@@ -1,14 +1,15 @@
+using D_Dev.PolymorphicValueSystem;
 using D_Dev.ScriptableVaiables;
 
 namespace D_Dev.EntityVariable.Types
 {
     [System.Serializable]
-    public class BoolEntityVariable : EntityVariable<bool>
+    public class BoolEntityVariable : PolymorphicEntityVariable<PolymorphicValue<bool>>
     {
         #region Constructor
 
         public BoolEntityVariable() { }
-        public BoolEntityVariable(StringScriptableVariable id, bool value) : base(id, value) { }
+        public BoolEntityVariable(StringScriptableVariable id, PolymorphicValue<bool> value) : base(id, value) { }
 
         #endregion
 
@@ -16,7 +17,7 @@ namespace D_Dev.EntityVariable.Types
 
         public override BaseEntityVariable Clone()
         {
-            return new BoolEntityVariable(_variableID, _value);
+            return new BoolEntityVariable(_variableID, _value?.Clone());
         }
 
         #endregion

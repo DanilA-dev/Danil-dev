@@ -11,6 +11,12 @@ namespace D_Dev.PolymorphicValueSystem
 
         #endregion
 
+        #region Cloning
+
+        public abstract PolymorphicValue<T> Clone();
+
+        #endregion
+
         #region Overrides
 
         public virtual void Dispose() { }

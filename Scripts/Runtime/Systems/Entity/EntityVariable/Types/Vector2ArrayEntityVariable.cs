@@ -1,15 +1,16 @@
+using D_Dev.PolymorphicValueSystem;
 using D_Dev.ScriptableVaiables;
 using UnityEngine;
 
 namespace D_Dev.EntityVariable.Types
 {
     [System.Serializable]
-    public class Vector2ArrayEntityVariable : EntityVariable<Vector2[]>
+    public class Vector2ArrayEntityVariable : PolymorphicEntityVariable<PolymorphicValue<Vector2[]>>
     {
         #region Constructor
 
         public Vector2ArrayEntityVariable() { }
-        public Vector2ArrayEntityVariable(StringScriptableVariable id, Vector2[] value) : base(id, value) { }
+        public Vector2ArrayEntityVariable(StringScriptableVariable id, PolymorphicValue<Vector2[]> value) : base(id, value) { }
 
         #endregion
 
@@ -17,7 +18,7 @@ namespace D_Dev.EntityVariable.Types
 
         public override BaseEntityVariable Clone()
         {
-            return new Vector2ArrayEntityVariable(_variableID, _value);
+            return new Vector2ArrayEntityVariable(_variableID, _value?.Clone());
         }
 
         #endregion

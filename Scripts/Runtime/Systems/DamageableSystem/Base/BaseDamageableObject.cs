@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using D_Dev.PolymorphicValueSystem;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,7 +10,7 @@ namespace D_Dev.DamageableSystem
         #region Fields
 
         [Title("Damageable Settings")] 
-        [SerializeField] private bool _isDamageable = true;
+        [SerializeReference] private PolymorphicValue<bool> _isDamageable;
         [PropertyOrder(100)]
         [FoldoutGroup("Events")]
         public UnityEvent<DamageData> OnDamage;
@@ -21,9 +22,9 @@ namespace D_Dev.DamageableSystem
 
         #region Properties
 
-        public bool IsDamageable => _isDamageable;
-        public abstract int MaxHealth { get; protected set; }
-        public int CurrentHealth { get; protected set; }
+        public bool IsDamageable => _isDamageable.Value;
+        public abstract float MaxHealth { get; protected set; }
+        public float CurrentHealth { get; protected set; }
 
         #endregion
 
@@ -40,7 +41,7 @@ namespace D_Dev.DamageableSystem
             if(damageData.Damage <= 0)
                 return;
             
-            if(!_isDamageable)
+            if(!_isDamageable.Value)
                 return;
             
             CurrentHealth -= damageData.Damage;

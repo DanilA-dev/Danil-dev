@@ -41,5 +41,14 @@ namespace D_Dev.PolymorphicValueSystem
         public ScriptableVariableValue(TVariable variable) => _variable = variable;
 
         #endregion
+
+        #region Cloning
+
+        public override PolymorphicValue<T> Clone()
+        {
+            return new ScriptableVariableValue<T, TVariable>(_variable);
+        }
+
+        #endregion
     }
 }
