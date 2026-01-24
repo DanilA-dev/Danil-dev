@@ -1,7 +1,9 @@
 {
     "name": "D-Dev.PositionRotationSettings",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:ba7d088f93a8e1649b9edc0955fab802"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

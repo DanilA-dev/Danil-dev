@@ -1,4 +1,5 @@
 ﻿using System;
+using D_Dev.PolymorphicValueSystem;
 using UnityEngine;
 
 namespace D_Dev.PositionRotationConfig
@@ -8,7 +9,7 @@ namespace D_Dev.PositionRotationConfig
     {
         #region Fields
 
-        [SerializeField] private Transform _value;
+        [SerializeReference] private PolymorphicValue<Transform> _value;
         [SerializeField] private bool _isLocal;
 
         #endregion
@@ -16,8 +17,8 @@ namespace D_Dev.PositionRotationConfig
         #region Overrides
 
         public override Vector3 GetPosition() => _isLocal ?
-            _value.localPosition 
-            : _value.position;
+            _value.Value.localPosition 
+            : _value.Value.position;
 
         #endregion
     }
