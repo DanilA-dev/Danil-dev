@@ -43,6 +43,8 @@ namespace D_Dev.StateMachineBehaviour
             InitStates();
         }
 
+        protected virtual void Start() => ChangeState(_startState);
+
         protected virtual void OnDestroy()
         {
             _stateMachine.OnStateEnter -= state =>
