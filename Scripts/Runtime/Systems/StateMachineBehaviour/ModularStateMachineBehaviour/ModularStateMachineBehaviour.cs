@@ -6,7 +6,8 @@ using UnityEngine;
 
 namespace  D_Dev.StateMachineBehaviour
 {
-    public abstract class ModularStateMachineBehaviour<TStateEnum> : StateMachineBehaviour<TStateEnum> where TStateEnum : Enum
+    public abstract class ModularStateMachineBehaviour<TStateEnum, TModularState> 
+        : StateMachineBehaviour<TStateEnum> where TStateEnum : Enum where TModularState : BaseModularState<TStateEnum>
     {
         #region Fields
 
@@ -14,7 +15,7 @@ namespace  D_Dev.StateMachineBehaviour
         [SerializeField] protected bool _findOnObject;
         [FoldoutGroup("Module Settings", 99)]
         [HideIf(nameof(_findOnObject))]
-        [SerializeField] protected BaseModularState<TStateEnum>[] _states;
+        [SerializeField] protected TModularState[] _states;
 
         #endregion
 
@@ -23,7 +24,7 @@ namespace  D_Dev.StateMachineBehaviour
         protected override void InitStates()
         {
             if (_findOnObject)
-                _states = GetComponents<BaseModularState<TStateEnum>>();
+                _states = GetComponents<TModularState>();
             
             if (_states == null || _states.Length == 0)
                 return;
