@@ -8,14 +8,12 @@ namespace D_Dev.Utility
 
          private Rigidbody _rigidbody;
          private Vector3 _direction;
-         private float _currentSpeed;
  
          #endregion
  
          #region Properties
  
          public Vector3 Direction => _direction;
-         public float CurrentSpeed => _currentSpeed;
  
          #endregion
  
@@ -30,21 +28,22 @@ namespace D_Dev.Utility
  
          #region Public
         
-         public void ApplyMovement(Vector3 direction, float speed, ForceMode forceMode = ForceMode.Acceleration)
+         public void ApplyMovement(Vector3 direction, float accelerationSpeed, float maxLinearVelocity,
+             ForceMode forceMode = ForceMode.Acceleration)
          {
              if (_rigidbody == null)
                  return;
  
              _direction = direction;
-             _currentSpeed = speed;
- 
              if (direction.magnitude > 0.1f)
              {
-                 Vector3 force = direction.normalized * speed;
+                 Vector3 force = direction.normalized * accelerationSpeed;
                  _rigidbody.AddForce(force, forceMode);
              }
+
+             if (_rigidbody.linearVelocity.magnitude > maxLinearVelocity)
+                 _rigidbody.linearVelocity = Vector3.ClampMagnitude(_rigidbody.linearVelocity, maxLinearVelocity);
          }
- 
         
          public void StopMovement()
          {
@@ -53,9 +52,7 @@ namespace D_Dev.Utility
  
              _rigidbody.linearVelocity = Vector3.zero;
              _direction = Vector3.zero;
-             _currentSpeed = 0f;
          }
- 
         
          public void ApplyBraking(float deceleration = 10f, ForceMode forceMode = ForceMode.Acceleration)
          {
