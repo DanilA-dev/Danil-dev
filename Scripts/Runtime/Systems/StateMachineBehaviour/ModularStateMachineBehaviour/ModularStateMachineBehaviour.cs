@@ -32,6 +32,7 @@ namespace  D_Dev.StateMachineBehaviour
                 AddState(state.StateName, state);
             
             InitTransitions();
+            OnStatesInitialized();
         }
 
         protected virtual void InitTransitions()
@@ -51,6 +52,8 @@ namespace  D_Dev.StateMachineBehaviour
                 }
             }
         }
+        
+        protected virtual void OnStatesInitialized(){}
         
         #endregion
     }
