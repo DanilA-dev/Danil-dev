@@ -64,7 +64,7 @@ namespace D_Dev
             foreach (var (packageName, packageURL) in CustomPackages)
                 AddPackageToManifest(packageName, packageURL);
             
-            var path = "Package/Danil-Dev.plugins.unitypackage";
+            var path = "Packages/com.d-dev.utils/Danil-Dev.plugins.unitypackage";
             AssetDatabase.ImportPackage(path,true);
             AssetDatabase.Refresh();
         }
