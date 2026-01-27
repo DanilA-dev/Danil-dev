@@ -9,19 +9,18 @@ namespace D_Dev.InputSystem.Extensions.Conditions
     {
         #region Enums
 
-        public enum InputActionPhase
+        public enum InputActionThisFrame
         {
-            Started,
-            Performed,
-            Canceled
+            Pressed,
+            Released
         }
 
         #endregion
-
+        
         #region Fields
 
         [SerializeField] private InputActionReference _inputAction;
-        [SerializeField] private InputActionPhase _desiredPhase = InputActionPhase.Performed;
+        [SerializeField] private InputActionThisFrame _desiredPhase = InputActionThisFrame.Pressed;
 
         private bool _isMet;
         private bool _isSubscribed;
@@ -32,41 +31,22 @@ namespace D_Dev.InputSystem.Extensions.Conditions
 
         public bool IsConditionMet()
         {
-            if (!_isSubscribed)
+            if (_inputAction?.action == null)
+                return false;
+            
+            if(!_inputAction.action.enabled)
+                _inputAction.action.Enable();
+            
+            return _desiredPhase switch
             {
-                if (_inputAction?.action != null)
-                {
-                    _inputAction.action.Enable();
-                    switch (_desiredPhase)
-                    {
-                        case InputActionPhase.Started:
-                            _inputAction.action.started += OnInputTriggered;
-                            break;
-                        case InputActionPhase.Performed:
-                            _inputAction.action.performed += OnInputTriggered;
-                            break;
-                        case InputActionPhase.Canceled:
-                            _inputAction.action.canceled += OnInputTriggered;
-                            break;
-                    }
-                }
-                _isSubscribed = true;
-            }
-            return _isMet;
+                InputActionThisFrame.Pressed => _inputAction.action.WasPressedThisFrame(),
+                InputActionThisFrame.Released => _inputAction.action.WasReleasedThisFrame(),
+                _ => false
+            };
         }
 
         public void Reset()
         {
-            _isMet = false;
-        }
-
-        #endregion
-
-        #region Listeners
-
-        private void OnInputTriggered(InputAction.CallbackContext context)
-        {
-            _isMet = true;
         }
 
         #endregion
