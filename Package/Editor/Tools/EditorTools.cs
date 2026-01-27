@@ -44,7 +44,6 @@ namespace D_Dev
             string[] paths = new []
             {
                 "Assets/Danil-dev/Assets",
-                "Assets/Danil-dev/Plugins",
                 "Assets/Danil-dev/Scripts"
             } ;
             var exportDirectory =  "Assets/Danil-dev/Package/Danil-Dev.unitypackage";
@@ -64,6 +63,10 @@ namespace D_Dev
         {
             foreach (var (packageName, packageURL) in CustomPackages)
                 AddPackageToManifest(packageName, packageURL);
+            
+            var path = "Package/Danil-Dev.plugins.unitypackage";
+            AssetDatabase.ImportPackage(path,true);
+            AssetDatabase.Refresh();
         }
 
         [MenuItem("Tools/D_Dev/Open PersistentDataPath")]
