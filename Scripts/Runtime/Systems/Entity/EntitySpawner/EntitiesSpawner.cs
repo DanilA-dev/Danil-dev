@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Cysharp.Threading.Tasks;
-using D_Dev.Base;
+using D_Dev.Entity;
 using UnityEngine;
 
 namespace D_Dev.EntitySpawner

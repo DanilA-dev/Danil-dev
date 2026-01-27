@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using D_Dev.Base;
+using D_Dev.Entity;
 using D_Dev.EntityVariable;
 using D_Dev.Extensions;
 using D_Dev.PositionRotationConfig;
 using D_Dev.PositionRotationConfig.RotationSettings;
 using Sirenix.OdinInspector;
-using Sirenix.OdinInspector.Editor;
 using UnityEngine;
 using UnityEngine.Pool;
 

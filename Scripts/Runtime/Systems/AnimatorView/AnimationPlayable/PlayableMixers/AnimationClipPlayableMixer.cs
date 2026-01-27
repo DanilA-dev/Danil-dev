@@ -38,25 +38,47 @@ namespace D_Dev.AnimatorView.AnimationPlayableHandler
             _targetLayerMixerPlayable = _connectToSeperateMixer 
                 ? AnimationLayerMixerPlayable.Create(_playableGraph.PlayableGraph, 1) 
                 : _playableGraph.RootLayerMixer;
-            
-            if(_connectToSeperateMixer && _targetLayerMixerPlayable.IsValid())
-                _playableGraph.RootLayerMixer.ConnectInput(_layer, _targetLayerMixerPlayable, 0, 0);
+
+            if (_connectToSeperateMixer && _targetLayerMixerPlayable.IsValid())
+            {
+                _playableGraph.RootLayerMixer.ConnectInput(_layer, _targetLayerMixerPlayable, 0);
+                _playableGraph.RootLayerMixer.SetInputWeight(_layer, 1f);
+            }
         }
 
         private void OnDisable()
         {
-            if(_blendInCoroutine != null)
+            if (_blendInCoroutine != null)
                 StopCoroutine(_blendInCoroutine);
-            
-            if(_blendOutCoroutine != null)
+
+            if (_blendOutCoroutine != null)
                 StopCoroutine(_blendOutCoroutine);
-            
+
+            if (_targetLayerMixerPlayable.IsValid())
+            {
+                foreach (var pair in _playablesPair)
+                {
+                    _targetLayerMixerPlayable.DisconnectInput(pair.Key);
+                }
+            }
+
             foreach (var pair in _playablesPair)
             {
                 if (pair.Value.Playable.IsValid())
                     _playableGraph.PlayableGraph.DestroyPlayable(pair.Value.Playable);
             }
+
             _playablesPair.Clear();
+
+            if (_connectToSeperateMixer && _playableGraph.RootLayerMixer.IsValid())
+            {
+                _playableGraph.RootLayerMixer.DisconnectInput(_layer);
+            }
+
+            if (_connectToSeperateMixer && _targetLayerMixerPlayable.IsValid())
+            {
+                _playableGraph.PlayableGraph.DestroyPlayable(_targetLayerMixerPlayable);
+            }
         }
         
         private void Start()
@@ -94,10 +116,10 @@ namespace D_Dev.AnimatorView.AnimationPlayableHandler
             var newAnimationLayer = newPlayableConfig.Layer + 1;
             var newAnimationPlayable = CreatePlayableClip(newPlayableConfig);
             if(newAnimationLayer >=  _targetLayerMixerPlayable.GetInputCount())
-                _targetLayerMixerPlayable.SetInputCount(_targetLayerMixerPlayable.GetInputCount() + newAnimationLayer);
+                _targetLayerMixerPlayable.SetInputCount(newAnimationLayer + 1);
 
-            if(!_playablesPair.ContainsKey(newAnimationLayer))    
-                _targetLayerMixerPlayable.ConnectInput(newAnimationLayer, newAnimationPlayable, 0);
+            _targetLayerMixerPlayable.DisconnectInput(newAnimationLayer);
+            _targetLayerMixerPlayable.ConnectInput(newAnimationLayer, newAnimationPlayable, 0);
            
             if(newPlayableConfig.Mask != null)
                 _targetLayerMixerPlayable.SetLayerMaskFromAvatarMask((uint)newAnimationLayer,newPlayableConfig.Mask);
@@ -121,15 +143,16 @@ namespace D_Dev.AnimatorView.AnimationPlayableHandler
 
         public void Stop(AnimationPlayableClipConfig config)
         {
-            if(_blendInCoroutine != null)
+            if (_blendInCoroutine != null)
                 StopCoroutine(_blendInCoroutine);
-            
-            if(_blendOutCoroutine != null)
+
+            if (_blendOutCoroutine != null)
                 StopCoroutine(_blendOutCoroutine);
-            
-            _targetLayerMixerPlayable.SetInputWeight(config.Layer + 1, 0);
+
+            int layer = config.Layer + 1;
+            _targetLayerMixerPlayable.SetInputWeight(layer, 0);
             _playableGraph.RootLayerMixer.SetInputWeight(0, 1);
-            
+
             DisconnectOneShot(config);
         }
         
@@ -139,20 +162,22 @@ namespace D_Dev.AnimatorView.AnimationPlayableHandler
 
         private void DisconnectOneShot(AnimationPlayableClipConfig config)
         {
-            if (_playablesPair.TryGetValue(config.Layer + 1, out var playableConfig))
-            {
-                if (!playableConfig.Playable.IsValid())
-                    return;
+            int layer = config.Layer + 1;
 
-                if (!config.IsStatic)
-                {
-                    if(_lastPlayedConfig == config)
-                        _lastPlayedConfig = null;
-                    
-                    _playableGraph.PlayableGraph.DestroyPlayable(playableConfig.Playable);
-                    _targetLayerMixerPlayable.DisconnectInput(config.Layer + 1);
-                    _playablesPair.Remove(config.Layer + 1);
-                }
+            if (!_playablesPair.TryGetValue(layer, out var playableConfig))
+                return;
+
+            if (!playableConfig.Playable.IsValid())
+                return;
+
+            if (!config.IsStatic)
+            {
+                if (_lastPlayedConfig == config)
+                    _lastPlayedConfig = null;
+
+                _targetLayerMixerPlayable.DisconnectInput(layer);
+                _playableGraph.PlayableGraph.DestroyPlayable(playableConfig.Playable);
+                _playablesPair.Remove(layer);
             }
         }
         

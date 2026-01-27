@@ -4,7 +4,7 @@ using D_Dev.EntityVariable;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace D_Dev.Base
+namespace D_Dev.Entity
 {
     [CreateAssetMenu(menuName = "D-Dev/Info/EntityInfo")]
     public class EntityInfo : ScriptableObject
