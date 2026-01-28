@@ -5,7 +5,7 @@ namespace D_Dev.Entity.Extensions
     public static class EntityInfoExtensions
     {
         public static TVariable GetVariable<TVariable>(this EntityInfo entityInfo,
-            StringArrayScriptableVariable id)
+            StringScriptableVariable id)
             where TVariable : BaseScriptableVariable<TVariable>
         {
             foreach (var variable in entityInfo.Variables)
