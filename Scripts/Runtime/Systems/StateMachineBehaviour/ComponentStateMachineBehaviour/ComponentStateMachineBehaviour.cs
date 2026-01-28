@@ -5,8 +5,7 @@ using UnityEngine;
 
 namespace  D_Dev.StateMachineBehaviour
 {
-    public abstract class ComponentStateMachineBehaviour<TModularState> 
-        : StateMachineBehaviour where TModularState : BaseComponentState
+    public abstract class ComponentStateMachineBehaviour  : StateMachineBehaviour
     {
         #region Fields
 
@@ -14,7 +13,7 @@ namespace  D_Dev.StateMachineBehaviour
         [SerializeField] protected bool _findOnObject;
         [FoldoutGroup("Module Settings", 99)]
         [HideIf(nameof(_findOnObject))]
-        [SerializeField] protected TModularState[] _states;
+        [SerializeField] protected BaseComponentState[] _states;
 
         #endregion
 
@@ -23,7 +22,7 @@ namespace  D_Dev.StateMachineBehaviour
         protected override void InitStates()
         {
             if (_findOnObject)
-                _states = GetComponents<TModularState>();
+                _states = GetComponents<BaseComponentState>();
             
             if (_states == null || _states.Length == 0)
                 return;
