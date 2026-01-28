@@ -107,6 +107,18 @@ namespace D_Dev.EntitySpawner
             set => _poolMaxSize = value;
         }
 
+        public BasePositionSettings PositionSettings
+        {
+            get => _positionSettings;
+            set => _positionSettings = value;
+        }
+
+        public BaseRotationSettings RotationSettings
+        {
+            get => _rotationSettings;
+            set => _rotationSettings = value;
+        }
+
         #endregion
 
         #region Public

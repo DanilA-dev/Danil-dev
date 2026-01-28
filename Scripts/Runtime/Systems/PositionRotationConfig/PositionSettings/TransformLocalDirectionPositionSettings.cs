@@ -26,8 +26,26 @@ namespace D_Dev.PositionRotationConfig
         [SerializeReference] private PolymorphicValue<Transform> _value;
         [SerializeField] private LocalDirection _direction;
 
+        
+
         #endregion
 
+        #region Properties
+
+        public PolymorphicValue<Transform> Value
+        {
+            get => _value;
+            set => _value = value;
+        }
+
+        public LocalDirection Direction
+        {
+            get => _direction;
+            set => _direction = value;
+        }
+
+        #endregion
+        
         #region Overrides
 
         public override Vector3 GetPosition()

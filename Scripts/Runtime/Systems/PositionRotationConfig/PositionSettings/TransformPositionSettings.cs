@@ -14,6 +14,22 @@ namespace D_Dev.PositionRotationConfig
 
         #endregion
 
+        #region Properties
+
+        public PolymorphicValue<Transform> Value
+        {
+            get => _value;
+            set => _value = value;
+        }
+
+        public bool IsLocal
+        {
+            get => _isLocal;
+            set => _isLocal = value;
+        }
+
+        #endregion
+        
         #region Overrides
 
         public override Vector3 GetPosition() => _isLocal ?

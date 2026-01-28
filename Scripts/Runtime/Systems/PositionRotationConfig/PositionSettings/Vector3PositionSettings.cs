@@ -12,6 +12,16 @@ namespace D_Dev.PositionRotationConfig
 
         #endregion
 
+        #region Properties
+
+        public PolymorphicValue<Vector3> Value
+        {
+            get => _value;
+            set => _value = value;
+        }
+
+        #endregion
+        
         #region Overrides
         
         public override Vector3 GetPosition() => _value.Value;
