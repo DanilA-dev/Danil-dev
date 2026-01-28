@@ -1,6 +1,6 @@
 ﻿using D_Dev.DamageableSystem;
-using D_Dev.EntityVariable;
 using D_Dev.EntityVariable.Types;
+using D_Dev.RuntimeEntityVariables;
 using D_Dev.ScriptableVaiables;
 using Sirenix.OdinInspector;
 using UnityEngine;

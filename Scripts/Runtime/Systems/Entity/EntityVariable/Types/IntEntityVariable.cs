@@ -22,4 +22,4 @@ namespace D_Dev.EntityVariable.Types
 
         #endregion
     }
-}
+}     

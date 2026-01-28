@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using D_Dev.EntityVariable;
 using D_Dev.ScriptableVaiables;
 using UnityEngine;
 
-namespace D_Dev.EntityVariable
+namespace D_Dev.RuntimeEntityVariables
 {
     public class RuntimeEntityVariablesContainer : MonoBehaviour
     {
