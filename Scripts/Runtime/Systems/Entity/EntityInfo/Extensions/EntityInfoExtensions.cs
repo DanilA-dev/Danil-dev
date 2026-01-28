@@ -1,4 +1,5 @@
-﻿using D_Dev.ScriptableVaiables;
+﻿using D_Dev.EntityVariable;
+using D_Dev.ScriptableVaiables;
 
 namespace D_Dev.Entity.Extensions
 {
@@ -6,7 +7,7 @@ namespace D_Dev.Entity.Extensions
     {
         public static TVariable GetVariable<TVariable>(this EntityInfo entityInfo,
             StringScriptableVariable id)
-            where TVariable : BaseScriptableVariable<TVariable>
+            where TVariable : BaseEntityVariable
         {
             foreach (var variable in entityInfo.Variables)
             {
