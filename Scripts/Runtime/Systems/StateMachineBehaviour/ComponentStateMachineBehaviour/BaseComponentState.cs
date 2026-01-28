@@ -16,7 +16,7 @@ namespace D_Dev.StateMachineBehaviour
         {
             #region Fields
 
-            [SerializeField] private PolymorphicValue<string>[] _fromStates;
+            [SerializeReference] private PolymorphicValue<string>[] _fromStates;
             [SerializeReference] private ICondition[] _conditions;
 
             #endregion
@@ -34,7 +34,7 @@ namespace D_Dev.StateMachineBehaviour
 
         #region Fields
 
-        [SerializeField] private PolymorphicValue<string> _stateName;
+        [SerializeReference] private PolymorphicValue<string> _stateName;
         [SerializeField] private TransitionData[] _transitions;
 
         #endregion
