@@ -50,15 +50,26 @@ namespace D_Dev.EntityVariable
             return null;
         }
 
-        public T GetValue<T>(StringScriptableVariable variableID) where T : BaseEntityVariable
+        public bool TryGetValue<T>(StringScriptableVariable variableID, out T value)
+            where T : BaseEntityVariable
         {
             var variable = GetVariable<T>(variableID);
-            if (variable != null)
-                return variable.GetValueRaw() as T;
-            
-            return null;
-        }
+            if (variable == null)
+            {
+                value = null;
+                return false;
+            }
 
+            var valueRaw = variable.GetValueRaw() as T;
+            if(valueRaw == null)
+            {
+                value = null;
+                return false;
+            }
+            value = valueRaw;
+            return true;
+        }
+        
         public void SetValue<T>(StringScriptableVariable variableID, T value) where T : BaseEntityVariable
         {
             var variable = GetVariable<T>(variableID);
