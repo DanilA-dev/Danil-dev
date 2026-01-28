@@ -2,12 +2,12 @@
 
 namespace D_Dev.StateMachine
 {
-    public class StateTransition<TStateEnum>  where TStateEnum : Enum
+    public class StateTransition
     {
-        public TStateEnum ToState { get; set; }
+        public string ToState { get; set; }
         public IStateCondition Condition { get; }
 
-        public StateTransition(TStateEnum toState, IStateCondition condition)
+        public StateTransition(string toState, IStateCondition condition)
         {
             ToState = toState;
             Condition = condition;

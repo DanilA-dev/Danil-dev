@@ -1,13 +1,12 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using D_Dev.StateMachine;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace  D_Dev.StateMachineBehaviour
 {
-    public abstract class ModularStateMachineBehaviour<TStateEnum, TModularState> 
-        : StateMachineBehaviour<TStateEnum> where TStateEnum : Enum where TModularState : BaseModularState<TStateEnum>
+    public abstract class ComponentStateMachineBehaviour<TModularState> 
+        : StateMachineBehaviour where TModularState : BaseComponentState
     {
         #region Fields
 

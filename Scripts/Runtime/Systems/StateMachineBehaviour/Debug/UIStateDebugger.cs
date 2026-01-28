@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace D_Dev.StateMachineBehaviour
 {
-    public class UIStateDebugger<TStateEnum> : MonoBehaviour where TStateEnum : Enum
+    public class UIStateDebugger : MonoBehaviour
     {
         #region Fields
 
-        [SerializeField] private StateMachineBehaviour<TStateEnum> _stateMachineBehaviour;
+        [SerializeField] private StateMachineBehaviour _stateMachineBehaviour;
         [SerializeField] private TextMesh _text;
 
         private Camera _camera;
@@ -28,7 +28,7 @@ namespace D_Dev.StateMachineBehaviour
         #endregion
 
         #region Listeners
-        private void OnStateEnter(TStateEnum state) => _text.text = state.ToString();
+        private void OnStateEnter(string state) => _text.text = state;
 
         #endregion
     }

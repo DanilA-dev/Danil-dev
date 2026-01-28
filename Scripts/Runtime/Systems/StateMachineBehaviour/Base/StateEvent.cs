@@ -6,12 +6,12 @@ using UnityEngine.Events;
 namespace D_Dev.StateMachineBehaviour
 {
     [System.Serializable]
-    public class StateEvent<TStateEnum> where TStateEnum : Enum
+    public class StateEvent
     {
-        [field : SerializeField] public TStateEnum State { get; private set; }
+        [field : SerializeField] public string State { get; private set; }
         [FoldoutGroup("Events")]
-        public UnityEvent<TStateEnum> OnStateEnter;
+        public UnityEvent<string> OnStateEnter;
         [FoldoutGroup("Events")]
-        public UnityEvent<TStateEnum> OnStateExit;
+        public UnityEvent<string> OnStateExit;
     }
 }

@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Linq;
 using D_Dev.Base;
+using D_Dev.PolymorphicValueSystem;
 using D_Dev.StateMachine;
 using UnityEngine;
 
 namespace D_Dev.StateMachineBehaviour
 {
-    public abstract class BaseModularState<TStateEnum> : MonoBehaviour, IState where TStateEnum : Enum
+    public abstract class BaseComponentState : MonoBehaviour, IState
     {
         #region Classes
 
@@ -14,14 +16,14 @@ namespace D_Dev.StateMachineBehaviour
         {
             #region Fields
 
-            [SerializeField] private TStateEnum[] _fromStates;
+            [SerializeField] private PolymorphicValue<string>[] _fromStates;
             [SerializeReference] private ICondition[] _conditions;
 
             #endregion
 
             #region Properties
 
-            public TStateEnum[] FromStates => _fromStates;
+            public string[] FromStates => _fromStates.Select(x => x.Value).ToArray();
 
             public ICondition[] Conditions => _conditions;
 
@@ -32,6 +34,7 @@ namespace D_Dev.StateMachineBehaviour
 
         #region Fields
 
+        [SerializeField] private PolymorphicValue<string> _stateName;
         [SerializeField] private TransitionData[] _transitions;
 
         #endregion
@@ -39,8 +42,7 @@ namespace D_Dev.StateMachineBehaviour
         #region Properties
 
         public float ExitTime { get; }
-        public abstract TStateEnum StateName { get; }
-
+        public string StateName => _stateName.Value;
         public TransitionData[] Transitions => _transitions;
 
         #endregion

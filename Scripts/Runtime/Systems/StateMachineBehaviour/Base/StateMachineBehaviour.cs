@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using D_Dev.StateMachine;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -8,26 +7,26 @@ using UnityEngine.Events;
 
 namespace D_Dev.StateMachineBehaviour
 {
-    public abstract class StateMachineBehaviour<TStateEnum> : MonoBehaviour where TStateEnum : Enum
+    public abstract class StateMachineBehaviour : MonoBehaviour
     {
         #region Fields
 
         [FoldoutGroup("Base Settings", order:100)]
-        [SerializeField, ReadOnly] protected TStateEnum _currentState;
+        [SerializeField, ReadOnly] protected string _currentState;
         [FoldoutGroup("Base Settings", order:100)]
         [SerializeField] protected bool _debugStateChange;
         [Space]
         [FoldoutGroup("Base Settings", order:100)]
-        [SerializeField] protected TStateEnum _startState;
+        [SerializeField] protected string _startState;
         [Title("Events")]
         [FoldoutGroup("Base Settings", order:100)]
-        [SerializeField] protected StateEvent<TStateEnum>[] _stateEvents;
+        [SerializeField] protected StateEvent[] _stateEvents;
         [FoldoutGroup("Base Settings", order:100)]
-        public UnityEvent<TStateEnum> OnAnyStateEnter;
+        public UnityEvent<string> OnAnyStateEnter;
         [FoldoutGroup("Base Settings", order:100)]
-        public UnityEvent<TStateEnum> OnAnyStateExit;
+        public UnityEvent<string> OnAnyStateExit;
         
-        protected StateMachine<TStateEnum> _stateMachine;
+        protected StateMachine.StateMachine _stateMachine;
 
         #endregion
 
@@ -35,7 +34,7 @@ namespace D_Dev.StateMachineBehaviour
 
         protected virtual void Awake()
         {
-            _stateMachine = new StateMachine<TStateEnum>();
+            _stateMachine = new StateMachine.StateMachine();
             _stateMachine.OnStateEnter += state =>
             {
                 _currentState = state;
@@ -84,21 +83,21 @@ namespace D_Dev.StateMachineBehaviour
 
         #region Protected
 
-        protected void AddState(TStateEnum stateName, IState state) => _stateMachine?.AddState(stateName, state);
-        protected void AddTransition(TStateEnum[] fromStates, TStateEnum toState, IStateCondition condition)
+        protected void AddState(string stateName, IState state) => _stateMachine?.AddState(stateName, state);
+        protected void AddTransition(string[] fromStates, string toState, IStateCondition condition)
         {
             foreach (var fromState in fromStates)
                 _stateMachine?.AddTransition(fromState, toState, condition);
         }
         
-        protected void RemoveTransition(TStateEnum keyState) => _stateMachine?.RemoveTransition(keyState);
-        protected void ChangeState(TStateEnum stateName) => _stateMachine.ChangeState(stateName);
+        protected void RemoveTransition(string keyState) => _stateMachine?.RemoveTransition(keyState);
+        protected void ChangeState(string stateName) => _stateMachine.ChangeState(stateName);
         
         #endregion
 
         #region Private
 
-        private void InvokeStateEnterEvent(TStateEnum state)
+        private void InvokeStateEnterEvent(string state)
         {
             if(_stateEvents.Length <= 0)
                 return;
@@ -106,7 +105,7 @@ namespace D_Dev.StateMachineBehaviour
             _stateEvents.FirstOrDefault(s => s.State.Equals(state))?.OnStateEnter?.Invoke(state);
         }
         
-        private void InvokeStateExitEvent(TStateEnum state)
+        private void InvokeStateExitEvent(string state)
         {
             if(_stateEvents.Length <= 0)
                 return;
@@ -118,7 +117,7 @@ namespace D_Dev.StateMachineBehaviour
         
         #region Debug
 
-        protected void StateChangedDebug(TStateEnum stateName)
+        protected void StateChangedDebug(string stateName)
         {
             if(_debugStateChange)
                 Debug.Log($"[StateBehaviour [<color=pink>{this.name}</color>] entered state <color=yellow>{stateName}</color>");

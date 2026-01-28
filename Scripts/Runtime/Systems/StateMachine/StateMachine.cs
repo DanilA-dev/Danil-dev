@@ -7,26 +7,26 @@ using UnityEngine.Events;
 
 namespace D_Dev.StateMachine
 {
-    public class StateMachine<TStateEnum> where TStateEnum : Enum
+    public class StateMachine
     {
         #region Fields
 
-        private TStateEnum _currentState;
+        private string _currentState;
         
         private IState _current;
-        private Dictionary<TStateEnum, IState> _states;
-        private Dictionary<TStateEnum, List<StateTransition<TStateEnum>>> _statesConditions;
+        private Dictionary<string, IState> _states;
+        private Dictionary<string, List<StateTransition>> _statesConditions;
         private CancellationTokenSource _tokenSource;
         
         private bool _isStateSwitching;
         
-        public UnityAction<TStateEnum> OnStateEnter;
-        public UnityAction<TStateEnum> OnStateExit;
+        public UnityAction<string> OnStateEnter;
+        public UnityAction<string> OnStateExit;
             
         #endregion
 
         #region Properties
-        public TStateEnum CurrentState => _currentState;
+        public string CurrentState => _currentState;
 
         #endregion
 
@@ -43,14 +43,14 @@ namespace D_Dev.StateMachine
 
         #region Public
 
-        public void AddState(TStateEnum stateEnum, IState state) => _states.TryAdd(stateEnum, state);
-        public void AddTransition(TStateEnum fromState, TStateEnum toState, IStateCondition condition)
+        public void AddState(string stateName, IState state) => _states.TryAdd(stateName, state);
+        public void AddTransition(string fromState, string toState, IStateCondition condition)
         {
-            if(!_statesConditions.TryAdd(fromState, new List<StateTransition<TStateEnum>> {new(toState, condition) }))
+            if(!_statesConditions.TryAdd(fromState, new List<StateTransition> {new(toState, condition) }))
                 _statesConditions[fromState].Add(new(toState, condition));
         }
 
-        public void RemoveTransition(TStateEnum keyState)
+        public void RemoveTransition(string keyState)
         {
             if(_statesConditions.ContainsKey(keyState))
                 _statesConditions.Remove(keyState);
@@ -63,7 +63,7 @@ namespace D_Dev.StateMachine
         }
         public void OnFixedUpdate() => _current?.OnFixedUpdate();
         
-        public async UniTaskVoid ChangeState(TStateEnum newState)
+        public async UniTaskVoid ChangeState(string newState)
         {
             if(_isStateSwitching)
                 return;
@@ -102,9 +102,9 @@ namespace D_Dev.StateMachine
             if(_statesConditions.Count <= 0)
                 return;
 
-            foreach (var (stateEnum, transition) in _statesConditions)
+            foreach (var (stateName, transition) in _statesConditions)
             {
-                if(!stateEnum.Equals(_currentState))
+                if(!stateName.Equals(_currentState))
                     continue;
                 
                 foreach (var stateTransition in transition)
