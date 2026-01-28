@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using D_Dev.PolymorphicValueSystem;
 using D_Dev.StateMachine;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -17,7 +18,7 @@ namespace D_Dev.StateMachineBehaviour
         [SerializeField] protected bool _debugStateChange;
         [Space]
         [FoldoutGroup("Base Settings", order:100)]
-        [SerializeField] protected string _startState;
+        [SerializeReference] protected PolymorphicValue<string> _startState;
         [Title("Events")]
         [FoldoutGroup("Base Settings", order:100)]
         [SerializeField] protected StateEvent[] _stateEvents;
@@ -46,7 +47,7 @@ namespace D_Dev.StateMachineBehaviour
             InitStates();
         }
 
-        protected virtual void Start() => ChangeState(_startState);
+        protected virtual void Start() => ChangeState(_startState.Value);
 
         protected virtual void OnDestroy()
         {
@@ -102,7 +103,7 @@ namespace D_Dev.StateMachineBehaviour
             if(_stateEvents.Length <= 0)
                 return;
             
-            _stateEvents.FirstOrDefault(s => s.State.Equals(state))?.OnStateEnter?.Invoke(state);
+            _stateEvents.FirstOrDefault(s => s.State.Value.Equals(state))?.OnStateEnter?.Invoke(state);
         }
         
         private void InvokeStateExitEvent(string state)

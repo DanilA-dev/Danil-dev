@@ -1,4 +1,5 @@
 ﻿using System;
+using D_Dev.PolymorphicValueSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,7 +9,7 @@ namespace D_Dev.StateMachineBehaviour
     [System.Serializable]
     public class StateEvent
     {
-        [field : SerializeField] public string State { get; private set; }
+        [field : SerializeReference] public PolymorphicValue<string> State { get; private set; }
         [FoldoutGroup("Events")]
         public UnityEvent<string> OnStateEnter;
         [FoldoutGroup("Events")]
