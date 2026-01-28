@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace  D_Dev.StateMachineBehaviour
 {
-    public abstract class ComponentStateMachineBehaviour  : StateMachineBehaviour
+    public class ComponentStateMachineBehaviour  : StateMachineBehaviour
     {
         #region Fields
 
