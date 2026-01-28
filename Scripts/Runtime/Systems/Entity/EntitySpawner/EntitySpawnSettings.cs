@@ -119,6 +119,18 @@ namespace D_Dev.EntitySpawner
             set => _rotationSettings = value;
         }
 
+        public bool SetParent
+        {
+            get => _setParent;
+            set => _setParent = value;
+        }
+
+        public Transform ParentTransform
+        {
+            get => _parentTransform;
+            set => _parentTransform = value;
+        }
+
         #endregion
 
         #region Public
