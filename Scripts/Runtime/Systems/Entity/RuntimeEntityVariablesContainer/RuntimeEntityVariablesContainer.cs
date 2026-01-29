@@ -25,6 +25,9 @@ namespace D_Dev.RuntimeEntityVariables
             if(variablesFromInfo == null || variablesFromInfo.Count == 0)
                 return;
 
+            foreach (var runtimeVariables in _variables)
+                _variableMap.TryAdd(runtimeVariables.VariableID, runtimeVariables);
+            
             foreach (var variable in variablesFromInfo)
             {
                 if(variable == null)
