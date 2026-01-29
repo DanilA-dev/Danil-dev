@@ -214,6 +214,7 @@ namespace D_Dev.EntitySpawner
         
         private async UniTask PrewarmPool()
         {
+            _poolableEntities = new List<PoolableObject>();
             for (int i = 0; i < _startEntitiesAmount; i++)
             {
                 var go = await CreateEntity();
