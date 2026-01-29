@@ -26,8 +26,9 @@ namespace D_Dev.Scripts.DamageableSystem.Extensions
 
         protected override void Init()
         {
-            base.Init();
             MaxHealth = _maxHealthValue.Value;
+            CurrentHealth = MaxHealth;
+            _currentHealthValue.Value = CurrentHealth;
         }
 
         public override void TakeDamage(DamageData damageData)
