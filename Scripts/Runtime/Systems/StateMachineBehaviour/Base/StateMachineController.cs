@@ -8,7 +8,7 @@ using UnityEngine.Events;
 
 namespace D_Dev.StateMachineBehaviour
 {
-    public abstract class StateMachineBehaviour : MonoBehaviour
+    public abstract class StateMachineController : MonoBehaviour
     {
         #region Fields
 

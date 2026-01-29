@@ -7,7 +7,7 @@ namespace D_Dev.StateMachineBehaviour
     {
         #region Fields
 
-        [SerializeField] private StateMachineBehaviour _stateMachineBehaviour;
+        [SerializeField] private StateMachineController _stateMachineController;
         [SerializeField] private TextMesh _text;
 
         private Camera _camera;
@@ -19,9 +19,9 @@ namespace D_Dev.StateMachineBehaviour
         private void OnEnable()
         {
             _camera = Camera.main;
-            _stateMachineBehaviour.OnAnyStateEnter.AddListener(OnStateEnter);
+            _stateMachineController.OnAnyStateEnter.AddListener(OnStateEnter);
         }
-        private void OnDisable() => _stateMachineBehaviour.OnAnyStateEnter.RemoveListener(OnStateEnter);
+        private void OnDisable() => _stateMachineController.OnAnyStateEnter.RemoveListener(OnStateEnter);
 
         private void LateUpdate() => transform.LookAt(_camera.transform.position);
 
