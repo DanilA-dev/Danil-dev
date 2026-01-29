@@ -21,7 +21,7 @@ namespace D_Dev.MovementHandler
                 return;
 
             _navMeshAgent.speed = maxVelocity;
-            _navMeshAgent.Move(direction);
+            _navMeshAgent.destination = direction;
         }
 
         public override void StopMovement()

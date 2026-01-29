@@ -12,7 +12,7 @@ namespace D_Dev.RuntimeEntityVariables
 
         [SerializeReference] private List<BaseEntityVariable> _variables = new();
 
-        private Dictionary<StringScriptableVariable, BaseEntityVariable> _variableMap;
+        private Dictionary<StringScriptableVariable, BaseEntityVariable> _variableMap = new();
         
         public event Action OnInitialized;
             
@@ -22,9 +22,6 @@ namespace D_Dev.RuntimeEntityVariables
 
         public void Init(List<BaseEntityVariable> variablesFromInfo)
         {
-            _variableMap = new();
-            _variables.Clear();
-            
             if(variablesFromInfo == null || variablesFromInfo.Count == 0)
                 return;
 
