@@ -46,7 +46,7 @@ namespace D_Dev.Utility
                 _transform.rotation = Quaternion.Slerp(
                     _transform.rotation,
                     targetRotation,
-                    speed * Time.fixedDeltaTime
+                    speed * Time.deltaTime
                 );
 
                 _isRotating = true;
