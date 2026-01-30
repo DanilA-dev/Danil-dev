@@ -9,7 +9,7 @@ namespace D_Dev.AnimatorView.Extensions
         [Serializable]
         public class StateConfig
         {
-            public PolymorphicValue<string> StateName;
+            [SerializeReference] public PolymorphicValue<string> StateName;
             public TConfig AnimationConfig;
         }
 
