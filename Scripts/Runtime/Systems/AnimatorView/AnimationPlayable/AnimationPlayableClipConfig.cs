@@ -9,9 +9,9 @@ namespace D_Dev.AnimatorView.AnimationPlayableHandler
         #region Fields
 
         [SerializeField] private int _layer;
-        [SerializeField] private bool _isStatic;
         [SerializeField] private bool _applyRootMotion;
         [SerializeField, Range(0, 1f)] private float _targetWeight;
+        [SerializeField] private bool _canPlayIfSameClip;
         [SerializeField] private bool _isRandomizeClip;
         [HideIf(nameof(_isRandomizeClip))] 
         [SerializeField] private AnimationClip _animationClip;
@@ -105,12 +105,6 @@ namespace D_Dev.AnimatorView.AnimationPlayableHandler
             set => _fadeDelay = value;
         }
 
-        public bool IsStatic
-        {
-            get => _isStatic;
-            set => _isStatic = value;
-        }
-
         public bool UseAutoFadeTimeBasedOnClipLength
         {
             get => _useAutoFadeTimeBasedOnClipLength;
@@ -121,6 +115,12 @@ namespace D_Dev.AnimatorView.AnimationPlayableHandler
         {
             get => _applyRootMotion;
             set => _applyRootMotion = value;
+        }
+
+        public bool CanPlayIfSameClip
+        {
+            get => _canPlayIfSameClip;
+            set => _canPlayIfSameClip = value;
         }
 
         #endregion

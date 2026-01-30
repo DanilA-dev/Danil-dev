@@ -52,10 +52,16 @@ namespace D_Dev.AnimatorView.AnimationPlayableHandler
 
         protected AnimationClipPlayable CreatePlayableClip(AnimationPlayableClipConfig config)
         {
-            if (!_playableGraph.PlayableGraph.IsValid())
+            if (_playableGraph?.PlayableGraph.IsValid() != true)
                 return new AnimationClipPlayable();
-            
+
+            if (config == null)
+                return new AnimationClipPlayable();
+
             var clip = config.GetAnimationClip();
+            if (clip == null)
+                return new AnimationClipPlayable();
+
             var newPlayable = AnimationClipPlayable.Create(_playableGraph.PlayableGraph, clip);
             if(!config.IsLooping)
                 newPlayable.SetDuration(clip.length);

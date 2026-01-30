@@ -40,8 +40,27 @@ namespace D_Dev.AnimatorView.AnimationPlayableHandler
 
         private void OnDestroy()
         {
-            if(PlayableGraph.IsValid())
-                PlayableGraph.Destroy();
+            if (!PlayableGraph.IsValid())
+                return;
+
+            if (RootLayerMixer.IsValid())
+            {
+                int inputCount = RootLayerMixer.GetInputCount();
+                for (int i = 0; i < inputCount; i++)
+                {
+                    if (RootLayerMixer.GetInput(i).IsValid())
+                    {
+                        RootLayerMixer.DisconnectInput(i);
+                    }
+                }
+            }
+
+            if (_animationPlayableOutput.IsOutputValid())
+            {
+                _animationPlayableOutput.SetSourcePlayable(Playable.Null);
+            }
+
+            PlayableGraph.Destroy();
         }
 
         #endregion
