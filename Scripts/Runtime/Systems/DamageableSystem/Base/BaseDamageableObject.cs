@@ -1,4 +1,5 @@
-﻿using D_Dev.PolymorphicValueSystem;
+﻿using System;
+using D_Dev.PolymorphicValueSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -17,6 +18,7 @@ namespace D_Dev.DamageableSystem
         [FoldoutGroup("Events")]
         [PropertyOrder(100)]
         public UnityEvent OnDeath;
+        public event Action<IDamageable> OnDeathCallback;
         
         #endregion
 
@@ -46,6 +48,7 @@ namespace D_Dev.DamageableSystem
             
             CurrentHealth -= damageData.Damage;
             OnDamage?.Invoke(damageData);
+            OnDeathCallback?.Invoke(this);
             if(CurrentHealth <= 0)
                 OnDie();
         }
