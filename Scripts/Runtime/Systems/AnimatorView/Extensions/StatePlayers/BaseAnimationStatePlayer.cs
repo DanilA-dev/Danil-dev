@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace D_Dev.AnimatorView.Extensions
 {
-    public abstract class AnimationStatePlayer<TConfig, TPlayer> : MonoBehaviour
+    public abstract class BaseAnimationStatePlayer<TConfig, TPlayer> : MonoBehaviour
     {
         [Serializable]
         public class StateConfig
