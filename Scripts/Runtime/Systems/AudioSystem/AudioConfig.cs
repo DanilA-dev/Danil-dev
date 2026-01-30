@@ -22,7 +22,7 @@ namespace D_Dev.AudioSystem
         #region Fields
 
         [SerializeField] private StringScriptableVariable _audioConfigName;
-        [SerializeField] private AudioMixerGroup _soundMixer;
+        [SerializeField] private AudioMixerGroup _soundMixerGroup;
         [Space]
         [Title("Clips")]
         [HideIf(nameof(_isRandomClip))]
@@ -67,8 +67,8 @@ namespace D_Dev.AudioSystem
 
         public AudioMixerGroup SoundMixer
         {
-            get => _soundMixer;
-            set => _soundMixer = value;
+            get => _soundMixerGroup;
+            set => _soundMixerGroup = value;
         }
 
         public AudioClip Clip
@@ -190,6 +190,7 @@ namespace D_Dev.AudioSystem
             audioSource.pitch = _isRandomPitch ? Random.Range(_minPitch, _maxPitch) : _pitch;
             audioSource.loop = _isLooping;
             audioSource.playOnAwake = _playOnAwake;
+            audioSource.outputAudioMixerGroup = _soundMixerGroup;
         }
 
         public AudioClip GetClip() => _isRandomClip ? _clips[Random.Range(0, _clips.Length)] : _clip;
