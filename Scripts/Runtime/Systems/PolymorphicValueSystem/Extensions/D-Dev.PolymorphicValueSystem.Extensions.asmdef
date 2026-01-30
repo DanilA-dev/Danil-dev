@@ -1,0 +1,17 @@
+{
+    "name": "D-Dev.PolymorphicValueSystem.Extensions",
+    "rootNamespace": "",
+    "references": [
+        "D-Dev.PolymorphicValueSystem",
+        "D-Dev.Base"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

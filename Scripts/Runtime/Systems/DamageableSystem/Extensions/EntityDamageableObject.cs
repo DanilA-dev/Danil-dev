@@ -20,7 +20,6 @@ namespace D_Dev.Scripts.DamageableSystem.Extensions
         public override float MaxHealth { get; protected set; }
 
         #endregion
-
         
         #region Overrides
 
