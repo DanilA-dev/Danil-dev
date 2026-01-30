@@ -48,7 +48,6 @@ namespace D_Dev.DamageableSystem
             
             CurrentHealth -= damageData.Damage;
             OnDamage?.Invoke(damageData);
-            OnDeathCallback?.Invoke(this);
             if(CurrentHealth <= 0)
                 OnDie();
         }
@@ -64,6 +63,7 @@ namespace D_Dev.DamageableSystem
         private void OnDie()
         {
             CurrentHealth = 0;
+            OnDeathCallback?.Invoke(this);
             OnDeath?.Invoke();
         }
 
