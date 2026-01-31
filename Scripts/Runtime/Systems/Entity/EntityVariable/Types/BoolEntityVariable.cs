@@ -4,7 +4,7 @@ using D_Dev.ScriptableVaiables;
 namespace D_Dev.EntityVariable.Types
 {
     [System.Serializable]
-    public class BoolEntityVariable : PolymorphicEntityVariable<PolymorphicValue<bool>>
+    public class BoolEntityVariable : PolymorphicEntityVariable<PolymorphicValue<bool>, bool>
     {
         #region Constructor
 

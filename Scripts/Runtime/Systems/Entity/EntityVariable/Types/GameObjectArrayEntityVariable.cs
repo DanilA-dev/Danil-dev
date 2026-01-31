@@ -5,7 +5,7 @@ using UnityEngine;
 namespace D_Dev.EntityVariable.Types
 {
     [System.Serializable]
-    public class GameObjectArrayEntityVariable : PolymorphicEntityVariable<PolymorphicValue<GameObject[]>>
+    public class GameObjectArrayEntityVariable : PolymorphicEntityVariable<PolymorphicValue<GameObject[]>, GameObject[]>
     {
         #region Constructor
 

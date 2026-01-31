@@ -4,7 +4,7 @@ using D_Dev.ScriptableVaiables;
 namespace D_Dev.EntityVariable.Types
 {
     [System.Serializable]
-    public class StringArrayEntityVariable : PolymorphicEntityVariable<PolymorphicValue<string[]>>
+    public class StringArrayEntityVariable : PolymorphicEntityVariable<PolymorphicValue<string[]>, string[]>
     {
         #region Constructor
 

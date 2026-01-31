@@ -5,7 +5,7 @@ using UnityEngine;
 namespace D_Dev.EntityVariable.Types
 {
     [System.Serializable]
-    public class TransformArrayEntityVariable : PolymorphicEntityVariable<PolymorphicValue<Transform[]>>
+    public class TransformArrayEntityVariable : PolymorphicEntityVariable<PolymorphicValue<Transform[]>, Transform[]>
     {
         #region Constructor
 

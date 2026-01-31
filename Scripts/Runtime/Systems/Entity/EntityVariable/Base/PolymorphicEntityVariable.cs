@@ -1,32 +1,36 @@
 using System;
 using System.Collections.Generic;
+using D_Dev.PolymorphicValueSystem;
 using D_Dev.ScriptableVaiables;
 using UnityEngine;
 
 namespace D_Dev.EntityVariable.Types
 {
     [System.Serializable]
-    public abstract class PolymorphicEntityVariable<T> : BaseEntityVariable
+    public abstract class PolymorphicEntityVariable<TPolymorphicValue, TValue> : BaseEntityVariable 
+        where TPolymorphicValue : PolymorphicValue<TValue>
     {
         #region Fields
 
-        [SerializeReference] protected T _value;
+        [SerializeReference] protected TPolymorphicValue _value;
         
-        public event Action<T> OnVariableChange;
+        public event Action<TValue> OnVariableChange;
 
         #endregion
 
         #region Properties
 
-        public T Value
+        public TPolymorphicValue Value
         {
             get => _value;
             set
             {
-                if (!EqualityComparer<T>.Default.Equals(_value, value))
+                var oldValue = _value.Value;
+                _value.Value = value.Value;
+                var newValue = _value.Value;
+                if (!EqualityComparer<TValue>.Default.Equals(oldValue, newValue))
                 {
-                    _value = value;
-                    OnVariableChange?.Invoke(_value);
+                    OnVariableChange?.Invoke(_value.Value);
                 }
             }
         }
@@ -37,9 +41,9 @@ namespace D_Dev.EntityVariable.Types
 
         protected PolymorphicEntityVariable() {}
         
-        protected PolymorphicEntityVariable(T value) { _value = value; }
+        protected PolymorphicEntityVariable(TPolymorphicValue value) { _value = value; }
 
-        protected PolymorphicEntityVariable(StringScriptableVariable variableID, T value)
+        protected PolymorphicEntityVariable(StringScriptableVariable variableID, TPolymorphicValue value)
         {
             _variableID = variableID;
             _value = value;
@@ -56,7 +60,7 @@ namespace D_Dev.EntityVariable.Types
 
         public override void SetValueRaw(object value)
         {
-            Value = (T)value;
+            Value = (TPolymorphicValue)value;
         }
 
         #endregion
