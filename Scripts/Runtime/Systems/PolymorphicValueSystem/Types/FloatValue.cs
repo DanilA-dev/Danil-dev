@@ -20,12 +20,7 @@ namespace D_Dev.PolymorphicValueSystem
         public override float Value
         {
             get => _value;
-            set
-            {
-                var oldValue = _value;
-                _value = value;
-                RaiseOnValueChanged(oldValue, value);
-            }
+            set => _value = value;
         }
 
         #endregion
@@ -60,10 +55,7 @@ namespace D_Dev.PolymorphicValueSystem
             set
             {
                 if (_variable == null) return;
-                
-                var oldValue = _variable.Value;
                 _variable.Value = value;
-                RaiseOnValueChanged(oldValue, value);
             }
         }
 

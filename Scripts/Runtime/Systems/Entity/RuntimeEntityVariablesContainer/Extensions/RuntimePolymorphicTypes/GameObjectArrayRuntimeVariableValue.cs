@@ -36,9 +36,7 @@ namespace D_Dev.RuntimeEntityVariables.Extensions
                 
                 if (_cachedVariable != null)
                 {
-                    var oldValue = _cachedVariable.Value.Value;
                     _cachedVariable.Value.Value = value;
-                    RaiseOnValueChanged(oldValue, value);
                 }
             }
         }
