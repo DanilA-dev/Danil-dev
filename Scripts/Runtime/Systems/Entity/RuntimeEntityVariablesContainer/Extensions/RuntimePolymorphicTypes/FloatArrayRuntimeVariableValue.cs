@@ -1,3 +1,4 @@
+using System;
 using D_Dev.EntityVariable.Types;
 using D_Dev.PolymorphicValueSystem;
 using D_Dev.ScriptableVaiables;
@@ -25,11 +26,8 @@ namespace D_Dev.RuntimeEntityVariables.Extensions
             {
                 if (_cachedVariable == null)
                     _cachedVariable = _runtimeEntityVariablesContainer?.GetVariable<FloatArrayEntityVariable>(_variableID);
-                
-                if (_cachedVariable == null)
-                    return new float[0];
-                
-                return _cachedVariable.Value.Value;
+
+                return _cachedVariable != null ? _cachedVariable.Value.Value : Array.Empty<float>();
             }
             set
             {
@@ -37,7 +35,11 @@ namespace D_Dev.RuntimeEntityVariables.Extensions
                     _cachedVariable = _runtimeEntityVariablesContainer?.GetVariable<FloatArrayEntityVariable>(_variableID);
                 
                 if (_cachedVariable != null)
+                {
+                    var oldValue = _cachedVariable.Value.Value;
                     _cachedVariable.Value.Value = value;
+                    RaiseOnValueChanged(oldValue, value);
+                }
             }
         }
 

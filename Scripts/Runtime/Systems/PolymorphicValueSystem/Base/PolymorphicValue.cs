@@ -9,6 +9,8 @@ namespace D_Dev.PolymorphicValueSystem
 
         public abstract T Value { get; set; }
 
+        public event Action<T, T> OnValueChanged;
+
         #endregion
 
         #region Cloning
@@ -22,5 +24,10 @@ namespace D_Dev.PolymorphicValueSystem
         public virtual void Dispose() { }
 
         #endregion
+
+        protected void RaiseOnValueChanged(T oldValue, T newValue)
+        {
+            OnValueChanged?.Invoke(oldValue, newValue);
+        }
     }
 }

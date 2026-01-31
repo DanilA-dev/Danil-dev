@@ -1,4 +1,5 @@
-﻿using D_Dev.EntityVariable.Types;
+using System;
+using D_Dev.EntityVariable.Types;
 using D_Dev.PolymorphicValueSystem;
 using D_Dev.ScriptableVaiables;
 using UnityEngine;
@@ -26,10 +27,7 @@ namespace D_Dev.RuntimeEntityVariables.Extensions
                 if (_cachedVariable == null)
                     _cachedVariable = _runtimeEntityVariablesContainer?.GetVariable<IntEntityVariable>(_variableID);
                 
-                if (_cachedVariable == null)
-                    return 0;
-                
-                return _cachedVariable.Value.Value;
+                return _cachedVariable != null ? _cachedVariable.Value.Value : 0;
             }
             set
             {
@@ -37,10 +35,13 @@ namespace D_Dev.RuntimeEntityVariables.Extensions
                     _cachedVariable = _runtimeEntityVariablesContainer?.GetVariable<IntEntityVariable>(_variableID);
                 
                 if (_cachedVariable != null)
+                {
+                    var oldValue = _cachedVariable.Value.Value;
                     _cachedVariable.Value.Value = value;
+                    RaiseOnValueChanged(oldValue, value);
+                }
             }
         }
-
 
         #endregion
 
