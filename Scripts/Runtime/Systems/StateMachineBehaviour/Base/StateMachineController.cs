@@ -64,11 +64,6 @@ namespace D_Dev.StateMachineBehaviour
             Observable.Interval(TimeSpan.FromSeconds(_transitionCheckInterval))
                 .Subscribe(_ => _stateMachine?.CheckTransitions())
                 .AddTo(_disposables);
-
-            this.UpdateAsObservable()
-                .Where(_ => Time.inFixedTimeStep)
-                .Subscribe(_ => _stateMachine?.UpdateStatesFixed())
-                .AddTo(_disposables);
         }
 
         protected virtual void Start() => ChangeState(_startState.Value);
@@ -78,12 +73,18 @@ namespace D_Dev.StateMachineBehaviour
             _disposables?.Dispose();
         }
 
+        private void FixedUpdate()
+        {
+            _stateMachine?.UpdateStatesFixed();
+            OnFixedUpdate();
+        }
 
         #endregion
 
         #region Virtual/Abstract
 
         protected abstract void InitStates();
+        protected virtual void OnFixedUpdate() {}
 
         #endregion
 

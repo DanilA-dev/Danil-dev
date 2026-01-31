@@ -160,7 +160,6 @@ namespace D_Dev.EntitySpawner
                 poolableEntity.OnEntityRelease.RemoveListener(OnPoolableEntityReleased);
                 poolableEntity.OnEntityDestroy.RemoveListener(OnPoolableEntityDestroyed);
                 _pool.Release(poolableEntity);
-                Object.Destroy(poolableEntity.gameObject);
             }
             
             _pool.Dispose();
@@ -207,9 +206,9 @@ namespace D_Dev.EntitySpawner
 
             _pool = new ObjectPool<PoolableObject>(
                 createFunc: () => _poolableEntities[index++],
-                actionOnGet: p => p.gameObject.SetActive(true),
-                actionOnRelease: p => p.gameObject.SetActive(false),
-                actionOnDestroy: p => Object.Destroy(p.gameObject),
+                actionOnGet: p => { if (p != null && p.gameObject != null) p.gameObject.SetActive(true); },
+                actionOnRelease: p => { if (p != null && p.gameObject != null) p.gameObject.SetActive(false); },
+                actionOnDestroy: p => { if (p != null && p.gameObject != null) Object.Destroy(p.gameObject); },
                 collectionCheck: false,
                 defaultCapacity: _poolableEntities.Count,
                 maxSize: _poolableEntities.Count

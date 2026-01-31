@@ -39,8 +39,8 @@ namespace D_Dev.InputSystem.Extensions.Conditions
             
             return _desiredPhase switch
             {
-                InputActionThisFrame.Pressed => _inputAction.action.WasPressedThisFrame(),
-                InputActionThisFrame.Released => _inputAction.action.WasReleasedThisFrame(),
+                InputActionThisFrame.Pressed => _inputAction.action.IsPressed(),
+                InputActionThisFrame.Released => !_inputAction.action.IsPressed(),
                 _ => false
             };
         }
