@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using D_Dev.Entity;
 using D_Dev.Extensions;
@@ -149,9 +149,9 @@ namespace D_Dev.EntitySpawner
 
         public void DisposePool()
         {
-            if(!_usePool)
+            if(!_usePool || _pool == null)
                 return;
-            
+
             if(_poolableEntities.Count <= 0)
                 return;
 
@@ -159,7 +159,11 @@ namespace D_Dev.EntitySpawner
             {
                 poolableEntity.OnEntityRelease.RemoveListener(OnPoolableEntityReleased);
                 poolableEntity.OnEntityDestroy.RemoveListener(OnPoolableEntityDestroyed);
+                _pool.Release(poolableEntity);
+                Object.Destroy(poolableEntity.gameObject);
             }
+            
+            _pool.Dispose();
             _poolableEntities.Clear();
         }
 
@@ -255,6 +259,7 @@ namespace D_Dev.EntitySpawner
         {
             poolableObject.OnEntityRelease.RemoveListener(OnPoolableEntityReleased);
             poolableObject.OnEntityDestroy.RemoveListener(OnPoolableEntityDestroyed);
+            _pool.Release(poolableObject);
             _poolableEntities.TryRemove(poolableObject);
         }
 

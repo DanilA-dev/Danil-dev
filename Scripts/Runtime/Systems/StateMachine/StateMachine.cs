@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -56,12 +56,20 @@ namespace D_Dev.StateMachine
                 _statesConditions.Remove(keyState);
         }
         
-        public void OnUpdate()
+        public void UpdateStates()
         {
             _current?.OnUpdate();
+        }
+
+        public void CheckTransitions()
+        {
             UpdateTransitions();
         }
-        public void OnFixedUpdate() => _current?.OnFixedUpdate();
+
+        public void UpdateStatesFixed()
+        {
+            _current?.OnFixedUpdate();
+        }
         
         public async UniTaskVoid ChangeState(string newState)
         {

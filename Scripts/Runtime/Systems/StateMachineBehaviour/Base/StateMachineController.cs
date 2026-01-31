@@ -1,7 +1,10 @@
-﻿using System.Linq;
+using System;
+using System.Linq;
 using D_Dev.PolymorphicValueSystem;
 using D_Dev.StateMachine;
 using Sirenix.OdinInspector;
+using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -26,8 +29,14 @@ namespace D_Dev.StateMachineBehaviour
         public UnityEvent<string> OnAnyStateEnter;
         [FoldoutGroup("Base Settings", order:100)]
         public UnityEvent<string> OnAnyStateExit;
-        
+
+        [FoldoutGroup("Update Intervals", order: 200)]
+        [SerializeField] private float _stateUpdateInterval = 0.05f;
+        [FoldoutGroup("Update Intervals", order: 200)]
+        [SerializeField] private float _transitionCheckInterval = 0.02f;
+
         protected StateMachine.StateMachine _stateMachine;
+        private CompositeDisposable _disposables;
 
         #endregion
 
@@ -35,6 +44,8 @@ namespace D_Dev.StateMachineBehaviour
 
         protected virtual void Awake()
         {
+            _disposables = new CompositeDisposable();
+
             _stateMachine = new StateMachine.StateMachine();
             _stateMachine.OnStateEnter += state =>
             {
@@ -45,40 +56,34 @@ namespace D_Dev.StateMachineBehaviour
             };
             _stateMachine.OnStateExit += InvokeStateExitEvent;
             InitStates();
+
+            Observable.Interval(TimeSpan.FromSeconds(_stateUpdateInterval))
+                .Subscribe(_ => _stateMachine?.UpdateStates())
+                .AddTo(_disposables);
+
+            Observable.Interval(TimeSpan.FromSeconds(_transitionCheckInterval))
+                .Subscribe(_ => _stateMachine?.CheckTransitions())
+                .AddTo(_disposables);
+
+            this.UpdateAsObservable()
+                .Where(_ => Time.inFixedTimeStep)
+                .Subscribe(_ => _stateMachine?.UpdateStatesFixed())
+                .AddTo(_disposables);
         }
 
         protected virtual void Start() => ChangeState(_startState.Value);
 
         protected virtual void OnDestroy()
         {
-            _stateMachine.OnStateEnter -= state =>
-            {
-                _currentState = state;
-                OnAnyStateExit?.Invoke(state);
-                InvokeStateEnterEvent(state);
-            };
-            _stateMachine.OnStateExit -= InvokeStateExitEvent;
+            _disposables?.Dispose();
         }
 
-        protected virtual void Update()
-        {
-            _stateMachine?.OnUpdate();
-            OnUpdate();
-        }
-
-        protected virtual void FixedUpdate()
-        {
-            _stateMachine?.OnFixedUpdate();
-            OnFixedUpdate();
-        }
 
         #endregion
 
         #region Virtual/Abstract
 
         protected abstract void InitStates();
-        protected virtual void OnUpdate() {}
-        protected virtual void OnFixedUpdate() {}
 
         #endregion
 
