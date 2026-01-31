@@ -4,7 +4,7 @@ using D_Dev.ScriptableVaiables;
 namespace D_Dev.EntityVariable.Types
 {
     [System.Serializable]
-    public class BoolArrayEntityVariable : PolymorphicEntityVariable<PolymorphicValue<bool[]>, bool[]>
+    public class BoolArrayEntityVariable : PolymorphicEntityVariable<PolymorphicValue<bool[]>>
     {
         #region Constructor
 

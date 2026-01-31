@@ -11,8 +11,6 @@ namespace D_Dev.EntityVariable
 
         [SerializeField] protected StringScriptableVariable _variableID;
         
-        public event Action OnChange;
-
         #endregion
 
         #region Properties

@@ -4,7 +4,7 @@ using D_Dev.ScriptableVaiables;
 namespace D_Dev.EntityVariable.Types
 {
     [System.Serializable]
-    public class FloatEntityVariable : PolymorphicEntityVariable<PolymorphicValue<float>, float>
+    public class FloatEntityVariable : PolymorphicEntityVariable<PolymorphicValue<float>>
     {
         #region Constructors
 

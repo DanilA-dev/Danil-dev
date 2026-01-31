@@ -5,7 +5,7 @@ using UnityEngine;
 namespace D_Dev.EntityVariable.Types
 {
     [System.Serializable]
-    public class Vector3ArrayEntityVariable : PolymorphicEntityVariable<PolymorphicValue<Vector3[]>, Vector3[]>
+    public class Vector3ArrayEntityVariable : PolymorphicEntityVariable<PolymorphicValue<Vector3[]>>
     {
         #region Constructor
 
