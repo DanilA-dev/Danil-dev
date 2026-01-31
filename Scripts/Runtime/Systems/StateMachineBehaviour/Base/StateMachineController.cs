@@ -57,13 +57,31 @@ namespace D_Dev.StateMachineBehaviour
             _stateMachine.OnStateExit += InvokeStateExitEvent;
             InitStates();
 
-            Observable.Interval(TimeSpan.FromSeconds(_stateUpdateInterval))
-                .Subscribe(_ => _stateMachine?.UpdateStates())
-                .AddTo(_disposables);
+            if (_stateUpdateInterval <= 0)
+            {
+                this.UpdateAsObservable()
+                    .Subscribe(_ => _stateMachine?.UpdateStates())
+                    .AddTo(_disposables);
+            }
+            else
+            {
+                Observable.Interval(TimeSpan.FromSeconds(_stateUpdateInterval))
+                    .Subscribe(_ => _stateMachine?.UpdateStates())
+                    .AddTo(_disposables);
+            }
 
-            Observable.Interval(TimeSpan.FromSeconds(_transitionCheckInterval))
-                .Subscribe(_ => _stateMachine?.CheckTransitions())
-                .AddTo(_disposables);
+            if (_transitionCheckInterval <= 0)
+            {
+                this.UpdateAsObservable()
+                    .Subscribe(_ => _stateMachine?.CheckTransitions())
+                    .AddTo(_disposables);
+            }
+            else
+            {
+                Observable.Interval(TimeSpan.FromSeconds(_transitionCheckInterval))
+                    .Subscribe(_ => _stateMachine?.CheckTransitions())
+                    .AddTo(_disposables);
+            }
         }
 
         protected virtual void Start() => ChangeState(_startState.Value);
