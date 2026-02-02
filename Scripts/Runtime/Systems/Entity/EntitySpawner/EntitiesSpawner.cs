@@ -37,8 +37,8 @@ namespace D_Dev.EntitySpawner
 
         #region Public
 
-        public async UniTask CreateEntityAsync(int settingsIndex) => await GetEntityAsync(settingsIndex);
-        public async UniTask CreateEntityAsync(EntityInfo data) => await GetEntityAsync(data);
+        public async void CreateEntityAsync(int settingsIndex) => await GetEntityAsync(settingsIndex);
+        public async void CreateEntityAsync(EntityInfo data) => await GetEntityAsync(data);
 
         #endregion
 
