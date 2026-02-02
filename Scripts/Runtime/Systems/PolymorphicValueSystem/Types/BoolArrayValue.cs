@@ -1,4 +1,3 @@
-using System;
 using D_Dev.ScriptableVaiables;
 using UnityEngine;
 
@@ -8,24 +7,8 @@ namespace D_Dev.PolymorphicValueSystem
     public abstract class BoolArrayValue : PolymorphicValue<bool[]> { }
 
     [System.Serializable]
-    public sealed class BoolArrayConstantValue : BoolArrayValue
+    public sealed class BoolArrayConstantValue : ConstantValue<bool[]>
     {
-        #region Fields
-
-        [SerializeField] private bool[] _value;
-
-        #endregion
-
-        #region Properties
-
-        public override bool[] Value
-        {
-            get => _value;
-            set => _value = value;
-        }
-
-        #endregion
-
         #region Cloning
 
         public override PolymorphicValue<bool[]> Clone()
@@ -37,33 +20,8 @@ namespace D_Dev.PolymorphicValueSystem
     }
 
     [System.Serializable]
-    public sealed class BoolArrayScriptableVariableValue : BoolArrayValue
+    public sealed class BoolArrayScriptableVariableValue : ScriptableVariableValue<BoolArrayScriptableVariable,bool[]>
     {
-        #region Fields
-
-        [SerializeField] private BoolArrayScriptableVariable _variable;
-
-        #endregion
-
-        #region Properties
-
-        public override bool[] Value
-        {
-            get
-            {
-                return _variable != null ? _variable.Value : default;
-            }
-            set
-            {
-                if (_variable == null) return;
-                _variable.Value = value;
-            }
-        }
-
-        public BoolArrayScriptableVariable Variable => _variable;
-
-        #endregion
-
         #region Cloning
 
         public override PolymorphicValue<bool[]> Clone()

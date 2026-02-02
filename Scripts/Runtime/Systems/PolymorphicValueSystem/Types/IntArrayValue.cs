@@ -1,4 +1,3 @@
-using System;
 using D_Dev.ScriptableVaiables;
 using UnityEngine;
 
@@ -8,24 +7,8 @@ namespace D_Dev.PolymorphicValueSystem
     public abstract class IntArrayValue : PolymorphicValue<int[]> { }
 
     [System.Serializable]
-    public sealed class IntArrayConstantValue : IntArrayValue
+    public sealed class IntArrayConstantValue : ConstantValue<int[]>
     {
-        #region Fields
-
-        [SerializeField] private int[] _value;
-
-        #endregion
-
-        #region Properties
-
-        public override int[] Value
-        {
-            get => _value;
-            set => _value = value;
-        }
-
-        #endregion
-
         #region Cloning
 
         public override PolymorphicValue<int[]> Clone()
@@ -37,33 +20,8 @@ namespace D_Dev.PolymorphicValueSystem
     }
 
     [System.Serializable]
-    public sealed class IntArrayScriptableVariableValue : IntArrayValue
+    public sealed class IntArrayScriptableVariableValue : ScriptableVariableValue<IntArrayScriptableVariable,int[]>
     {
-        #region Fields
-
-        [SerializeField] private IntArrayScriptableVariable _variable;
-
-        #endregion
-
-        #region Properties
-
-        public override int[] Value
-        {
-            get
-            {
-                return _variable != null ? _variable.Value : default;
-            }
-            set
-            {
-                if (_variable == null) return;
-                _variable.Value = value;
-            }
-        }
-
-        public IntArrayScriptableVariable Variable => _variable;
-
-        #endregion
-
         #region Cloning
 
         public override PolymorphicValue<int[]> Clone()

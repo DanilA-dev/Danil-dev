@@ -7,24 +7,8 @@ namespace D_Dev.PolymorphicValueSystem
     public abstract class FloatValue : PolymorphicValue<float> { }
 
     [System.Serializable]
-    public sealed class FloatConstantValue : FloatValue
+    public sealed class FloatConstantValue : ConstantValue<float>
     {
-        #region Fields
-
-        [SerializeField] private float _value;
-
-        #endregion
-
-        #region Properties
-
-        public override float Value
-        {
-            get => _value;
-            set => _value = value;
-        }
-
-        #endregion
-
         #region Cloning
 
         public override PolymorphicValue<float> Clone()
@@ -36,33 +20,8 @@ namespace D_Dev.PolymorphicValueSystem
     }
 
     [System.Serializable]
-    public sealed class FloatScriptableVariableValue : FloatValue
+    public sealed class FloatScriptableVariableValue : ScriptableVariableValue<FloatScriptableVariable,float>
     {
-        #region Fields
-
-        [SerializeField] private FloatScriptableVariable _variable;
-
-        #endregion
-
-        #region Properties
-
-        public override float Value
-        {
-            get
-            {
-                return _variable != null ? _variable.Value : default;
-            }
-            set
-            {
-                if (_variable == null) return;
-                _variable.Value = value;
-            }
-        }
-
-        public FloatScriptableVariable Variable => _variable;
-
-        #endregion
-
         #region Cloning
 
         public override PolymorphicValue<float> Clone()
