@@ -23,6 +23,7 @@ namespace D_Dev.TweenAnimations
         #region Fields
 
         [SerializeField] private PlayMode _playMode;
+        [SerializeField] private bool _ignoreTimeScale;
         [SerializeReference] protected List<BaseAnimationTween> _tweens = new();
         
         private Sequence _currentSequence;
@@ -37,7 +38,7 @@ namespace D_Dev.TweenAnimations
         public void Play()
         {
             if (!HasTweensInArray())
-                return;
+                return; 
 
             Kill();
             OnStart?.Invoke();
@@ -56,6 +57,7 @@ namespace D_Dev.TweenAnimations
             }
 
             _currentSequence.SetAutoKill(true)
+                .SetUpdate(_ignoreTimeScale)
                 .OnComplete(OnTweensComplete);
         }
 

@@ -87,7 +87,7 @@ namespace D_Dev.CurrencySystem
                     ActionType = CurrencyActionType.Deposit,
                     IsSuccess = false,
                 }, _value);
-                Debug.Log($"[Currency : <color=pink> {_name} </color> ] Deposit - {depositValue}, <color=red> Failed </color>");
+                Debug.Log($"[Currency : {_name}] Deposit - {depositValue}, <color=red> Failed </color>");
                 return false;
             }
 
@@ -98,7 +98,7 @@ namespace D_Dev.CurrencySystem
                 _value += depositValue;
 
             OnCurrencyUpdate?.Invoke(new CurrencyEvent{ActionType = CurrencyActionType.Deposit, IsSuccess = true }, _value);
-            Debug.Log($"[Currency : <color=pink> {_name} </color> ] Deposit - {depositValue}, <color=green> Success </color>");
+            Debug.Log($"[Currency : {_name}] Deposit - {depositValue}, <color=green> Success </color>");
             return true;
         }
 
@@ -110,13 +110,13 @@ namespace D_Dev.CurrencySystem
                 {
                     ActionType = CurrencyActionType.Withdraw, IsSuccess = false
                 }, _value);
-                Debug.Log($"[Currency : <color=pink> {_name}</color> ] Withdraw - {withdrawValue}, <color=red> Failed </color>");
+                Debug.Log($"[Currency : {_name}] Withdraw - {withdrawValue}, <color=red> Failed </color>");
                 return false;
             }
 
             _value -= withdrawValue;
             OnCurrencyUpdate?.Invoke(new CurrencyEvent{ActionType = CurrencyActionType.Withdraw, IsSuccess = true }, _value);
-            Debug.Log($"[Currency : <color=pink> {_name}</color> ] Withdraw - {withdrawValue}, <color=green> Success </color>");
+            Debug.Log($"[Currency : {_name}] Withdraw - {withdrawValue}, <color=green> Success </color>");
             return true;
         }
 
@@ -128,13 +128,13 @@ namespace D_Dev.CurrencySystem
                 {
                     ActionType = CurrencyActionType.Set, IsSuccess = false
                 }, _value);
-                Debug.Log($"[Currency : <color=pink> {_name}</color> ] Set value - {value}, <color=red> Failed </color>");
+                Debug.Log($"[Currency : {_name}] Set value - {value}, <color=red> Failed </color>");
                 return false;
             }
 
             _value = value;
             OnCurrencyUpdate?.Invoke(new CurrencyEvent{ActionType = CurrencyActionType.Set, IsSuccess = true }, _value);
-            Debug.Log($"[Currency : <color=pink> {_name}</color> ] Set value - {value}, <color=green> Success </color>");
+            Debug.Log($"[Currency : {_name}] Set value - {value}, <color=green> Success </color>");
             return true;
         }
         

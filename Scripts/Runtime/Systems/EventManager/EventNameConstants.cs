@@ -4,11 +4,12 @@
     {
         GameplayStart = 0,
         GameplayPause = 1,
-        GameFinish = 2,
-        GameOver = 3,
-        MenuOpen = 4,
-        MenuClose = 5,
-        SceneLoad = 6,
-        SceneReload = 7,
+        GameplayUnpause = 2,
+        GameFinish = 3,
+        GameOver = 4,
+        MenuOpen = 5,
+        MenuClose = 6,
+        SceneLoad = 7,
+        SceneReload = 8,
     }
 }
