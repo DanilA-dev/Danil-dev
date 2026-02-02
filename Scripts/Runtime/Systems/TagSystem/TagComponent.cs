@@ -10,6 +10,13 @@ namespace D_Dev.TagSystem
 
         [SerializeField] private List<Tag> _tags;
 
+
+        #endregion
+
+        #region Properties
+
+        public List<Tag> Tags => _tags;
+
         #endregion
 
         #region Public

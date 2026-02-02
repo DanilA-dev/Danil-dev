@@ -34,6 +34,12 @@ namespace D_Dev.PlayerStateController
 
         #endregion
 
+        #region Public
+
+        public void DisableInput() => _inputRouter?.Disable();
+
+        #endregion
+        
         #region Listeners
 
         private void OnMove(Vector2 dir) => _rawInputDirection.Value = new Vector3(dir.x, 0f, dir.y);
