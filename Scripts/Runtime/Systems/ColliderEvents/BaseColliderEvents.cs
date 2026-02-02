@@ -69,7 +69,7 @@ namespace D_Dev.ColliderEvents
             set => _onExit2D = value;
         }
 
-        protected ColliderChecker.ColliderChecker CollisionChecker
+        public ColliderChecker.ColliderChecker CollisionChecker
         {
             get => _colliderChecker;
             set => _colliderChecker = value;
