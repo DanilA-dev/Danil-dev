@@ -1,5 +1,5 @@
-using System;
 using Sirenix.OdinInspector;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace D_Dev.PolymorphicValueSystem
@@ -9,7 +9,9 @@ namespace D_Dev.PolymorphicValueSystem
     {
         #region Fields
 
-        public Action<T> OnValueChanged;
+        [SerializeField, PropertyOrder(999)] protected bool _showEvent;
+        [ShowIf("_showEvent")]
+        [SerializeField, PropertyOrder(999)] protected UnityEvent<T> OnValueChanged;
 
         #endregion
         
