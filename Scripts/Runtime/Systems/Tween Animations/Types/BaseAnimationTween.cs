@@ -96,6 +96,11 @@ namespace D_Dev.TweenAnimations.Types
 
         public abstract Tween Play();
         public virtual void Pause() {}
+        public virtual void Kill() 
+        {
+            _tween?.Kill();
+            _tween = null;
+        }
 
         #endregion
 
