@@ -1,4 +1,4 @@
-﻿#if DOTWEEN
+#if DOTWEEN
 using System;
 using DG.Tweening;
 using Sirenix.OdinInspector;
@@ -78,12 +78,19 @@ namespace D_Dev.TweenAnimations.Types
 
         public override Tween Play()
         {
-            return _fillType switch
+            switch (_fillType)
             {
-                FillType.Slider => Tween = _fillSlider.DOValue(_endValue, Duration, _snapping).From(_startValue),
-                FillType.Image => Tween = _fillImage.DOFillAmount(_endValue, Duration).From(_startValue),
-                _ => throw new ArgumentOutOfRangeException()
-            };
+                case FillType.Slider:
+                    if (_fillSlider == null) return null;
+                    SetTarget(_fillSlider.gameObject);
+                    return Tween = _fillSlider.DOValue(_endValue, Duration, _snapping).From(_startValue);
+                case FillType.Image:
+                    if (_fillImage == null) return null;
+                    SetTarget(_fillImage.gameObject);
+                    return Tween = _fillImage.DOFillAmount(_endValue, Duration).From(_startValue);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         #endregion

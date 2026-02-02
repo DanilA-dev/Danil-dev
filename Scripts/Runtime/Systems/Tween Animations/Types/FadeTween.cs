@@ -1,4 +1,4 @@
-﻿#if DOTWEEN
+#if DOTWEEN
 using System;
 using DG.Tweening;
 using Sirenix.OdinInspector;
@@ -94,15 +94,23 @@ namespace D_Dev.TweenAnimations.Types
             switch (_fadeObject)
             {
                 case FadeObject.Image:
+                    if (_image == null) return null;
+                    SetTarget(_image.gameObject);
                     return Tween = _image.DOFade(_endValue, Duration).From(_startValue);
                 case FadeObject.CanvasGroup:
+                    if (_canvasGroup == null) return null;
+                    SetTarget(_canvasGroup.gameObject);
                     return Tween = _canvasGroup.DOFade(_endValue, Duration).From(_startValue);
                 case FadeObject.Material:
                 {
+                    if (_meshMaterial == null) return null;
+                    SetTarget(_meshMaterial.gameObject);
                     var material = _meshMaterial.sharedMaterial;
                     return Tween = material.DOFade(_endValue, Duration).From(_startValue);
                 }
                 case FadeObject.SpriteRenderer:
+                    if (_spriteRenderer == null) return null;
+                    SetTarget(_spriteRenderer.gameObject);
                     return Tween = _spriteRenderer.DOFade(_endValue, Duration).From(_startValue);
                 default:
                     throw new ArgumentOutOfRangeException();

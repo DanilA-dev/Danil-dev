@@ -30,6 +30,8 @@ namespace D_Dev.EntitySpawner
         [SerializeField] private Transform _parentTransform;
         [FoldoutGroup("Position and Rotation")]
         [SerializeReference] private BasePositionSettings _positionSettings = new();
+        [FoldoutGroup("Position and Rotation")] 
+        [SerializeField] private Vector3 _positionOffset;
         [FoldoutGroup("Position and Rotation")]
         [SerializeReference] private BaseRotationSettings _rotationSettings = new();
         [FoldoutGroup("Pool")]
@@ -129,6 +131,12 @@ namespace D_Dev.EntitySpawner
         {
             get => _parentTransform;
             set => _parentTransform = value;
+        }
+
+        public Vector3 PositionOffset
+        {
+            get => _positionOffset;
+            set => _positionOffset = value;
         }
 
         #endregion
@@ -236,8 +244,8 @@ namespace D_Dev.EntitySpawner
             var entityTransform = obj.transform;
             if(_setParent && _parentTransform != null)
                 entityTransform.SetParent(_parentTransform);
-            
-            obj.transform.position = _positionSettings.GetPosition();
+
+            obj.transform.position = _positionSettings.GetPosition() + _positionOffset;
             obj.transform.rotation = _rotationSettings.GetRotation();
             
             obj.SetActive(_setActiveOnStart);

@@ -1,4 +1,4 @@
-﻿#if DOTWEEN
+#if DOTWEEN
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -50,6 +50,11 @@ namespace D_Dev.TweenAnimations.Types
 
         public override Tween Play()
         {
+            if (_scaleObject == null)
+                return null;
+            
+            SetTarget(_scaleObject.gameObject);
+            
             Tween = _scaleObject.DOScale(_endScale, Duration)
                 .From(_useInitialScaleAsStart
                     ? _scaleObject.transform.localScale

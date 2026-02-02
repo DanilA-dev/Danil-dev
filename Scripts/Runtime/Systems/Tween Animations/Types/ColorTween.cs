@@ -1,4 +1,4 @@
-﻿#if DOTWEEN
+#if DOTWEEN
 using System;
 using DG.Tweening;
 using Sirenix.OdinInspector;
@@ -91,17 +91,23 @@ namespace D_Dev.TweenAnimations.Types
             {
                 case ColorObjectType.Image:
                 {
+                    if (_image == null) return null;
+                    SetTarget(_image.gameObject);
                     var startColor = _useInitialColorAsStart ? _image.color : _startValue;
                     return Tween = _image.DOColor(_endValue, Duration).From(startColor);
                 }
                 case ColorObjectType.Material:
                 {
+                    if (_meshMaterial == null) return null;
+                    SetTarget(_meshMaterial.gameObject);
                     var material = _meshMaterial.sharedMaterial;
                     var startColor = _useInitialColorAsStart ? material.color : _startValue;
                     return Tween = material.DOColor(_endValue, Duration).From(startColor);
                 }
                 case ColorObjectType.SpriteRenderer:
                 {
+                    if (_spriteRenderer == null) return null;
+                    SetTarget(_spriteRenderer.gameObject);
                     var startColor = _useInitialColorAsStart ? _spriteRenderer.color : _startValue;
                     return Tween = _spriteRenderer.DOColor(_endValue, Duration).From(startColor);
                 }

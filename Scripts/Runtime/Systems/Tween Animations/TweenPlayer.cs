@@ -65,6 +65,11 @@ namespace D_Dev.TweenAnimations
             }
         }
 
+        private void OnDestroy()
+        {
+            _tweenPlayer?.Kill();
+        }
+
         #endregion
 
         #region Public

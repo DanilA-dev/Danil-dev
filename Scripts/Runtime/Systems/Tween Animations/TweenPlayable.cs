@@ -1,4 +1,4 @@
-﻿#if DOTWEEN
+#if DOTWEEN
 using System;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -75,6 +75,19 @@ namespace D_Dev.TweenAnimations
 
             foreach (var tween in _tweens)
                 tween.Pause();
+        }
+
+        public void Kill()
+        {
+            if (!HasTweensInArray())
+                return;
+
+            foreach (var tween in _tweens)
+            {
+                tween.OnComplete.RemoveAllListeners();
+            }
+            
+            DOTween.Kill(this);
         }
 
         #endregion

@@ -1,4 +1,4 @@
-﻿#if DOTWEEN
+#if DOTWEEN
 using DG.Tweening;
 using UnityEngine;
 
@@ -22,6 +22,8 @@ namespace D_Dev.TweenAnimations
 
         public override Tween Play()
         {
+            if (_text != null)
+                SetTarget(_text.gameObject);
             var fullText = _endValue;
             return Tween = DOTween.To(() => 0, x =>
             {

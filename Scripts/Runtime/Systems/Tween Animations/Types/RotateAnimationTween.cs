@@ -1,4 +1,4 @@
-﻿#if DOTWEEN
+#if DOTWEEN
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -135,6 +135,11 @@ namespace D_Dev.TweenAnimations.Types
 
         public override Tween Play()
         {
+            if (_rotateObject == null)
+                return null;
+            
+            SetTarget(_rotateObject.gameObject);
+            
             switch (_rotationMotionType)
             {
                 case RotationMotionType.None:

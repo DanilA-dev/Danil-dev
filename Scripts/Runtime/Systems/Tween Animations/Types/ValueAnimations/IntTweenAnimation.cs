@@ -20,6 +20,8 @@ namespace D_Dev.TweenAnimations
         #region Overrides
         public override Tween Play()
         {
+            if (_text != null)
+                SetTarget(_text.gameObject);
             return Tween = DOTween.To(() => _startValue, x => ApplyValue(x), _endValue, Duration).SetEase(_ease);
         }
         #endregion

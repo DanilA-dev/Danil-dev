@@ -1,4 +1,4 @@
-﻿#if DOTWEEN
+#if DOTWEEN
 using System;
 using DG.Tweening;
 using Sirenix.OdinInspector;
@@ -160,6 +160,11 @@ namespace D_Dev.TweenAnimations.Types
 
         public override Tween Play()
         {
+            if (_movedObject == null)
+                return null;
+            
+            SetTarget(_movedObject.gameObject);
+            
             switch (_moveMotionType)
             {
                 case MoveMotionType.None:
@@ -190,7 +195,7 @@ namespace D_Dev.TweenAnimations.Types
                 case MoveObjectType.Vector:
                     return VectorWorldTween();
                 case MoveObjectType.Transform:
-                    return TransfromTween();
+                    return TransformTween();
                 case MoveObjectType.X:
                     return XTween();
                 case MoveObjectType.Y:
@@ -202,7 +207,7 @@ namespace D_Dev.TweenAnimations.Types
             }
         }
 
-        private Tween TransfromTween()
+        private Tween TransformTween()
         {
             RectTransform rect = _movedObject.GetComponent<RectTransform>();
             return !rect

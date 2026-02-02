@@ -1,4 +1,4 @@
-﻿#if DOTWEEN
+#if DOTWEEN
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -27,6 +27,7 @@ namespace D_Dev.TweenAnimations.Types
         public UnityEvent OnComplete;
 
         private Tween _tween;
+        private GameObject _target;
 
         #endregion
 
@@ -46,8 +47,17 @@ namespace D_Dev.TweenAnimations.Types
                     .SetLoops(_loops, _loopType)
                     .SetUpdate(_ignoreTimeScale)
                     .SetAutoKill();
+                
+                if (_target != null)
+                    _tween.SetLink(_target);
+                
                 _tween.OnComplete((() => OnComplete?.Invoke()));
             }
+        }
+
+        protected void SetTarget(GameObject target)
+        {
+            _target = target;
         }
 
         public float Duration
