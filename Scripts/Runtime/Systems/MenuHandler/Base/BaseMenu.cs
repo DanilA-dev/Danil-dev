@@ -1,11 +1,9 @@
-﻿using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
-using System.Collections.Generic;
 #if DOTWEEN
-using DG.Tweening;
-using D_Dev.TweenAnimations.Types;
+using D_Dev.TweenAnimations;
 #endif
 
 namespace D_Dev.MenuHandler
@@ -24,10 +22,10 @@ namespace D_Dev.MenuHandler
         [SerializeField] private bool _disableObjectOnComplete;
 #if DOTWEEN
         [ShowIf(nameof(_hasOpenAnimation))] 
-        [SerializeReference] private List<BaseAnimationTween> _openAnimations = new();
+        [SerializeField] private TweenPlayable _openAnimation;
 
         [ShowIf(nameof(_hasCloseAniation))] 
-        [SerializeReference] private List<BaseAnimationTween> _closeAnimations = new();
+        [SerializeField] private TweenPlayable _closeAnimation;
 #endif
         [FoldoutGroup("Events")]
         public UnityEvent OnOpenEvent;
@@ -49,25 +47,29 @@ namespace D_Dev.MenuHandler
 
         #region Public
 
-        public async void Open()
+public async void Open()
         {
             if(IsOpen)
                 return;
             
             gameObject.SetActive(true);
 #if DOTWEEN
-            if (_hasOpenAnimation && _openAnimations != null
-                                  && _openAnimations.Count > 0)
+            if (_hasOpenAnimation && _openAnimation != null)
             {
-                var seq = DOTween.Sequence();
-                seq.Restart();
-                seq.SetAutoKill(gameObject);
-               
-                foreach (var openAnimation in _openAnimations)
-                    seq.Append(openAnimation.Play());
-
-                await seq.AsyncWaitForCompletion().AsUniTask();
+                var tcs = new UniTaskCompletionSource();
+                
+                void OnComplete()
+                {
+                    _openAnimation.OnComplete -= OnComplete;
+                    tcs.TrySetResult();
+                }
+                
+                _openAnimation.OnComplete += OnComplete;
+                _openAnimation.Play();
+                
+                await tcs.Task;
                 _isOpen = true;
+                OnOpenEvent?.Invoke();
                 return;
             }
 #endif
@@ -81,17 +83,20 @@ namespace D_Dev.MenuHandler
                 return;
             
 #if DOTWEEN
-            if (_hasCloseAniation && _closeAnimations != null
-                                  && _closeAnimations.Count > 0)
+            if (_hasCloseAniation && _closeAnimation != null)
             {
-                var seq = DOTween.Sequence();
-                seq.Restart();
-                seq.SetAutoKill(gameObject);
+                var tcs = new UniTaskCompletionSource();
                 
-                foreach (var closeAnimation in _closeAnimations)
-                    seq.Append(closeAnimation.Play());
-
-                await seq.AsyncWaitForCompletion().AsUniTask();
+                void OnComplete()
+                {
+                    _closeAnimation.OnComplete -= OnComplete;
+                    tcs.TrySetResult();
+                }
+                
+                _closeAnimation.OnComplete += OnComplete;
+                _closeAnimation.Play();
+                
+                await tcs.Task;
                 _isOpen = false;
                 gameObject.SetActive(!_disableObjectOnComplete);
                 OnCloseEvent?.Invoke();
