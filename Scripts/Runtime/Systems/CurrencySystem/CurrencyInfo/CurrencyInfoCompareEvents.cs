@@ -1,4 +1,5 @@
 using System;
+using D_Dev.PolymorphicValueSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -41,7 +42,7 @@ namespace D_Dev.CurrencySystem
         #region Fields
         
         [Title("General")]
-        [SerializeField] private CurrencyInfo _currencyToCheck;
+        [SerializeReference] private PolymorphicValue<CurrencyInfo> _currencyToCheck;
         [SerializeField] private ComparisonType _comparisonType;
         [SerializeField] private bool _invokeOnStart;
         
@@ -69,7 +70,7 @@ namespace D_Dev.CurrencySystem
         
         #region Properties
         
-        public CurrencyInfo CurrencyToCheck => _currencyToCheck;
+        public CurrencyInfo CurrencyToCheck => _currencyToCheck.Value;
         public ComparisonType CurrentComparisonType => _comparisonType;
         public long ValueToCompare => _valueToCompare;
         public CurrencyInfo OtherCurrencyItem => _otherCurrencyItem;
@@ -134,11 +135,11 @@ namespace D_Dev.CurrencySystem
                 return;
             }
 
-            long currentValue = _currencyToCheck.Currency.Value;
+            long currentValue = _currencyToCheck.Value.Currency.Value;
             long compareValue = _valueToCompare;
 
             PerformComparison(currentValue, compareValue, _valueComparisonEvents,
-                _currencyToCheck.name, compareValue.ToString());
+                _currencyToCheck.Value.name, compareValue.ToString());
         }
 
         private void CompareWithMaxValue()
@@ -149,17 +150,17 @@ namespace D_Dev.CurrencySystem
                 return;
             }
 
-            if (!_currencyToCheck.Currency.HasMaxValue)
+            if (!_currencyToCheck.Value.Currency.HasMaxValue)
             {
-                Debug.Log($"[CurrencyCompareEvents] {_currencyToCheck.name} не имеет максимального значения!");
+                Debug.Log($"[CurrencyCompareEvents] {_currencyToCheck.Value.name} не имеет максимального значения!");
                 return;
             }
 
-            long currentValue = _currencyToCheck.Currency.Value;
-            long maxValue = _currencyToCheck.Currency.MaxValue;
+            long currentValue = _currencyToCheck.Value.Currency.Value;
+            long maxValue = _currencyToCheck.Value.Currency.MaxValue;
 
             PerformComparison(currentValue, maxValue, _maxValueComparisonEvents,
-                _currencyToCheck.name, $"MaxValue ({maxValue})");
+                _currencyToCheck.Value.name, $"MaxValue ({maxValue})");
         }
 
         private void CompareWithCurrencyItem()
@@ -176,11 +177,11 @@ namespace D_Dev.CurrencySystem
                 return;
             }
 
-            long currentValue = _currencyToCheck.Currency.Value;
+            long currentValue = _currencyToCheck.Value.Currency.Value;
             long otherValue = _otherCurrencyItem.Currency.Value;
 
             PerformComparison(currentValue, otherValue, _currencyComparisonEvents,
-                _currencyToCheck.name, $"{_otherCurrencyItem.name} ({otherValue})");
+                _currencyToCheck.Value.name, $"{_otherCurrencyItem.name} ({otherValue})");
         }
 
         private void PerformComparison(long currentValue, long compareValue, ComparisonEvents events,

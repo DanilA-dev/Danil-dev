@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using D_Dev.PolymorphicValueSystem;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -19,7 +20,7 @@ namespace D_Dev.CurrencySystem
         
         #region Fields
 
-        [SerializeField] private CurrencyInfo _currencyInfo;
+        [SerializeReference] private PolymorphicValue<CurrencyInfo> _currencyInfo;
         [SerializeField] private long _amount;
         [SerializeField] private bool _setOnEnable;
         [ShowIf("_setOnEnable")]
@@ -60,7 +61,7 @@ namespace D_Dev.CurrencySystem
 
         public bool TryDepositValue(long amount)
         {
-            if (_currencyInfo != null && _currencyInfo.Currency.TryDeposit(amount))
+            if (_currencyInfo != null && _currencyInfo.Value.Currency.TryDeposit(amount))
             {
                 OnDepositSuccess?.Invoke();
                 return true;
@@ -71,7 +72,7 @@ namespace D_Dev.CurrencySystem
 
         public bool TryWithdrawValue(long amount)
         {
-            if (_currencyInfo != null && _currencyInfo.Currency.TryWithdraw(amount))
+            if (_currencyInfo != null && _currencyInfo.Value.Currency.TryWithdraw(amount))
             {
                 OnWithdrawSuccess?.Invoke();
                 return true;
@@ -82,7 +83,7 @@ namespace D_Dev.CurrencySystem
 
         public bool TrySetValue(long amount)
         {
-            if (_currencyInfo != null && _currencyInfo.Currency.TrySet(amount))
+            if (_currencyInfo != null && _currencyInfo.Value.Currency.TrySet(amount))
             {
                 OnSetSuccess?.Invoke();
                 return true;

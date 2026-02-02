@@ -11,7 +11,7 @@ namespace D_Dev.CurrencySystem.Extensions
     {
         #region Fields
 
-        [SerializeField] private CurrencyInfo _currencyInfo;
+        [SerializeReference] private CurrencyInfo _currencyInfo;
         [FoldoutGroup("Events")] 
         [SerializeField] private UnityEvent OnDepositSucsses;
         [FoldoutGroup("Events")]
