@@ -27,6 +27,7 @@ namespace D_Dev.SceneLoader
         #endregion
 
 #if UNITY_EDITOR
+        
         #region Editor
 
         [Button]
@@ -105,6 +106,6 @@ namespace D_Dev.SceneLoader
         }
         
         #endregion
-    }
 #endif
+    }
 }
