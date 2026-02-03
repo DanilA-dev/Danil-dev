@@ -14,22 +14,19 @@ namespace D_Dev.MovementHandler
 
         #region Overrides
 
-        public override void ApplyMovement(Vector3 direction, float acceleration, float maxVelocity)
+        public override void OnFixedUpdate()
         {
-            _direction = direction;
-
             if (_rigidbody == null)
                 return;
  
-            _direction = direction;
-            if (direction.magnitude > 0.1f)
+            if (Direction.magnitude > 0.1f)
             {
-                Vector3 force = direction.normalized * acceleration;
+                Vector3 force = Direction.normalized * Acceleration;
                 _rigidbody.AddForce(force, _forceMode);
             }
 
-            if (_rigidbody.linearVelocity.magnitude > maxVelocity)
-                _rigidbody.linearVelocity = Vector3.ClampMagnitude(_rigidbody.linearVelocity, maxVelocity);
+            if (_rigidbody.linearVelocity.magnitude > MaxVelocity)
+                _rigidbody.linearVelocity = Vector3.ClampMagnitude(_rigidbody.linearVelocity, MaxVelocity);
         }
 
         public override void StopMovement()
@@ -38,7 +35,7 @@ namespace D_Dev.MovementHandler
                 return;
  
             _rigidbody.linearVelocity = Vector3.zero;
-            _direction = Vector3.zero;
+            Direction = Vector3.zero;
         }
 
         public override float GetVelocity() => _rigidbody != null ? _rigidbody.linearVelocity.magnitude : 0f;

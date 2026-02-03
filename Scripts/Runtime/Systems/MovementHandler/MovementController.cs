@@ -10,33 +10,21 @@ namespace D_Dev.MovementHandler
 
         #endregion
 
-        #region Abstract
+        #region Monobehaviour
 
-        public abstract Vector3 GetMovementDirection();
+        protected virtual void Update() => _movementHandler?.OnUpdate();
+        protected virtual void FixedUpdate() => _movementHandler?.OnFixedUpdate();
 
         #endregion
         
         #region Public
 
-        public void ApplyMovement(float acceleration, float maxVelocity)
-        {
-            _movementHandler.ApplyMovement(GetMovementDirection(), acceleration, maxVelocity);
-        }
-        
-        public void StopMovement()
-        {
-            _movementHandler.StopMovement();
-        }
-        
-        public float GetVelocity()
-        {
-            return _movementHandler.GetVelocity();
-        }
-        
-        public bool IsMoving()
-        {
-            return _movementHandler.IsMoving();
-        }
+        public void SetDirection(Vector3 direction) => _movementHandler.Direction = direction;
+        public void SetMaxVelocity(float maxVelocity) => _movementHandler.MaxVelocity = maxVelocity;
+        public void SetAcceleration(float acceleration) => _movementHandler.Acceleration = acceleration;
+        public void StopMovement() => _movementHandler.StopMovement();
+        public float GetVelocity() => _movementHandler.GetVelocity();
+        public bool IsMoving() => _movementHandler.IsMoving();
 
         #endregion
     }

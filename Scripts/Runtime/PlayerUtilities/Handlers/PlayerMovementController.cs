@@ -10,12 +10,23 @@ namespace D_Dev.PlayerStateController
 
         [SerializeReference] private PolymorphicValue<Transform> _directionRoot;
         [SerializeReference] private PolymorphicValue<Vector3> _rawInputDirection;
+        [SerializeReference] private PolymorphicValue<Vector3> _moveInputDirection;
         
         #endregion
-        
-        #region Abstract
 
-        public override Vector3 GetMovementDirection()
+        #region Overrides
+
+        protected override void Update()
+        {
+            base.Update();
+            _moveInputDirection.Value = GetMovementDirection();
+        }
+
+        #endregion
+        
+        #region Private
+
+        private Vector3 GetMovementDirection()
         {
             var rootRight = _directionRoot.Value.right;
             var rootForward = _directionRoot.Value.forward;

@@ -14,14 +14,13 @@ namespace D_Dev.MovementHandler
 
         #region Overrides
 
-        public override void ApplyMovement(Vector3 direction, float acceleration, float maxVelocity)
+        public override void OnUpdate()
         {
-            _direction = direction;
             if (_navMeshAgent == null)
                 return;
 
-            _navMeshAgent.speed = maxVelocity;
-            _navMeshAgent.destination = direction;
+            _navMeshAgent.speed = MaxVelocity;
+            _navMeshAgent.destination = Direction;
         }
 
         public override void StopMovement()
@@ -30,7 +29,7 @@ namespace D_Dev.MovementHandler
                 return;
 
             _navMeshAgent.ResetPath();
-            _direction = Vector3.zero;
+            Direction = Vector3.zero;
         }
 
         public override float GetVelocity() => _navMeshAgent != null ? _navMeshAgent.velocity.magnitude : 0f;
