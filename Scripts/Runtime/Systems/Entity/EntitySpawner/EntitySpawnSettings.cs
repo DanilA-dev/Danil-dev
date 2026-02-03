@@ -139,6 +139,8 @@ namespace D_Dev.EntitySpawner
             set => _positionOffset = value;
         }
 
+        public List<PoolableObject> PoolableEntities => _poolableEntities;
+
         #endregion
 
         #region Public
