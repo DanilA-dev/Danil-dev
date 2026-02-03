@@ -2,8 +2,10 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.AddressableAssets;
+#endif
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace D_Dev.AddressablesExstensions
