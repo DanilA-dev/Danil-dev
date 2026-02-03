@@ -2,9 +2,9 @@
 
 namespace D_Dev.MovementHandler
 {
-    public abstract class MovementController : MonoBehaviour
+    public class MovementController : MonoBehaviour
     {
-        #region Fields
+         #region Fields
 
         [SerializeReference] private BaseMovementHandler _movementHandler;
 
