@@ -14,7 +14,6 @@ namespace D_Dev.MovementHandler
         #endregion
 
         #region Properties
-
         public Vector3 Direction
         {
             get => _direction;
