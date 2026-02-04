@@ -59,9 +59,10 @@ namespace D_Dev.DamageableSystem
             CurrentHealth -= damageData.Damage;
             if (_applyForceOnDamage && damageData.Force > 0)
             {
-                _rigidbody?.AddForce(damageData.ForceDirection * damageData.Force, ForceMode.Impulse);
-                _lastTakenForce.Value = damageData.Force;
                 _lastTakenDirection.Value = damageData.ForceDirection;
+                _lastTakenForce.Value = damageData.Force;
+                _rigidbody?.AddForce(damageData.ForceDirection * damageData.Force, ForceMode.Impulse);
+                _lastTakenForce.Value = 0;
             }
             
             OnDamage?.Invoke(damageData);
