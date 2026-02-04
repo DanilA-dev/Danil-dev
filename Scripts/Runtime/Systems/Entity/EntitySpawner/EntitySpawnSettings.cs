@@ -20,7 +20,7 @@ namespace D_Dev.EntitySpawner
         [Title("Data")] 
         [SerializeReference] private PolymorphicValue<EntityInfo> _data;
         [SerializeField] private bool _createOnStart;
-        [SerializeReference, Min(1)] private PolymorphicValue<int> _amount;
+        [SerializeReference] private PolymorphicValue<int> _amount;
         [SerializeField] private bool _setActiveOnStart;
 
         [FoldoutGroup("Position and Rotation")]
