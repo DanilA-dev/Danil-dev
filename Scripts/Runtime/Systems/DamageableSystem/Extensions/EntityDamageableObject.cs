@@ -9,9 +9,9 @@ namespace D_Dev.Scripts.DamageableSystem.Extensions
     {
         #region Fields
 
-        [Title("Entity Settings")]
-        [SerializeReference] private PolymorphicValue<float> _currentHealthValue;
-        [SerializeReference] private PolymorphicValue<float> _maxHealthValue;
+        [Title("Entity Settings")] 
+        [SerializeReference] private PolymorphicValue<float> _currentHealthValue = new FloatConstantValue();
+        [SerializeReference] private PolymorphicValue<float> _maxHealthValue = new FloatConstantValue();
             
         #endregion
 

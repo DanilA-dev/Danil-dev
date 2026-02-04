@@ -11,7 +11,16 @@ namespace D_Dev.DamageableSystem
         #region Fields
 
         [Title("Damageable Settings")] 
-        [SerializeReference] private PolymorphicValue<bool> _isDamageable;
+        [SerializeReference] private PolymorphicValue<bool> _isDamageable = new BoolConstantValue();
+        [SerializeReference] private PolymorphicValue<float> _lastTakenDamage = new FloatConstantValue();
+        [SerializeField] private bool _applyForceOnDamage;
+        [ShowIf(nameof(_applyForceOnDamage))]
+        [Title("Force On Damage Settings")]
+        [SerializeReference] private PolymorphicValue<float> _lastTakenForce = new FloatConstantValue();
+        [ShowIf(nameof(_applyForceOnDamage))]
+        [SerializeReference] private PolymorphicValue<Vector3> _lastTakenDirection = new Vector3ConstantValue();
+        [ShowIf(nameof(_applyForceOnDamage))]
+        [SerializeField] private Rigidbody _rigidbody;
         [PropertyOrder(100)]
         [FoldoutGroup("Events")]
         public UnityEvent<DamageData> OnDamage;
@@ -46,7 +55,15 @@ namespace D_Dev.DamageableSystem
             if(!_isDamageable.Value)
                 return;
             
+            _lastTakenDamage.Value = damageData.Damage;
             CurrentHealth -= damageData.Damage;
+            if (_applyForceOnDamage && damageData.Force > 0)
+            {
+                _rigidbody?.AddForce(damageData.ForceDirection * damageData.Force, ForceMode.Impulse);
+                _lastTakenForce.Value = damageData.Force;
+                _lastTakenDirection.Value = damageData.ForceDirection;
+            }
+            
             OnDamage?.Invoke(damageData);
             if(CurrentHealth <= 0)
                 OnDie();

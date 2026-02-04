@@ -7,5 +7,8 @@ namespace D_Dev.DamageableSystem
     {
        public int Damage;
        public GameObject DamageSource;
+       public float Force;
+       public Vector3 ForceDirection;
+       public ForceMode ForceMode;
     }
 }
