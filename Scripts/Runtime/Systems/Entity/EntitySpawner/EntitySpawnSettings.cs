@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using D_Dev.Entity;
 using D_Dev.Extensions;
+using D_Dev.PolymorphicValueSystem;
 using D_Dev.PositionRotationConfig;
 using D_Dev.PositionRotationConfig.RotationSettings;
 using D_Dev.RuntimeEntityVariables;
@@ -17,10 +18,9 @@ namespace D_Dev.EntitySpawner
         #region Fields
 
         [Title("Data")] 
-        [SerializeField] private EntityInfo _data;
+        [SerializeReference] private PolymorphicValue<EntityInfo> _data;
         [SerializeField] private bool _createOnStart;
-        [ShowIf(nameof(_createOnStart))]
-        [SerializeField, Min(1)] private int _startEntitiesAmount;
+        [SerializeReference, Min(1)] private PolymorphicValue<int> _amount;
         [SerializeField] private bool _setActiveOnStart;
 
         [FoldoutGroup("Position and Rotation")]
@@ -58,8 +58,8 @@ namespace D_Dev.EntitySpawner
 
         public EntityInfo Data
         {
-            get => _data;
-            set => _data = value;
+            get => _data.Value;
+            set => _data.Value = value;
         }
 
         public bool CreateOnStart
@@ -70,8 +70,8 @@ namespace D_Dev.EntitySpawner
 
         public int StartEntitiesAmount
         {
-            get => _startEntitiesAmount;
-            set => _startEntitiesAmount = value;
+            get => _amount.Value;
+            set => _amount.Value = value;
         }
 
         public bool SetActiveOnStart
@@ -206,7 +206,7 @@ namespace D_Dev.EntitySpawner
 
         private async UniTask PreCreateEntities()
         {
-            for (int i = 0; i < _startEntitiesAmount; i++)
+            for (int i = 0; i < _amount.Value; i++)
                 await CreateEntity();
         }
         
@@ -228,7 +228,7 @@ namespace D_Dev.EntitySpawner
         private async UniTask PrewarmPool()
         {
             _poolableEntities = new List<PoolableObject>();
-            for (int i = 0; i < _startEntitiesAmount; i++)
+            for (int i = 0; i < _amount.Value; i++)
             {
                 var go = await CreateEntity();
                 var poolable = go.GetComponent<PoolableObject>();
@@ -239,7 +239,6 @@ namespace D_Dev.EntitySpawner
         
         private async UniTask<GameObject> CreateEntity()
         {
-            
             GameObject obj = null;
             var entityAsset = Data.EntityPrefab;
             obj = await entityAsset.InstantiateAsync();
