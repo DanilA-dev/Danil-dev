@@ -68,7 +68,7 @@ namespace D_Dev.EntitySpawner
             set => _createOnStart = value;
         }
 
-        public PolymorphicValue<int> StartEntitiesAmount
+        public PolymorphicValue<int> Amount
         {
             get => _amount;
             set => _amount = value;
