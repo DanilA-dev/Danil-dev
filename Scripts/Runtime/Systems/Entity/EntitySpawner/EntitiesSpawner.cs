@@ -46,7 +46,7 @@ namespace D_Dev.EntitySpawner
 
         private async UniTask<GameObject> GetEntityAsync(EntityInfo data)
         {
-            var spawnSettings = _spawnSettings.FirstOrDefault(s => s.Data == data);
+            var spawnSettings = _spawnSettings.FirstOrDefault(s => s.Data.Value == data);
             return spawnSettings != null ? await spawnSettings.Get() : null;
         }
 

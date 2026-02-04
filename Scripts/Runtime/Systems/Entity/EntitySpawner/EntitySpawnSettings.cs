@@ -56,10 +56,10 @@ namespace D_Dev.EntitySpawner
 
         #region Properties
 
-        public EntityInfo Data
+        public PolymorphicValue<EntityInfo> Data
         {
-            get => _data.Value;
-            set => _data.Value = value;
+            get => _data;
+            set => _data = value;
         }
 
         public bool CreateOnStart
@@ -68,10 +68,10 @@ namespace D_Dev.EntitySpawner
             set => _createOnStart = value;
         }
 
-        public int StartEntitiesAmount
+        public PolymorphicValue<int> StartEntitiesAmount
         {
-            get => _amount.Value;
-            set => _amount.Value = value;
+            get => _amount;
+            set => _amount = value;
         }
 
         public bool SetActiveOnStart
@@ -240,7 +240,7 @@ namespace D_Dev.EntitySpawner
         private async UniTask<GameObject> CreateEntity()
         {
             GameObject obj = null;
-            var entityAsset = Data.EntityPrefab;
+            var entityAsset = _data.Value.EntityPrefab;
             obj = await entityAsset.InstantiateAsync();
             var entityTransform = obj.transform;
             if(_setParent && _parentTransform != null)
@@ -252,7 +252,7 @@ namespace D_Dev.EntitySpawner
             obj.SetActive(_setActiveOnStart);
             
             if(obj.TryGetComponent(out RuntimeEntityVariablesContainer runtimeEntityVariablesContainer))
-                runtimeEntityVariablesContainer.Init(Data.Variables);
+                runtimeEntityVariablesContainer.Init(_data.Value.Variables);
             
             if (_usePool && obj.TryGetComponent(out PoolableObject poolableEntity))
             {
