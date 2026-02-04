@@ -43,7 +43,10 @@ namespace D_Dev.PositionRotationConfig
         public override Vector3 GetPosition()
         {
             if (_target?.Value == null)
+            {
+                Debug.Log($"[PositionSettings] Value is null, reset to Vector.zero");
                 return Vector3.zero;
+            }
 
             Vector3 center = _useLocalPosition 
                 ? _target.Value.localPosition 

@@ -32,9 +32,18 @@ namespace D_Dev.PositionRotationConfig
         
         #region Overrides
 
-        public override Vector3 GetPosition() => _isLocal ?
-            _value.Value.localPosition 
-            : _value.Value.position;
+        public override Vector3 GetPosition()
+        {
+            if (_value?.Value == null)
+            {
+                Debug.Log($"[PositionSettings] Value is null, reset to Vector.zero");
+                return Vector3.zero;
+            }
+            
+            return _isLocal
+                ? _value.Value.localPosition
+                : _value.Value.position;
+        }
 
         #endregion
     }

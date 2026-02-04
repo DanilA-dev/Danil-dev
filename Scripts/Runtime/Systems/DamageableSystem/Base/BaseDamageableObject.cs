@@ -62,7 +62,6 @@ namespace D_Dev.DamageableSystem
                 _lastTakenDirection.Value = damageData.ForceDirection;
                 _lastTakenForce.Value = damageData.Force;
                 _rigidbody?.AddForce(damageData.ForceDirection * damageData.Force, ForceMode.Impulse);
-                _lastTakenForce.Value = 0;
             }
             
             OnDamage?.Invoke(damageData);
