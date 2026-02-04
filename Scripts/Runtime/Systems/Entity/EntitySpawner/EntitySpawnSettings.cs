@@ -149,7 +149,7 @@ namespace D_Dev.EntitySpawner
         {
             if (_usePool)
             {
-                await PrewarmPool();
+                PrewarmPool();
                 CreatePool();
             }
 
@@ -189,7 +189,7 @@ namespace D_Dev.EntitySpawner
                 }
             }
             else
-                returnObj = await CreateEntity();
+                returnObj = await CreateEntityAsync();
             
             return returnObj;
         }
@@ -207,7 +207,7 @@ namespace D_Dev.EntitySpawner
         private async UniTask PreCreateEntities()
         {
             for (int i = 0; i < _amount.Value; i++)
-                await CreateEntity();
+                await CreateEntityAsync();
         }
         
         private void CreatePool()
@@ -215,8 +215,12 @@ namespace D_Dev.EntitySpawner
             int index = 0;
 
             _pool = new ObjectPool<PoolableObject>(
-                createFunc: () => _poolableEntities[index++],
-                actionOnGet: p => { if (p != null && p.gameObject != null) p.gameObject.SetActive(true); },
+                createFunc: () => CreateEntity().GetComponent<PoolableObject>(),
+                actionOnGet: p =>
+                {
+                    if (p != null && p.gameObject != null && !p.gameObject.activeInHierarchy)
+                        p.gameObject.SetActive(true);
+                },
                 actionOnRelease: p => { if (p != null && p.gameObject != null) p.gameObject.SetActive(false); },
                 actionOnDestroy: p => { if (p != null && p.gameObject != null) Object.Destroy(p.gameObject); },
                 collectionCheck: false,
@@ -225,23 +229,49 @@ namespace D_Dev.EntitySpawner
             );
         }
         
-        private async UniTask PrewarmPool()
+        private void PrewarmPool()
         {
             _poolableEntities = new List<PoolableObject>();
             for (int i = 0; i < _amount.Value; i++)
             {
-                var go = await CreateEntity();
+                var go = CreateEntity();
                 var poolable = go.GetComponent<PoolableObject>();
                 go.SetActive(false);
                 _poolableEntities.Add(poolable);
             }
         }
         
-        private async UniTask<GameObject> CreateEntity()
+        private async UniTask<GameObject> CreateEntityAsync()
         {
             GameObject obj = null;
             var entityAsset = _data.Value.EntityPrefab;
             obj = await entityAsset.InstantiateAsync();
+            var entityTransform = obj.transform;
+            if(_setParent && _parentTransform != null)
+                entityTransform.SetParent(_parentTransform);
+
+            obj.transform.position = _positionSettings.GetPosition() + _positionOffset;
+            obj.transform.rotation = _rotationSettings.GetRotation();
+            
+            obj.SetActive(_setActiveOnStart);
+            
+            if(obj.TryGetComponent(out RuntimeEntityVariablesContainer runtimeEntityVariablesContainer))
+                runtimeEntityVariablesContainer.Init(_data.Value.Variables);
+            
+            if (_usePool && obj.TryGetComponent(out PoolableObject poolableEntity))
+            {
+                poolableEntity.OnEntityRelease.AddListener(OnPoolableEntityReleased);
+                poolableEntity.OnEntityDestroy.AddListener(OnPoolableEntityDestroyed);
+                _poolableEntities.Add(poolableEntity);
+            }
+            return obj;
+        }
+        
+        private GameObject CreateEntity()
+        {
+            GameObject obj = null;
+            var entityAsset = _data.Value.EntityPrefab;
+            obj = entityAsset.Instantiate();
             var entityTransform = obj.transform;
             if(_setParent && _parentTransform != null)
                 entityTransform.SetParent(_parentTransform);
