@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using D_Dev.Base;
 using D_Dev.PolymorphicValueSystem;
 using D_Dev.StateMachine;
 using Sirenix.OdinInspector;
@@ -93,7 +94,9 @@ namespace D_Dev.StateMachineBehaviour
 
         private void FixedUpdate()
         {
+            _stateMachine?.UpdateFixedTransitions();
             _stateMachine?.UpdateStatesFixed();
+            
             OnFixedUpdate();
         }
 
@@ -114,8 +117,15 @@ namespace D_Dev.StateMachineBehaviour
             foreach (var fromState in fromStates)
                 _stateMachine?.AddTransition(fromState, toState, condition);
         }
+
+        protected void AddFixedTransition(string[] fromStates, string toState, IFixedStateCondition condition)
+        {
+            foreach (var fromState in fromStates)
+                _stateMachine?.AddFixedTransition(fromState, toState, condition);
+        }
         
         protected void RemoveTransition(string keyState) => _stateMachine?.RemoveTransition(keyState);
+        protected void RemoveFixedTransition(string keyState) => _stateMachine?.RemoveFixedTransition(keyState);
         protected void ChangeState(string stateName) => _stateMachine.ChangeState(stateName);
         
         #endregion

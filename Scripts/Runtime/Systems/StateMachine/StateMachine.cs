@@ -16,6 +16,7 @@ namespace D_Dev.StateMachine
         private IState _current;
         private Dictionary<string, IState> _states;
         private Dictionary<string, List<StateTransition>> _statesConditions;
+        private Dictionary<string, List<FixedStateTransition>> _fixedStatesConditions;
         private CancellationTokenSource _tokenSource;
         
         private bool _isStateSwitching;
@@ -36,6 +37,7 @@ namespace D_Dev.StateMachine
         {
             _states = new();
             _statesConditions = new ();
+            _fixedStatesConditions = new ();
             _tokenSource = new CancellationTokenSource();
         }
 
@@ -50,10 +52,22 @@ namespace D_Dev.StateMachine
                 _statesConditions[fromState].Add(new(toState, condition));
         }
 
+        public void AddFixedTransition(string fromState, string toState, IFixedStateCondition condition)
+        {
+            if(!_fixedStatesConditions.TryAdd(fromState, new List<FixedStateTransition> {new(toState, condition) }))
+                _fixedStatesConditions[fromState].Add(new(toState, condition));
+        }
+
         public void RemoveTransition(string keyState)
         {
             if(_statesConditions.ContainsKey(keyState))
                 _statesConditions.Remove(keyState);
+        }
+
+        public void RemoveFixedTransition(string keyState)
+        {
+            if(_fixedStatesConditions.ContainsKey(keyState))
+                _fixedStatesConditions.Remove(keyState);
         }
         
         public void UpdateStates()
@@ -70,6 +84,8 @@ namespace D_Dev.StateMachine
         {
             _current?.OnFixedUpdate();
         }
+
+   
         
         public async UniTaskVoid ChangeState(string newState)
         {
@@ -119,6 +135,24 @@ namespace D_Dev.StateMachine
                 {
                     if(stateTransition.Condition.IsMatched() && !_isStateSwitching)
                         ChangeState(stateTransition.ToState);
+                }
+            }
+        }
+        
+        public void UpdateFixedTransitions()
+        {
+            if(_fixedStatesConditions.Count <= 0)
+                return;
+
+            foreach (var (stateName, transition) in _fixedStatesConditions)
+            {
+                if(!stateName.Equals(_currentState))
+                    continue;
+                
+                foreach (var fixedTransition in transition)
+                {
+                    if(fixedTransition.Condition.IsMatched() && !_isStateSwitching)
+                        ChangeState(fixedTransition.ToState);
                 }
             }
         }

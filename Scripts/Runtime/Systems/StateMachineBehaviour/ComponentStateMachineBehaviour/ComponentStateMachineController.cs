@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using D_Dev.StateMachine;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -46,8 +46,17 @@ namespace  D_Dev.StateMachineBehaviour
                 
                 foreach (var transition in state.Transitions)
                 {
-                    AddTransition(transition.FromStates, state.StateName, new FuncCondition(() =>
-                        transition.Conditions.All(c => c.IsConditionMet())));
+                    if (transition.Conditions != null && transition.Conditions.Length > 0)
+                    {
+                        AddTransition(transition.FromStates, state.StateName, new FuncCondition(() =>
+                            transition.Conditions.All(c => c.IsConditionMet())));
+                    }
+                    
+                    if (transition.FixedConditions != null && transition.FixedConditions.Length > 0)
+                    {
+                        AddFixedTransition(transition.FromStates, state.StateName, new FuncFixedCondition(() =>
+                            transition.FixedConditions.All(c => c.IsConditionMet())));
+                    }
                 }
             }
         }
