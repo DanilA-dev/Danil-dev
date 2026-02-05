@@ -129,6 +129,7 @@ namespace D_Dev.AnimatorView.AnimationPlayableHandler
 
             var newAnimationLayer = newPlayableConfig.Layer + 1;
             var newAnimationPlayable = CreatePlayableClip(newPlayableConfig);
+            
             if(newAnimationLayer >=  _targetLayerMixerPlayable.GetInputCount())
                 _targetLayerMixerPlayable.SetInputCount(newAnimationLayer + 1);
 
@@ -311,6 +312,33 @@ namespace D_Dev.AnimatorView.AnimationPlayableHandler
             onFinish?.Invoke();
         }
         
+        #endregion
+
+        #region Public - Event Support
+
+        public IReadOnlyDictionary<int, AnimationPlayablePairConfig> GetActivePlayables()
+        {
+            return _playablesPair;
+        }
+
+        public bool TryGetActivePlayable(int layer, out AnimationPlayablePairConfig playablePair)
+        {
+            return _playablesPair.TryGetValue(layer, out playablePair);
+        }
+
+        public float GetLayerWeight(int layer)
+        {
+            if (!_targetLayerMixerPlayable.IsValid())
+                return 0f;
+            
+            return _targetLayerMixerPlayable.GetInputWeight(layer);
+        }
+
+        public int GetActiveLayerCount()
+        {
+            return _playablesPair.Count;
+        }
+
         #endregion
     }
 }
