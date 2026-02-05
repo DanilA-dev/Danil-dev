@@ -19,8 +19,11 @@ namespace D_Dev.MovementHandler
             if (_navMeshAgent == null)
                 return;
 
-            _navMeshAgent.speed = MaxVelocity;
-            _navMeshAgent.destination = Direction;
+            if (_navMeshAgent.enabled && _navMeshAgent.isOnNavMesh)
+            {
+                _navMeshAgent.speed = MaxVelocity;
+                _navMeshAgent.destination = Direction;
+            }
         }
 
         public override void StopMovement()
@@ -28,7 +31,9 @@ namespace D_Dev.MovementHandler
             if (_navMeshAgent == null)
                 return;
 
-            _navMeshAgent.ResetPath();
+            if (_navMeshAgent.enabled && _navMeshAgent.isOnNavMesh)
+                _navMeshAgent.ResetPath();
+            
             Direction = Vector3.zero;
         }
 
