@@ -6,7 +6,7 @@ using UnityEngine;
 namespace D_Dev.Conditions
 {
     [System.Serializable]
-    public class RigidbodyLinearVelocityCompare : ICondition
+    public class RigidbodyLinearVelocityCompare : IFixedCondition
     {
         #region Fields
 
