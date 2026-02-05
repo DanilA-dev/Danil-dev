@@ -8,9 +8,9 @@ namespace D_Dev.PolymorphicValueSystem.Extensions
     {
         #region Fields
 
-        [SerializeReference] private PolymorphicValue<bool> _valueA;
-        [SerializeField] private bool _compareType;
-        [SerializeReference] private PolymorphicValue<bool> _valueB;
+        [SerializeField] private bool _invert;
+        [SerializeReference] private PolymorphicValue<bool> _value = new BoolConstantValue();
+        [SerializeReference] private PolymorphicValue<bool> _compareTo = new BoolConstantValue();
         
         #endregion
 
@@ -18,10 +18,7 @@ namespace D_Dev.PolymorphicValueSystem.Extensions
 
         public bool IsConditionMet()
         {
-            if(_compareType)
-                return _valueA.Value == _valueB.Value;
-            
-            return _valueA.Value != _valueB.Value;
+            return _invert? !_value.Value.Equals(_compareTo.Value) : _value.Value.Equals(_compareTo.Value);
         }
 
         public void Reset() {}
