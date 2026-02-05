@@ -34,14 +34,15 @@ namespace D_Dev.StateMachineBehaviour
 
         #region Fields
 
-        [SerializeReference] private PolymorphicValue<string> _stateName;
+        [SerializeReference] private PolymorphicValue<string> _stateName = new StringConstantValue();
+        [SerializeReference] private PolymorphicValue<float> _stateExitTime = new FloatConstantValue();
         [SerializeField] private TransitionData[] _transitions;
 
         #endregion
         
         #region Properties
 
-        public float ExitTime { get; }
+        public float ExitTime => _stateExitTime.Value;
         public string StateName => _stateName.Value;
         public TransitionData[] Transitions => _transitions;
 
