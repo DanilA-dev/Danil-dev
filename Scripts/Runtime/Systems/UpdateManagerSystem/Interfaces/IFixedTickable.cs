@@ -1,6 +1,6 @@
 using System;
 
-namespace D_Dev.UpdateManager
+namespace D_Dev.UpdateManagerSystem
 {
     public interface IFixedTickable
     {

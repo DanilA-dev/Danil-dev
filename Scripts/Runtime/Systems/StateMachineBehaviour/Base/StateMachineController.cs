@@ -1,11 +1,7 @@
-using System;
 using System.Linq;
-using D_Dev.Base;
 using D_Dev.PolymorphicValueSystem;
 using D_Dev.StateMachine;
 using Sirenix.OdinInspector;
-using UniRx;
-using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -31,13 +27,20 @@ namespace D_Dev.StateMachineBehaviour
         [FoldoutGroup("Base Settings", order:100)]
         public UnityEvent<string> OnAnyStateExit;
 
-        [FoldoutGroup("Update Intervals", order: 200)]
-        [SerializeField] private float _stateUpdateInterval = 0.05f;
-        [FoldoutGroup("Update Intervals", order: 200)]
-        [SerializeField] private float _transitionCheckInterval = 0.02f;
+        [FoldoutGroup("Update Intervals")]
+        [SerializeField] protected float _minStateTickInterval = 0.05f;
+        [FoldoutGroup("Update Intervals")]
+        [SerializeField] protected float _maxStateTickInterval = 0.1f;
 
+        [FoldoutGroup("Update Intervals")]
+        [SerializeField] protected float _minTransitionTickInterval = 0.1f;
+        [FoldoutGroup("Update Intervals")]
+        [SerializeField] protected float _maxTransitionTickInterval = 0.2f;
+
+        private float _nextUpdateTick;
+        private float _nextTransitionTick;
+        
         protected StateMachine.StateMachine _stateMachine;
-        private CompositeDisposable _disposables;
 
         #endregion
 
@@ -45,8 +48,6 @@ namespace D_Dev.StateMachineBehaviour
 
         protected virtual void Awake()
         {
-            _disposables = new CompositeDisposable();
-
             _stateMachine = new StateMachine.StateMachine();
             _stateMachine.OnStateEnter += state =>
             {
@@ -58,46 +59,39 @@ namespace D_Dev.StateMachineBehaviour
             _stateMachine.OnStateExit += InvokeStateExitEvent;
             InitStates();
 
-            if (_stateUpdateInterval <= 0)
-            {
-                this.UpdateAsObservable()
-                    .Subscribe(_ => _stateMachine?.UpdateStates())
-                    .AddTo(_disposables);
-            }
-            else
-            {
-                Observable.Interval(TimeSpan.FromSeconds(_stateUpdateInterval))
-                    .Subscribe(_ => _stateMachine?.UpdateStates())
-                    .AddTo(_disposables);
-            }
-
-            if (_transitionCheckInterval <= 0)
-            {
-                this.UpdateAsObservable()
-                    .Subscribe(_ => _stateMachine?.CheckTransitions())
-                    .AddTo(_disposables);
-            }
-            else
-            {
-                Observable.Interval(TimeSpan.FromSeconds(_transitionCheckInterval))
-                    .Subscribe(_ => _stateMachine?.CheckTransitions())
-                    .AddTo(_disposables);
-            }
+            float startupOffset = Time.time;
+            _nextUpdateTick = startupOffset + Random.Range(_minStateTickInterval, _maxStateTickInterval);
+            _nextTransitionTick = startupOffset + Random.Range(_minTransitionTickInterval, _maxTransitionTickInterval);
         }
 
         protected virtual void Start() => ChangeState(_startState.Value);
 
-        protected virtual void OnDestroy()
+        #endregion
+
+        #region Public
+
+        public void ManagedUpdate(float currentTime)
         {
-            _disposables?.Dispose();
+            if (_stateMachine == null)
+                return;
+
+            if (currentTime >= _nextTransitionTick)
+            {
+                _stateMachine.CheckTransitions();
+                _nextTransitionTick = currentTime + Random.Range(_minTransitionTickInterval, _maxTransitionTickInterval);
+            }
+
+            if (currentTime >= _nextUpdateTick)
+            {
+                _stateMachine.UpdateStates();
+                _nextUpdateTick = currentTime + Random.Range(_minStateTickInterval, _maxStateTickInterval);
+            }
         }
 
-        private void FixedUpdate()
+        public void ManagedFixedUpdate()
         {
             _stateMachine?.UpdateFixedTransitions();
             _stateMachine?.UpdateStatesFixed();
-            
-            OnFixedUpdate();
         }
 
         #endregion

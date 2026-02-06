@@ -1,37 +1,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace D_Dev.UpdateManager
+namespace D_Dev.UpdateManagerSystem
 {
-    public class LateUpdateManager : MonoBehaviour
+    public class FixedUpdateManager : MonoBehaviour
     {
         #region Fields
 
-        private static readonly Queue<ILateTickable> _lateTickables = new();
-        private static readonly Queue<ILateTickable> _pendingAdd = new();
-        private static readonly Queue<ILateTickable> _pendingRemove = new();
+        private static readonly Queue<IFixedTickable> _fixedTickables = new();
+        private static readonly Queue<IFixedTickable> _pendingAdd = new();
+        private static readonly Queue<IFixedTickable> _pendingRemove = new();
         
-        private static readonly List<ILateTickable> _sortedTickables = new();
+        private static readonly List<IFixedTickable> _sortedTickables = new();
         private static bool _isSorted = true;
 
         #endregion
 
         #region Properties
 
-        public static int Count => _lateTickables.Count + _pendingAdd.Count;
+        public static int Count => _fixedTickables.Count + _pendingAdd.Count;
 
         #endregion
 
         #region Monobehavior
 
-        private void LateUpdate()
+        private void FixedUpdate()
         {
             ProcessPending();
             EnsureSorted();
             
             foreach (var tickable in _sortedTickables)
             {
-                tickable?.LateTick();
+                tickable?.FixedTick();
             }
         }
 
@@ -39,13 +39,13 @@ namespace D_Dev.UpdateManager
 
         #region Public
 
-        public static void Add(ILateTickable tickable)
+        public static void Add(IFixedTickable tickable)
         {
             if (tickable != null)
                 _pendingAdd.Enqueue(tickable);
         }
         
-        public static void AddWithPriority(ILateTickable tickable, int priority)
+        public static void AddWithPriority(IFixedTickable tickable, int priority)
         {
             if (tickable != null)
             {
@@ -54,7 +54,7 @@ namespace D_Dev.UpdateManager
             }
         }
         
-        public static void Remove(ILateTickable tickable)
+        public static void Remove(IFixedTickable tickable)
         {
             if (tickable != null)
                 _pendingRemove.Enqueue(tickable);
@@ -62,7 +62,7 @@ namespace D_Dev.UpdateManager
         
         public static void Clear()
         {
-            _lateTickables.Clear();
+            _fixedTickables.Clear();
             _pendingAdd.Clear();
             _pendingRemove.Clear();
             _sortedTickables.Clear();
@@ -78,7 +78,7 @@ namespace D_Dev.UpdateManager
             while (_pendingAdd.Count > 0)
             {
                 var tickable = _pendingAdd.Dequeue();
-                _lateTickables.Enqueue(tickable);
+                _fixedTickables.Enqueue(tickable);
                 _isSorted = false;
             }
             
@@ -94,7 +94,7 @@ namespace D_Dev.UpdateManager
             if (_isSorted) return;
             
             _sortedTickables.Clear();
-            _sortedTickables.AddRange(_lateTickables);
+            _sortedTickables.AddRange(_fixedTickables);
             _sortedTickables.Sort((a, b) => b.GetPriority().CompareTo(a.GetPriority()));
             _isSorted = true;
         }
