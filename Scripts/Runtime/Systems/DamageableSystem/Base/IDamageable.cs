@@ -7,5 +7,7 @@ namespace D_Dev.DamageableSystem
         public event Action<IDamageable> OnDeathCallback;
         public bool IsDamageable { get; }
         public void TakeDamage(DamageData damageData);
+        public void Kill();
+        
     }
 }

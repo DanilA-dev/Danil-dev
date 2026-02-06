@@ -73,6 +73,8 @@ namespace D_Dev.DamageableSystem
                 OnDie();
         }
 
+        public void Kill() => OnDie();
+
         #endregion
 
         #region Virtual
