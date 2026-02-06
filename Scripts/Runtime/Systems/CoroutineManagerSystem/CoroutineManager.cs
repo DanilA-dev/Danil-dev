@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using D_Dev.Singleton;
 using UnityEngine;
 
-namespace D_dev.CoroutineManagerSystem
+namespace D_Dev.CoroutineManagerSystem
 {
     public class CoroutineManager : BaseSingleton<CoroutineManager>
     {
