@@ -20,8 +20,13 @@ namespace D_Dev.Conditions
 
         public bool IsConditionMet()
         {
-            float target = _value.Value;
+            if (_rigidbody == null)
+                return false;
+
+            if (_value == null)
+                return false;
             
+            float target = _value.Value;
             switch (_compareType)
             {
                 case ValueCompareType.Less:
