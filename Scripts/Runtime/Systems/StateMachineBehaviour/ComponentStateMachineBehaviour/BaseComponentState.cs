@@ -47,7 +47,11 @@ namespace D_Dev.StateMachineBehaviour
         public float ExitTime => _stateExitTime.Value;
         public string StateName => _stateName.Value;
         public TransitionData[] Transitions => _transitions;
-        public PolymorphicValue<bool> CanBeTransitioned => _canBeTransitioned;
+        public PolymorphicValue<bool> CanBeTransitioned
+        {
+            get => _canBeTransitioned;
+            set => _canBeTransitioned = value;
+        }
 
         #endregion
 
