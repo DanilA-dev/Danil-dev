@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using D_Dev.Entity;
 using UnityEngine;
@@ -37,32 +38,39 @@ namespace D_Dev.EntitySpawner
 
         #region Public
 
-        public async void CreateEntityAsync(int settingsIndex) => await GetEntityAsync(settingsIndex);
-        public async void CreateEntityAsync(EntityInfo data) => await GetEntityAsync(data);
+        public async void CreateEntityAsync(int settingsIndex) => await GetEntitiesAsync(settingsIndex);
+        public async void CreateEntityAsync(EntityInfo data) => await GetEntitiesAsync(data);
 
         #endregion
 
         #region Private
 
-        private async UniTask<GameObject> GetEntityAsync(EntityInfo data)
-        {
-            var spawnSettings = _spawnSettings.FirstOrDefault(s => s.Data.Value == data);
-            if (spawnSettings != null)
-                for (int i = 0; i < spawnSettings.Amount.Value; i++)
-                    return await spawnSettings.Get();
-            
-            return null;
-        }
+        public async UniTask<List<GameObject>> GetEntitiesAsync(EntityInfo data)                  
+        {                                                 
+            var spawnSettings = _spawnSettings.           
+                FirstOrDefault(s => s.Data.Value == data);        
+            var results = new List<GameObject>();         
+                                                       
+            if (spawnSettings != null)                    
+                for (int i = 0; i < spawnSettings.        
+                         Amount.Value; i++)                                
+                    results.Add(await spawnSettings.Get());       
+                                                       
+            return results;                               
+        }               
 
-        private async UniTask<GameObject> GetEntityAsync(int settingsIndex)
+        public async UniTask<List<GameObject>> GetEntitiesAsync(int index)
         {
-            var spawnSettings = _spawnSettings[settingsIndex];
-            if (spawnSettings != null)
-                for (int i = 0; i < spawnSettings.Amount.Value; i++)
-                    return await spawnSettings.Get();
-            
-            return null;
-        }
+            var spawnSettings = _spawnSettings[index];
+            var results = new List<GameObject>();         
+                                                       
+            if (spawnSettings != null)                    
+                for (int i = 0; i < spawnSettings.        
+                         Amount.Value; i++)                                
+                    results.Add(await spawnSettings.Get());       
+                                                       
+            return results;                               
+        }               
 
         #endregion
     }
