@@ -1,4 +1,6 @@
-﻿using Sirenix.OdinInspector;
+using System;
+using D_Dev.PolymorphicValueSystem;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,7 +11,7 @@ namespace D_Dev.TimerSystem
         #region Fields
 
         [SerializeField] private bool _invokeOnStart;
-        [SerializeField] private float _timeValue;
+        [SerializeReference] private PolymorphicValue<float> _timeValue = new FloatConstantValue();
 
         [FoldoutGroup("Events")]
         public UnityEvent<float> OnTimerStart;
@@ -19,7 +21,10 @@ namespace D_Dev.TimerSystem
         public UnityEvent<float> OnTimerEnd;
 
         private CountdownTimer _timer;
-            
+        private Action _onTimerStartDelegate;
+        private Action _onTimerEndDelegate;
+        private Action<float> _onTimerProgressUpdateDelegate;
+             
         #endregion
 
         #region Properties
@@ -30,7 +35,7 @@ namespace D_Dev.TimerSystem
             set => _invokeOnStart = value;
         }
 
-        public float TimeValue
+        public PolymorphicValue<float> TimeValue
         {
             get => _timeValue;
             set => _timeValue = value;
@@ -40,28 +45,37 @@ namespace D_Dev.TimerSystem
 
         #region Monobehaviour
 
-        private void Awake()
-        {
-            _timer = new CountdownTimer(_timeValue);
-            _timer.OnTimerStart += () => OnTimerStart?.Invoke(_timeValue);
-            _timer.OnTimerEnd += () => OnTimerEnd?.Invoke(_timer.RemainingTime);
-            _timer.OnTimerProgressUpdate += (value) => OnTimerUpdate?.Invoke(value);
-        }
-
         private void Start()
         {
+            _timer = new CountdownTimer(_timeValue.Value);
+            
+            _onTimerStartDelegate = () => OnTimerStart?.Invoke(_timeValue.Value);
+            _onTimerEndDelegate = () => OnTimerEnd?.Invoke(_timer.RemainingTime);
+            _onTimerProgressUpdateDelegate = (value) => OnTimerUpdate?.Invoke(value);
+            
+            _timer.OnTimerStart += _onTimerStartDelegate;
+            _timer.OnTimerEnd += _onTimerEndDelegate;
+            _timer.OnTimerProgressUpdate += _onTimerProgressUpdateDelegate;
+            
             if (_invokeOnStart)
                 StartTimer();
         }
 
         private void OnDestroy()
         {
-            _timer.OnTimerStart -= () => OnTimerStart?.Invoke(_timeValue);
-            _timer.OnTimerEnd -= () => OnTimerEnd?.Invoke(_timeValue);
-            _timer.OnTimerProgressUpdate -= (value) => OnTimerUpdate?.Invoke(value);
+            if (_timer != null)
+            {
+                _timer.OnTimerStart -= _onTimerStartDelegate;
+                _timer.OnTimerEnd -= _onTimerEndDelegate;
+                _timer.OnTimerProgressUpdate -= _onTimerProgressUpdateDelegate;
+            }
         }
 
-        private void Update() => _timer?.Tick(Time.deltaTime);
+        private void Update()
+        {
+            if (_timer != null)
+                _timer.Tick(Time.deltaTime);
+        }
 
         #endregion
 
