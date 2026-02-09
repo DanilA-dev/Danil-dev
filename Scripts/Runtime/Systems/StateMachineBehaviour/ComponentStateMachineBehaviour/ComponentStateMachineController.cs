@@ -48,13 +48,15 @@ namespace  D_Dev.StateMachineBehaviour
                 {
                     if (transition.Conditions != null && transition.Conditions.Length > 0)
                     {
-                        AddTransition(transition.FromStates, state.StateName, new FuncCondition(() =>
+                        AddTransition(transition.FromStates, state.StateName, new FuncCondition(() => 
+                            state.CanBeTransitioned.Value &&
                             transition.Conditions.All(c => c.IsConditionMet())));
                     }
                     
                     if (transition.FixedConditions != null && transition.FixedConditions.Length > 0)
                     {
-                        AddFixedTransition(transition.FromStates, state.StateName, new FuncFixedCondition(() =>
+                        AddFixedTransition(transition.FromStates, state.StateName, new FuncFixedCondition(() => 
+                            state.CanBeTransitioned.Value &&
                             transition.FixedConditions.All(c => c.IsConditionMet())));
                     }
                 }

@@ -35,9 +35,10 @@ namespace D_Dev.StateMachineBehaviour
 
         #region Fields
 
-        [SerializeReference] private PolymorphicValue<string> _stateName = new StringConstantValue();
-        [SerializeReference] private PolymorphicValue<float> _stateExitTime = new FloatConstantValue();
-        [SerializeField] private TransitionData[] _transitions;
+        [SerializeReference] protected PolymorphicValue<string> _stateName = new StringConstantValue();
+        [SerializeReference] protected PolymorphicValue<bool> _canBeTransitioned = new BoolConstantValue() { Value = true };
+        [SerializeReference] protected PolymorphicValue<float> _stateExitTime = new FloatConstantValue();
+        [SerializeField] protected TransitionData[] _transitions;
 
         #endregion
         
@@ -46,6 +47,7 @@ namespace D_Dev.StateMachineBehaviour
         public float ExitTime => _stateExitTime.Value;
         public string StateName => _stateName.Value;
         public TransitionData[] Transitions => _transitions;
+        public PolymorphicValue<bool> CanBeTransitioned => _canBeTransitioned;
 
         #endregion
 
