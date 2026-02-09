@@ -1,4 +1,6 @@
-﻿using D_Dev.TweenAnimations;
+using System;
+using System.Globalization;
+using D_Dev.TweenAnimations;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -14,6 +16,7 @@ namespace D_Dev.ValueViewProvider
         [ShowIf(nameof(_isAnimated))]
         [PropertyOrder(100)]
         [SerializeField] protected TAnimation _tweenAnimation;
+        [SerializeField] protected string _format;
         
         protected TValue? _currentValue;
 
@@ -39,7 +42,12 @@ namespace D_Dev.ValueViewProvider
                 _tweenAnimation.Play();
             }
             else
-                _text.text = value.ToString();
+            {
+                if (value is IFormattable formattable && !string.IsNullOrEmpty(_format))
+                    _text.text = formattable.ToString(_format, CultureInfo.InvariantCulture);
+                else
+                    _text.text = value.ToString();
+            }
 
             _currentValue = value;
         }
