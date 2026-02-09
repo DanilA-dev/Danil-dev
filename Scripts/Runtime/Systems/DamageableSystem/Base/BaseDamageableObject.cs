@@ -61,11 +61,6 @@ namespace D_Dev.DamageableSystem
             {
                 _lastTakenDirection.Value = damageData.ForceDirection;
                 _lastTakenForce.Value = damageData.Force;
-                if (_rigidbody != null)
-                {
-                    _rigidbody.isKinematic = false;
-                    _rigidbody.AddForce(damageData.ForceDirection * damageData.Force, damageData.ForceMode);
-                }
             }
             
             OnDamage?.Invoke(damageData);
