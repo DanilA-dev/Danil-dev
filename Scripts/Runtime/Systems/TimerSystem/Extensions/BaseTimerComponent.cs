@@ -6,12 +6,12 @@ using UnityEngine.Events;
 
 namespace D_Dev.TimerSystem
 {
-    public class TimerComponent : MonoBehaviour
+    public abstract class BaseTimerComponent : MonoBehaviour
     {
         #region Fields
 
-        [SerializeField] private bool _invokeOnStart;
-        [SerializeReference] private PolymorphicValue<float> _timeValue = new FloatConstantValue();
+        [SerializeField] protected bool _invokeOnStart;
+        [SerializeReference] protected PolymorphicValue<float> _timeValue = new FloatConstantValue();
 
         [FoldoutGroup("Events")]
         public UnityEvent<float> OnTimerStart;
@@ -20,10 +20,10 @@ namespace D_Dev.TimerSystem
         [FoldoutGroup("Events")]
         public UnityEvent<float> OnTimerEnd;
 
-        private CountdownTimer _timer;
-        private Action _onTimerStartDelegate;
-        private Action _onTimerEndDelegate;
-        private Action<float> _onTimerProgressUpdateDelegate;
+        protected CountdownTimer _timer;
+        protected Action _onTimerStartDelegate;
+        protected Action _onTimerEndDelegate;
+        protected Action<float> _onTimerProgressUpdateDelegate;
              
         #endregion
 
@@ -45,7 +45,7 @@ namespace D_Dev.TimerSystem
 
         #region Monobehaviour
 
-        private void Start()
+        protected virtual void Start()
         {
             _timer = new CountdownTimer(_timeValue.Value);
             
@@ -61,7 +61,7 @@ namespace D_Dev.TimerSystem
                 StartTimer();
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             if (_timer != null)
             {
@@ -71,16 +71,16 @@ namespace D_Dev.TimerSystem
             }
         }
 
-        private void Update()
-        {
-            if (_timer != null)
-                _timer.Tick(Time.deltaTime);
-        }
-
         #endregion
 
         #region Public
 
+        public void UpdateTimer(float delta)
+        {
+            if (_timer != null)
+                _timer.Tick(Time.deltaTime);
+        }
+        
         public void ResetTimer(float time) => _timer?.Reset(time);
         public void StartTimer() => _timer?.Start();
         public void StopTimer() => _timer?.Stop();
