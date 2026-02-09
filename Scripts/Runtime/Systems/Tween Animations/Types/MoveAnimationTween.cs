@@ -1,5 +1,6 @@
 #if DOTWEEN
 using System;
+using D_Dev.PolymorphicValueSystem;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -35,10 +36,11 @@ namespace D_Dev.TweenAnimations.Types
         [SerializeField] private MoveMotionType _moveMotionType;
         [SerializeField] private Transform _movedObject;
         [SerializeField] private bool _useInitialPositionAsStart;
+
         [ShowIf("@!_useInitialPositionAsStart && this._moveObjectType == MoveObjectType.Transform")]
-        [SerializeField] private Transform _moveStart;
+        [SerializeReference] private PolymorphicValue<Transform> _moveStart = new TransformConstantValue();
         [ShowIf(nameof(_moveObjectType), MoveObjectType.Transform)]
-        [SerializeField] private Transform _moveEnd;
+        [SerializeReference] private PolymorphicValue<Transform> _moveEnd = new TransformConstantValue();
         [ShowIf("@!_useInitialPositionAsStart && this._moveObjectType != MoveObjectType.Transform")]
         [SerializeField] private Vector3 _positionStart;
         [ShowIf("@this._moveObjectType != MoveObjectType.Transform")]
@@ -88,13 +90,13 @@ namespace D_Dev.TweenAnimations.Types
             set => _useInitialPositionAsStart = value;
         }
 
-        public Transform MoveStart
+        public PolymorphicValue<Transform> MoveStart
         {
             get => _moveStart;
             set => _moveStart = value;
         }
 
-        public Transform MoveEnd
+        public PolymorphicValue<Transform> MoveEnd
         {
             get => _moveEnd;
             set => _moveEnd = value;
@@ -211,10 +213,10 @@ namespace D_Dev.TweenAnimations.Types
         {
             RectTransform rect = _movedObject.GetComponent<RectTransform>();
             return !rect
-                ? _movedObject.DOMove(_moveEnd.position, Duration)
-                    .From(!_useInitialPositionAsStart? _moveStart.position : _initialStartPos)
-                : rect.DOAnchorPos(_moveEnd.position, Duration)
-                    .From(!_useInitialPositionAsStart? _moveStart.position : _initialStartPos);
+                ? _movedObject.DOMove(_moveEnd.Value.position, Duration)
+                    .From(!_useInitialPositionAsStart? _moveStart.Value.position : _initialStartPos)
+                : rect.DOAnchorPos(_moveEnd.Value.position, Duration)
+                    .From(!_useInitialPositionAsStart? _moveStart.Value.position : _initialStartPos);
 
         }
 
