@@ -1,5 +1,6 @@
-﻿using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using D_Dev.CustomEventManager;
+using D_Dev.EntitySpawner;
 using D_Dev.PolymorphicValueSystem;
 using DG.Tweening;
 using Sirenix.OdinInspector;
@@ -18,7 +19,7 @@ namespace D_Dev.CurrencySystem.Extensions
             #region Fields
 
             [Title("General")]
-            [SerializeField] private GameObject _currencyItemPrefab;
+            [SerializeField] private EntitySpawnSettings _entitySpawnSettings;
             [SerializeField] private int _maxAmount;
             [SerializeField] private Vector2 _localScale = new(1, 1);
 
@@ -44,7 +45,7 @@ namespace D_Dev.CurrencySystem.Extensions
 
             #region Properties
 
-            public GameObject CurrencyItemPrefab => _currencyItemPrefab;
+            public EntitySpawnSettings EntitySpawnSettings => _entitySpawnSettings;
 
             public PolymorphicValue<Canvas> Canvas => _canvas;
 
@@ -92,6 +93,11 @@ namespace D_Dev.CurrencySystem.Extensions
             _camera = Camera.main;
         }
 
+        private async void Start()
+        {
+            await _flyingCurrencyAnimation.EntitySpawnSettings.Init();
+        }
+
         private void OnEnable()
         {
             EventManager.AddListener<Transform, Transform, long>(_flyingAnimationEventName.Value, OnCurrencyUpdate);
@@ -102,6 +108,11 @@ namespace D_Dev.CurrencySystem.Extensions
             EventManager.RemoveListener<Transform, Transform, long>(_flyingAnimationEventName.Value, OnCurrencyUpdate);
         }
 
+        private void OnDestroy()
+        {
+            _flyingCurrencyAnimation?.EntitySpawnSettings?.DisposePool();
+        }
+
 
         #endregion
 
@@ -109,21 +120,21 @@ namespace D_Dev.CurrencySystem.Extensions
 
         private void OnCurrencyUpdate(Transform from, Transform to, long amount)
         {
-            StartFlyingCurrencySequence(from, to, amount);
+            StartFlyingCurrencySequence(from, to, amount).Forget();
         }
 
         #endregion
 
         #region Private
 
-        private async void StartFlyingCurrencySequence(Transform from, Transform to, long amount)
+        private async UniTaskVoid StartFlyingCurrencySequence(Transform from, Transform to, long amount)
         {
             int createdAmount = Mathf.Min((int)amount, _flyingCurrencyAnimation.MaxAmount);
             var canvasRect = _flyingCurrencyAnimation.Canvas.Value.GetComponent<RectTransform>();
 
             Vector3 worldPos = from.position;
             Vector2 screenPos = _camera.WorldToScreenPoint(worldPos);
-            
+                
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
                     canvasRect,
                     screenPos,
@@ -132,26 +143,31 @@ namespace D_Dev.CurrencySystem.Extensions
             {
                 for (int i = 0; i < createdAmount; i++)
                 {
-                    RectTransform currencyItem = Instantiate(
-                        _flyingCurrencyAnimation.CurrencyItemPrefab.GetComponent<RectTransform>(),
-                        canvasRect,
-                        false);
+                    var currencyGo = await _flyingCurrencyAnimation.EntitySpawnSettings.Get();
+                    if (currencyGo == null)
+                        continue;
+                    
+                    RectTransform currencyItem = currencyGo.GetComponent<RectTransform>();
+                    currencyItem.SetParent(canvasRect, false);
 
                     var fromAnchoredPos = fromLocalPos + _flyingCurrencyAnimation.FromOffset;
                     currencyItem.anchoredPosition = fromAnchoredPos;
                     currencyItem.localScale = _flyingCurrencyAnimation.LocalScale;
 
+                    var capturedGo = currencyGo;
                     currencyItem.DOMove(to.position, _flyingCurrencyAnimation.MoveTime)
                         .SetEase(_flyingCurrencyAnimation.Ease)
                         .SetUpdate(_flyingCurrencyAnimation.IgnoreTimeScale)
                         .OnComplete(() =>
                         {
                             _flyingCurrencyAnimation.OnSingleAnimationEnd?.Invoke();
-                            Destroy(currencyItem.gameObject);
-                        })
-                        .SetAutoKill();
+                            if (capturedGo.TryGetComponent<PoolableObject>(out var poolable))
+                            {
+                                poolable?.Release();
+                            }
+                        });
 
-                    await UniTask.Delay((int)_flyingCurrencyAnimation.DelayBetweenSpawn * 1000, DelayType.Realtime);
+                    await UniTask.Delay((int)(_flyingCurrencyAnimation.DelayBetweenSpawn * 1000), DelayType.Realtime);
                 }
                 _flyingCurrencyAnimation.OnAllAnimationEnd?.Invoke();
             }

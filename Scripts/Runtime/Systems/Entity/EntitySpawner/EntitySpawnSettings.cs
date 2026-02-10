@@ -17,10 +17,10 @@ namespace D_Dev.EntitySpawner
     {
         #region Fields
 
-        [Title("Data")] 
+        [Title("Data")]
         [SerializeReference] private PolymorphicValue<EntityInfo> _data;
         [SerializeField] private bool _createOnStart;
-        [SerializeReference] private PolymorphicValue<int> _amount;
+        [SerializeReference] private PolymorphicValue<int> _amount = new IntConstantValue();
         [SerializeField] private bool _setActiveOnStart;
 
         [FoldoutGroup("Position and Rotation")]
@@ -223,9 +223,9 @@ namespace D_Dev.EntitySpawner
                 },
                 actionOnRelease: p => { if (p != null && p.gameObject != null) p.gameObject.SetActive(false); },
                 actionOnDestroy: p => { if (p != null && p.gameObject != null) Object.Destroy(p.gameObject); },
-                collectionCheck: false,
-                defaultCapacity: _poolableEntities.Count,
-                maxSize: _poolableEntities.Count
+                collectionCheck: _poolCollectionCheck,
+                defaultCapacity: _poolDefaultCapacity,
+                maxSize: _poolMaxSize
             );
         }
         
