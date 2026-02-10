@@ -20,7 +20,17 @@ namespace D_Dev.EntitySpawner
         #region Monobehaviour
 
         private void OnDestroy() => OnEntityDestroy?.Invoke(this);
-        public void Release() => OnEntityRelease?.Invoke(this);
+        public void Release()
+        {
+            OnRelease();
+            OnEntityRelease?.Invoke(this);
+        }
+
+        #endregion
+
+        #region Virtual
+
+        public virtual void OnRelease() {}
 
         #endregion
     }
