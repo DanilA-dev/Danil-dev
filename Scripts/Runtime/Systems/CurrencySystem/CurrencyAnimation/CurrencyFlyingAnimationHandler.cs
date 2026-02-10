@@ -132,45 +132,68 @@ namespace D_Dev.CurrencySystem.Extensions
             int createdAmount = Mathf.Min((int)amount, _flyingCurrencyAnimation.MaxAmount);
             var canvasRect = _flyingCurrencyAnimation.Canvas.Value.GetComponent<RectTransform>();
 
-            Vector3 worldPos = from.position;
-            Vector2 screenPos = _camera.WorldToScreenPoint(worldPos);
-                
-            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    canvasRect,
-                    screenPos,
-                    null,
-                    out Vector2 fromLocalPos))
+            bool fromIsUI = from is RectTransform;
+            bool toIsUI = to is RectTransform;
+
+            Vector2 fromScreenPos;
+            if (fromIsUI)
+                fromScreenPos = ((RectTransform)from).position;
+            else
+                fromScreenPos = _camera.WorldToScreenPoint(from.position);
+
+            Vector2 toScreenPos;
+            if (toIsUI)
+                toScreenPos = ((RectTransform)to).position;
+            else
+                toScreenPos = _camera.WorldToScreenPoint(to.position);
+
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, fromScreenPos, null, out Vector2 fromLocalPos))
+                return;
+
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, toScreenPos, null, out Vector2 toLocalPos))
+                return;
+
+            for (int i = 0; i < createdAmount; i++)
             {
-                for (int i = 0; i < createdAmount; i++)
+                var currencyGo = await _flyingCurrencyAnimation.EntitySpawnSettings.Get();
+                if (currencyGo == null)
+                    continue;
+
+                RectTransform currencyItem = currencyGo.GetComponent<RectTransform>();
+                currencyItem.SetParent(canvasRect, false);
+
+                var fromAnchoredPos = fromLocalPos + _flyingCurrencyAnimation.FromOffset;
+                currencyItem.anchoredPosition = fromAnchoredPos;
+                currencyItem.localScale = _flyingCurrencyAnimation.LocalScale;
+
+                Vector3 targetWorldPos;
+                if (RectTransformUtility.ScreenPointToWorldPointInRectangle(
+                        canvasRect,
+                        toLocalPos + _flyingCurrencyAnimation.ToOffset,
+                        null,
+                        out Vector3 worldPoint))
                 {
-                    var currencyGo = await _flyingCurrencyAnimation.EntitySpawnSettings.Get();
-                    if (currencyGo == null)
-                        continue;
-                    
-                    RectTransform currencyItem = currencyGo.GetComponent<RectTransform>();
-                    currencyItem.SetParent(canvasRect, false);
-
-                    var fromAnchoredPos = fromLocalPos + _flyingCurrencyAnimation.FromOffset;
-                    currencyItem.anchoredPosition = fromAnchoredPos;
-                    currencyItem.localScale = _flyingCurrencyAnimation.LocalScale;
-
-                    var capturedGo = currencyGo;
-                    currencyItem.DOMove(to.position, _flyingCurrencyAnimation.MoveTime)
-                        .SetEase(_flyingCurrencyAnimation.Ease)
-                        .SetUpdate(_flyingCurrencyAnimation.IgnoreTimeScale)
-                        .OnComplete(() =>
-                        {
-                            _flyingCurrencyAnimation.OnSingleAnimationEnd?.Invoke();
-                            if (capturedGo.TryGetComponent<PoolableObject>(out var poolable))
-                            {
-                                poolable?.Release();
-                            }
-                        });
-
-                    await UniTask.Delay((int)(_flyingCurrencyAnimation.DelayBetweenSpawn * 1000), DelayType.Realtime);
+                    targetWorldPos = worldPoint;
                 }
-                _flyingCurrencyAnimation.OnAllAnimationEnd?.Invoke();
+                else
+                    targetWorldPos = to.position;
+
+                var capturedGo = currencyGo;
+                currencyItem.DOAnchorPos(targetWorldPos, _flyingCurrencyAnimation.MoveTime)
+                    .SetEase(_flyingCurrencyAnimation.Ease)
+                    .SetUpdate(_flyingCurrencyAnimation.IgnoreTimeScale)
+                    .OnComplete(() =>
+                    {
+                        _flyingCurrencyAnimation.OnSingleAnimationEnd?.Invoke();
+                        if (capturedGo.TryGetComponent<PoolableObject>(out var poolable))
+                        {
+                            poolable?.Release();
+                        }
+                    });
+
+                await UniTask.Delay((int)(_flyingCurrencyAnimation.DelayBetweenSpawn * 1000), DelayType.Realtime);
             }
+            _flyingCurrencyAnimation.OnAllAnimationEnd?.Invoke();
         }
 
         #endregion
