@@ -1,4 +1,5 @@
 ﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace D_Dev.Base
@@ -8,6 +9,8 @@ namespace D_Dev.Base
     {
         #region Fields
 
+        [SerializeField, PropertyOrder(-1)] private string _actionName;
+        
         [FoldoutGroup("Events"), PropertyOrder(100)] 
         public UnityEvent OnUndo;
 

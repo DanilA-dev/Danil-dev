@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace D_Dev.Base
@@ -11,6 +12,7 @@ namespace D_Dev.Base
 
         [SerializeField] private bool _executeInParallel = true;
         [Space]
+        [ListDrawerSettings(ListElementLabelName = "_actionName")]     
         [SerializeReference] private List<BaseAction> _actions = new();
         
         #endregion
