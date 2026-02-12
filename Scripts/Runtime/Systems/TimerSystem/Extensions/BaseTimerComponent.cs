@@ -82,7 +82,12 @@ namespace D_Dev.TimerSystem
         }
         
         public void ResetTimer(float time) => _timer?.Reset(time);
-        public void StartTimer() => _timer?.Start();
+        public void StartTimer()
+        {
+            ResetTimer(_timeValue.Value);
+            _timer?.Start();
+        }
+
         public void StopTimer() => _timer?.Stop();
         public void PauseTimer() => _timer?.Pause();
 
