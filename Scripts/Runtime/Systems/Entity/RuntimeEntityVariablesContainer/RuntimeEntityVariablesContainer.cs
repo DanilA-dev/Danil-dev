@@ -10,12 +10,28 @@ namespace D_Dev.RuntimeEntityVariables
     {
         #region Fields
 
+        [SerializeField] private bool _initLocalVariablesOnStart;
         [SerializeReference] private List<BaseEntityVariable> _variables = new();
 
         private Dictionary<StringScriptableVariable, BaseEntityVariable> _variableMap = new();
         
         public event Action OnInitialized;
             
+        #endregion
+
+        #region Monobehaviour
+
+        private void Start()
+        {
+            if (_initLocalVariablesOnStart)
+            {
+                foreach (var runtimeVariables in _variables)
+                    _variableMap.TryAdd(runtimeVariables.VariableID, runtimeVariables);
+                
+                OnInitialized?.Invoke();
+            }
+        }
+
         #endregion
 
         #region Public
