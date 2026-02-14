@@ -75,6 +75,18 @@ namespace D_Dev.ColliderEvents
             set => _colliderChecker = value;
         }
 
+        public bool CheckEnter
+        {
+            get => _checkEnter;
+            set => _checkEnter = value;
+        }
+
+        public bool CheckExit
+        {
+            get => _checkExit;
+            set => _checkExit = value;
+        }
+
         #endregion
 
         #region Monobehaviour
@@ -85,6 +97,12 @@ namespace D_Dev.ColliderEvents
 
         #region Abstract
         protected abstract void InitColliderEvents();
+
+        #endregion
+
+        #region Public
+
+        public void ForceClearColliders() => Colliders.Clear();
 
         #endregion
     }

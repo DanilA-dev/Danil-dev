@@ -12,7 +12,7 @@ namespace D_Dev.ColliderEvents
         {
             if (_collisionDimension == CollisionDimension.Collider3d)
             {
-                if (_checkEnter)
+                if (CheckEnter)
                     _rigidbody.OnCollisionEnterAsObservable()
                         .Subscribe((c) =>
                         {
@@ -25,7 +25,7 @@ namespace D_Dev.ColliderEvents
                             }
                         });
 
-                if (_checkExit)
+                if (CheckExit)
                     _rigidbody.OnCollisionExitAsObservable()
                         .Subscribe((c) =>
                         {
@@ -41,7 +41,7 @@ namespace D_Dev.ColliderEvents
             }
             else 
             {
-                if (_checkEnter)
+                if (CheckEnter)
                     _rigidbody2D.OnCollisionEnter2DAsObservable()
                         .Subscribe((c) =>
                         {
@@ -54,7 +54,7 @@ namespace D_Dev.ColliderEvents
                             }
                         });
 
-                if (_checkExit)
+                if (CheckExit)
                     _rigidbody2D.OnCollisionExit2DAsObservable()
                         .Subscribe((c) =>
                         {
