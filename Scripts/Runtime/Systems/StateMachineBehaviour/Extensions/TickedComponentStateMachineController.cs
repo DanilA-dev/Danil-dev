@@ -1,5 +1,4 @@
-﻿using System;
-using D_Dev.UpdateManagerSystem;
+﻿using D_Dev.UpdateManagerSystem;
 using UnityEngine;
 
 namespace D_Dev.StateMachineBehaviour.Extensions
@@ -37,7 +36,6 @@ namespace D_Dev.StateMachineBehaviour.Extensions
 
         #endregion
         
-
         #region IFixedTickable
         public void FixedTick()
         {

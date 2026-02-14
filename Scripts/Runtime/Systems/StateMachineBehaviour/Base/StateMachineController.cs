@@ -139,7 +139,7 @@ namespace D_Dev.StateMachineBehaviour
             if(_stateEvents.Length <= 0)
                 return;
             
-            _stateEvents.FirstOrDefault(s => s.State.Equals(state))?.OnStateExit?.Invoke(state);
+            _stateEvents.FirstOrDefault(s => s.State.Value.Equals(state))?.OnStateExit?.Invoke(state);
         }
 
         #endregion
