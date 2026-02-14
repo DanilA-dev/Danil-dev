@@ -23,7 +23,7 @@ namespace D_Dev.InteractableSystem.InteractableDetector
 
         [SerializeField] private InteractableDetectType _interactableDetectType;
         [ShowIf(nameof(_interactableDetectType), InteractableDetectType.Trigger)]
-        [SerializeField] private TriggerColliderEvents _triggerColliderEvents;
+        [SerializeField] private TriggerColliderObservable _triggerColliderObservable;
         [ShowIf(nameof(_interactableDetectType), InteractableDetectType.Raycaster)]
         [SerializeField] private float _updateRate = 0.1f;
         [ShowIf(nameof(_interactableDetectType), InteractableDetectType.Raycaster)]
@@ -51,8 +51,8 @@ namespace D_Dev.InteractableSystem.InteractableDetector
         private void Awake()
         {
             _interval = new WaitForSeconds(_updateRate);
-            _triggerColliderEvents?.OnEnter.AddListener(OnTriggerInteractableEnter);
-            _triggerColliderEvents?.OnExit.AddListener(OnTriggerInteractableExit);
+            _triggerColliderObservable?.OnEnter.AddListener(OnTriggerInteractableEnter);
+            _triggerColliderObservable?.OnExit.AddListener(OnTriggerInteractableExit);
         }
 
         private void Start()
@@ -63,8 +63,8 @@ namespace D_Dev.InteractableSystem.InteractableDetector
 
         private void OnDisable()
         {
-            _triggerColliderEvents?.OnEnter.RemoveListener(OnTriggerInteractableEnter);
-            _triggerColliderEvents?.OnExit.RemoveListener(OnTriggerInteractableExit);
+            _triggerColliderObservable?.OnEnter.RemoveListener(OnTriggerInteractableEnter);
+            _triggerColliderObservable?.OnExit.RemoveListener(OnTriggerInteractableExit);
         }
 
         #endregion

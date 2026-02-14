@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace D_Dev.ColliderEvents
 {
-    public abstract class BaseColliderEvents : MonoBehaviour
+    public abstract class BaseColliderObservable : MonoBehaviour
     {
         #region Fields
 

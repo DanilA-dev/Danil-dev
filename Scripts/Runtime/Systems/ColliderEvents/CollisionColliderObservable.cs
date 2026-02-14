@@ -4,7 +4,7 @@ using UniRx.Triggers;
 
 namespace D_Dev.ColliderEvents
 {
-    public class CollisionColliderEvents : BaseColliderEvents
+    public class CollisionColliderObservable : BaseColliderObservable
     {
         #region Override
 

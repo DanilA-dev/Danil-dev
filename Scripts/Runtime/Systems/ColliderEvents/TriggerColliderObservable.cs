@@ -1,11 +1,10 @@
 ﻿using D_Dev.ColliderChecker;
-using D_Dev.ColliderEvents;
 using UniRx;
 using UniRx.Triggers;
 
 namespace D_Dev.ColliderEvents
 {
-    public class TriggerColliderEvents : BaseColliderEvents
+    public class TriggerColliderObservable : BaseColliderObservable
     {
         #region Override
 
