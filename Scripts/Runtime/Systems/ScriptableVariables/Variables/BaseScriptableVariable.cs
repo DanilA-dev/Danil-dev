@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace D_Dev.ScriptableVaiables
@@ -33,15 +34,12 @@ namespace D_Dev.ScriptableVaiables
         public bool ResetOnEnterRuntime => _resetOnEnterRuntime;
 
         #endregion
-
-        #region ScriptableObject
-
-        protected virtual void OnEnable()
-        {
-            if (_resetOnEnterRuntime)
-                Value = default;
-        }
-
+        
+        #region Virtual
+        
+        [Button]
+        public virtual void ResetValue() => Value = default;
+        
         #endregion
     }
 }
