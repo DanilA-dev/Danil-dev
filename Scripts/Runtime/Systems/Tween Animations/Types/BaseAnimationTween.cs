@@ -12,6 +12,7 @@ namespace D_Dev.TweenAnimations.Types
         #region Fields
 
         [SerializeField] protected float _duration;
+        [SerializeField] protected float _delay;
         [SerializeField] protected Ease _ease;
         [SerializeField] protected bool _ignoreTimeScale;
         [SerializeField] protected int _loops;
@@ -44,6 +45,7 @@ namespace D_Dev.TweenAnimations.Types
                 
                 _tween.OnStart((() => OnStart?.Invoke()));
                 _tween.SetEase(_ease)
+                    .SetDelay(_delay)
                     .SetLoops(_loops, _loopType)
                     .SetUpdate(_ignoreTimeScale)
                     .SetAutoKill();
