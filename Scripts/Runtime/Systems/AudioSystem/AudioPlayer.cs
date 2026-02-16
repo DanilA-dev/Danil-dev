@@ -144,12 +144,35 @@ namespace D_Dev.AudioSystem
         {
             if(audioConfig == null)
                 return;
-            
+
             audioConfig.SetAudioSource(ref _audioSource);
             if (_audioSource.isPlaying && _lastAudioConfig != null)
                 StartCoroutine(FadePlay(audioConfig));
             else
                 Play(audioConfig);
+        }
+
+        public void Stop()
+        {
+            _audioSource?.Stop();
+        }
+
+        public void StopWithFade()
+        {
+            if (_audioSource != null && _audioSource.isPlaying && _lastAudioConfig != null)
+                StartCoroutine(FadeStop());
+            else
+                Stop();
+        }
+
+        public void Pause()
+        {
+            _audioSource?.Pause();
+        }
+
+        public void UnPause()
+        {
+            _audioSource?.UnPause();
         }
         #endregion
         
@@ -202,6 +225,21 @@ namespace D_Dev.AudioSystem
         {
             yield return new WaitForSeconds(audioConfig.Delay);
             PlayOneShot(audioConfig);
+        }
+
+        private IEnumerator FadeStop()
+        {
+            if (_audioSource.isPlaying)
+            {
+                float startVolume = _audioSource.volume;
+                for (float i = 0; i < _lastAudioConfig.FadeTime; i += Time.deltaTime)
+                {
+                    _audioSource.volume = startVolume * (1 - (i / _lastAudioConfig.FadeTime));
+                    yield return null;
+                }
+            }
+            _audioSource.Stop();
+            _audioSource.volume = _lastAudioConfig.Volume;
         }
 
         #endregion
