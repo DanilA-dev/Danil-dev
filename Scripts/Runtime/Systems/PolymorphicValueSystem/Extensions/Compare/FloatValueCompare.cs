@@ -16,19 +16,7 @@ namespace D_Dev.PolymorphicValueSystem.Compare
         [SerializeField, PropertyOrder(-1)] private ValueCompareType _compareType = ValueCompareType.Equal;
 
         [FoldoutGroup("Events"), PropertyOrder(100)]
-        [SerializeField] private UnityEvent OnValueLess;
-        [FoldoutGroup("Events"), PropertyOrder(100)]
-        [SerializeField] private UnityEvent OnValueEqual;
-        [FoldoutGroup("Events"), PropertyOrder(100)]
-        [SerializeField] private UnityEvent OnValueBigger;
-        [FoldoutGroup("Events"), PropertyOrder(100)]
-        [SerializeField] private UnityEvent OnValueEqualOrLess;
-        [FoldoutGroup("Events"), PropertyOrder(100)]
-        [SerializeField] private UnityEvent OnValueEqualOrBigger;
-        [FoldoutGroup("Events"), PropertyOrder(100)]
-        [SerializeField] private UnityEvent OnValuesEqual;
-        [FoldoutGroup("Events"), PropertyOrder(100)]
-        [SerializeField] private UnityEvent OnValuesNotEqual;
+        [SerializeField] private UnityEvent OnValueCompareTrue;
 
         #endregion
 
@@ -38,37 +26,23 @@ namespace D_Dev.PolymorphicValueSystem.Compare
         {
             float valueTo = _compareValueTo.Value;
             
-            switch (_compareType)
+            bool isTrue = _compareType switch
             {
-                case ValueCompareType.Less:
-                    if (value < valueTo) OnValueLess?.Invoke();
-                    break;
-                case ValueCompareType.Equal:
-                    if (Mathf.Approximately(value, valueTo)) OnValueEqual?.Invoke();
-                    break;
-                case ValueCompareType.Bigger:
-                    if (value > valueTo) OnValueBigger?.Invoke();
-                    break;
-                case ValueCompareType.EqualOrLess:
-                    if (value <= valueTo) OnValueEqualOrLess?.Invoke();
-                    break;
-                case ValueCompareType.EqualOrBigger:
-                    if (value >= valueTo) OnValueEqualOrBigger?.Invoke();
-                    break;
-            }
+                ValueCompareType.Less => value < valueTo,
+                ValueCompareType.Equal => Mathf.Approximately(value, valueTo),
+                ValueCompareType.Bigger => value > valueTo,
+                ValueCompareType.EqualOrLess => value <= valueTo,
+                ValueCompareType.EqualOrBigger => value >= valueTo,
+                _ => false
+            };
+
+            if (isTrue) OnValueCompareTrue?.Invoke();
         }
 
         public void CheckValues()
         {
             float valueA = _compareValue.Value;
-            float valueB = _compareValueTo.Value;
-            
             CheckValue(valueA);
-            
-            if (Mathf.Approximately(valueA, valueB))
-                OnValuesEqual?.Invoke();
-            else
-                OnValuesNotEqual?.Invoke();
         }
 
         #endregion
