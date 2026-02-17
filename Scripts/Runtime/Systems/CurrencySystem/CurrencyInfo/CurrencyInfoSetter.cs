@@ -22,7 +22,7 @@ namespace D_Dev.CurrencySystem
         #region Fields
 
         [SerializeReference] private PolymorphicValue<CurrencyInfo> _currencyInfo;
-        [SerializeField] private long _amount;
+        [SerializeReference] private PolymorphicValue<int> _amount = new IntConstantValue();
         [SerializeField] private bool _setOnEnable;
         [ShowIf("_setOnEnable")]
         [SerializeField] private StartCurrencySetAction _startCurrencySetAction;
@@ -61,11 +61,11 @@ namespace D_Dev.CurrencySystem
         
         #region Public
 
-        public void TryDeposit() => TryDepositValue(_amount);
+        public void TryDeposit() => TryDepositValue(_amount.Value);
 
-        public void TryWithdraw() => TryWithdrawValue(_amount);
+        public void TryWithdraw() => TryWithdrawValue(_amount.Value);
 
-        public void TrySet() => TrySetValue(_amount);
+        public void TrySet() => TrySetValue(_amount.Value);
 
         public bool TryDepositValue(long amount)
         {
