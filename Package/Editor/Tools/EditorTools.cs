@@ -69,13 +69,13 @@ namespace D_Dev
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("Tools/D_Dev/Open PersistentDataPath")]
+        [MenuItem("Tools/D_Dev/Data/Open PersistentDataPath")]
         public static void OpenPersistentDataPath()
         {
             EditorUtility.RevealInFinder(Application.persistentDataPath);
         }
         
-        [MenuItem("Tools/D_Dev/Clear All Data")]
+        [MenuItem("Tools/D_Dev/Data/Clear All Data")]
         public static void ClearData()
         {
             PlayerPrefs.DeleteAll();

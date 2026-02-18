@@ -27,7 +27,6 @@ namespace D_Dev.SceneLoader
         #endregion
 
 #if UNITY_EDITOR
-        
         #region Editor
 
         [Button]
@@ -72,7 +71,7 @@ namespace D_Dev.SceneLoader
             AssetDatabase.SaveAssets();
         }
         
-        [MenuItem("Tools/D_Dev/Project Scenes Config")]
+        [MenuItem("Tools/D_Dev/Setup/Project Scenes Config")]
         private static void OpenScenesConfig()
         {
             ProjectScenesConfig projectScenesConfig = Resources.Load<ProjectScenesConfig>("ProjectScenesConfig");

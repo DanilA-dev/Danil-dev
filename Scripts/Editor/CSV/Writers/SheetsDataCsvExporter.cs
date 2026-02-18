@@ -96,7 +96,7 @@ namespace D_Dev.SheetsLoadableSystem.Writers
             }
         }
 
-        [MenuItem("Tools/D_Dev/CSV/Export")]
+        [MenuItem("Tools/D_Dev/Utility/CSV/Export")]
         public static void OpenExportMenu()
         {
             SheetsDataCsvExporter exporter = Resources.LoadAll<SheetsDataCsvExporter>("")[0];

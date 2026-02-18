@@ -51,7 +51,7 @@ namespace D_Dev.SheetsLoadableSystem.Loaders
                 ImportFromURL();
         }
         
-        [MenuItem("Tools/D_Dev/CSV/Import")]
+        [MenuItem("Tools/D_Dev/Utility/CSV/Import")]
         public static void OpenImportMenu()
         {
             SheetsDataUrlImporter importer = Resources.LoadAll<SheetsDataUrlImporter>("")[0];

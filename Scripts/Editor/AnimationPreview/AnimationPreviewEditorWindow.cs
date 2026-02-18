@@ -27,7 +27,7 @@ namespace D_Dev.AnimatorView.Editor
 
         #region Menu
 
-        [MenuItem("Tools/D_Dev/Animation Preview")]
+        [MenuItem("Tools/D_Dev/Utility/Animation Preview")]
         public static void ShowWindow()
         {
             GetWindow<AnimationPreviewEditorWindow>("Animation Preview");
