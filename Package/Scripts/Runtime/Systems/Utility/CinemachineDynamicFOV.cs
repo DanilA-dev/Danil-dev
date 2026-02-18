@@ -67,6 +67,24 @@ namespace D_Dev.Utility
         public void SetMaxFOV(float duration) => SetFOV(_maxFovValue, duration);
         public void SetMaxFOV() => SetFOV(_maxFovValue);
 
+        public void SetFOVByNormalizedMagnitude(Vector3 value)
+        {
+            var normalizedVec = value.normalized;
+            if(normalizedVec.magnitude == 0)
+                SetMinFOV();
+            else
+                SetMaxFOV();
+        }
+        
+        public void SetFOVByNormalizedMagnitude(Vector2 value)
+        {
+            var normalizedVec = value.normalized;
+            if(normalizedVec.magnitude == 0)
+                SetMinFOV();
+            else
+                SetMaxFOV();
+        }
+
         #endregion
 
         #region Coroutine
