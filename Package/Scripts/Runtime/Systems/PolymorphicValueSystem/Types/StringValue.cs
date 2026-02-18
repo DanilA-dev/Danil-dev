@@ -20,6 +20,37 @@ namespace D_Dev.PolymorphicValueSystem
     }
 
     [System.Serializable]
+    public sealed class StringFromGameObjectName : StringValue
+    {
+        #region Fields
+
+        [SerializeReference] private PolymorphicValue<GameObject> _gameObject = new GameObjectConstantValue();
+
+        #endregion
+
+        #region Properties
+
+        public override string Value
+        {
+            get => _gameObject.Value.name;
+            set {}
+        }
+
+        #endregion
+
+        #region Cloning
+
+        public override PolymorphicValue<string> Clone()
+        {
+            return new StringFromGameObjectName { Value = Value };
+        }
+
+        #endregion
+        
+        
+    }
+
+    [System.Serializable]
     public sealed class StringScriptableVariableValue : ScriptableVariableValue<StringScriptableVariable,string>
     {
         #region Cloning

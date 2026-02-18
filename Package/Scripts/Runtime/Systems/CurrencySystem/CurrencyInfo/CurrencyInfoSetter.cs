@@ -26,11 +26,15 @@ namespace D_Dev.CurrencySystem
         [SerializeField] private bool _setOnEnable;
         [ShowIf("_setOnEnable")]
         [SerializeField] private StartCurrencySetAction _startCurrencySetAction;
+        [FoldoutGroup("Flying Animation")]
         [SerializeField] private bool _useFlyingAnimation;
+        [FoldoutGroup("Flying Animation")]
         [ShowIf(nameof(_useFlyingAnimation))] 
         [SerializeReference] private PolymorphicValue<string> _flyingAnimationEventName = new StringConstantValue();
+        [FoldoutGroup("Flying Animation")]
         [ShowIf(nameof(_useFlyingAnimation))]
         [SerializeReference] private PolymorphicValue<Transform> _from;
+        [FoldoutGroup("Flying Animation")]
         [ShowIf(nameof(_useFlyingAnimation))]
         [SerializeReference] private PolymorphicValue<Transform> _to;
         [Space]
