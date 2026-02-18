@@ -8,43 +8,32 @@ namespace D_Dev.TweenAnimations.Types
     [System.Serializable]
     public class RotateAnimationTween : BaseAnimationTween
     {
-        #region Enums
-
-        public enum RotationMotionType
-        {
-            None = 0,
-            Shake = 1,
-            Punch = 2
-        }
-
-        #endregion
-
         #region Fields
 
         [SerializeField] private Transform _rotateObject;
-        [SerializeField] private RotationMotionType _rotationMotionType;
-        [ShowIf(nameof(_rotationMotionType), RotationMotionType.None)]
+        [SerializeField] private MotionType _motionType;
+        [ShowIf(nameof(_motionType), MotionType.None)]
         [SerializeField] private RotateMode _rotateMode;
-        [ShowIf(nameof(_rotationMotionType), RotationMotionType.None)]
+        [ShowIf(nameof(_motionType), MotionType.None)]
         [SerializeField] private bool _useInitialRotationAsStart;
         [Space]
-        [ShowIf(nameof(_rotationMotionType), RotationMotionType.None)]
+        [ShowIf(nameof(_motionType), MotionType.None)]
         [SerializeField] private Vector3 _endValue;
-        [ShowIf("@_rotationMotionType == RotationMotionType.None && !_useInitialRotationAsStart")]
+        [ShowIf("@_motionType == MotionType.None && !_useInitialRotationAsStart")]
         [SerializeField] private Vector3 _startValue;
-        [ShowIf(nameof(_rotationMotionType), RotationMotionType.Shake)]
+        [ShowIf(nameof(_motionType), MotionType.Shake)]
         [SerializeField] private Vector3 _shakeStrength = Vector3.one;
-        [ShowIf(nameof(_rotationMotionType), RotationMotionType.Shake)]
+        [ShowIf(nameof(_motionType), MotionType.Shake)]
         [SerializeField] private int _vibratoShake = 10;
-        [ShowIf(nameof(_rotationMotionType), RotationMotionType.Shake)]
+        [ShowIf(nameof(_motionType), MotionType.Shake)]
         [SerializeField] private float _randomnessShake = 90f;
-        [ShowIf(nameof(_rotationMotionType), RotationMotionType.Shake)]
+        [ShowIf(nameof(_motionType), MotionType.Shake)]
         [SerializeField] private bool _fadeOutShake = true;
-        [ShowIf(nameof(_rotationMotionType), RotationMotionType.Punch)]
+        [ShowIf(nameof(_motionType), MotionType.Punch)]
         [SerializeField] private Vector3 _punch = Vector3.one;
-        [ShowIf(nameof(_rotationMotionType), RotationMotionType.Punch)]
+        [ShowIf(nameof(_motionType), MotionType.Punch)]
         [SerializeField] private int _vibratoPunch = 10;
-        [ShowIf(nameof(_rotationMotionType), RotationMotionType.Punch)]
+        [ShowIf(nameof(_motionType), MotionType.Punch)]
         [SerializeField] private float _elasticityPunch = 1f;
 
         #endregion
@@ -57,10 +46,10 @@ namespace D_Dev.TweenAnimations.Types
             set => _rotateObject = value;
         }
 
-        public RotationMotionType MotionType
+        public MotionType Motion
         {
-            get => _rotationMotionType;
-            set => _rotationMotionType = value;
+            get => _motionType;
+            set => _motionType = value;
         }
 
         public RotateMode RotateMode
@@ -140,17 +129,17 @@ namespace D_Dev.TweenAnimations.Types
             
             SetTarget(_rotateObject.gameObject);
             
-            switch (_rotationMotionType)
+            switch (_motionType)
             {
-                case RotationMotionType.None:
+                case MotionType.None:
                     Tween = _rotateObject.DORotate(_endValue, Duration, _rotateMode).From(_useInitialRotationAsStart
                         ? _rotateObject.transform.eulerAngles
                         : _startValue);
                     break;
-                case RotationMotionType.Shake:
+                case MotionType.Shake:
                     Tween = _rotateObject.DOShakeRotation(Duration, _shakeStrength, _vibratoShake, _randomnessShake, _fadeOutShake);
                     break;
-                case RotationMotionType.Punch:
+                case MotionType.Punch:
                     Tween = _rotateObject.DOPunchRotation(_punch, Duration, _vibratoPunch, _elasticityPunch);
                     break;
                 default:

@@ -6,6 +6,17 @@ using UnityEngine.Events;
 
 namespace D_Dev.TweenAnimations.Types
 {
+    #region Enum
+
+    public enum MotionType
+    {
+        None = 0,
+        Shake = 1,
+        Punch = 2
+    }
+
+    #endregion
+    
     [System.Serializable]
     public abstract class BaseAnimationTween
     {

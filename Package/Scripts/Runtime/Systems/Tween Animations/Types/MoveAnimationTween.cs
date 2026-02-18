@@ -21,43 +21,38 @@ namespace D_Dev.TweenAnimations.Types
             Transform
         }
 
-        public enum MoveMotionType
-        {
-            None = 0,
-            Shake = 1,
-            Punch = 2
-        }
-
         #endregion
 
         #region Fields
 
-        [SerializeField] private MoveObjectType _moveObjectType;
-        [SerializeField] private MoveMotionType _moveMotionType;
+        [SerializeField] private MotionType _motionType;
         [SerializeField] private Transform _movedObject;
+        [ShowIf(nameof(_motionType), MotionType.None)]
+        [SerializeField] private MoveObjectType _moveObjectType;
+        [ShowIf(nameof(_motionType), MotionType.None)]
         [SerializeField] private bool _useInitialPositionAsStart;
 
-        [ShowIf("@!_useInitialPositionAsStart && this._moveObjectType == MoveObjectType.Transform")]
+        [ShowIf("@_motionType == MotionType.None && !_useInitialPositionAsStart && this._moveObjectType == MoveObjectType.Transform")]
         [SerializeReference] private PolymorphicValue<Transform> _moveStart = new TransformConstantValue();
-        [ShowIf(nameof(_moveObjectType), MoveObjectType.Transform)]
+        [ShowIf("@_motionType == MotionType.None && this._moveObjectType == MoveObjectType.Transform")]
         [SerializeReference] private PolymorphicValue<Transform> _moveEnd = new TransformConstantValue();
-        [ShowIf("@!_useInitialPositionAsStart && this._moveObjectType != MoveObjectType.Transform")]
+        [ShowIf("@_motionType == MotionType.None && !_useInitialPositionAsStart && this._moveObjectType != MoveObjectType.Transform")]
         [SerializeField] private Vector3 _positionStart;
-        [ShowIf("@this._moveObjectType != MoveObjectType.Transform")]
+        [ShowIf("@_motionType == MotionType.None && this._moveObjectType != MoveObjectType.Transform")]
         [SerializeField] private Vector3 _positionEnd;
-        [ShowIf(nameof(_moveMotionType), MoveMotionType.Shake)]
+        [ShowIf(nameof(_motionType), MotionType.Shake)]
         [SerializeField] private Vector3 _shakeStrength = Vector3.one;
-        [ShowIf(nameof(_moveMotionType), MoveMotionType.Shake)]
+        [ShowIf(nameof(_motionType), MotionType.Shake)]
         [SerializeField] private int _vibratoShake = 10;
-        [ShowIf(nameof(_moveMotionType), MoveMotionType.Shake)]
+        [ShowIf(nameof(_motionType), MotionType.Shake)]
         [SerializeField] private float _randomnessShake = 90f;
-        [ShowIf(nameof(_moveMotionType), MoveMotionType.Shake)]
+        [ShowIf(nameof(_motionType), MotionType.Shake)]
         [SerializeField] private bool _fadeOutShake = true;
-        [ShowIf(nameof(_moveMotionType), MoveMotionType.Punch)]
+        [ShowIf(nameof(_motionType), MotionType.Punch)]
         [SerializeField] private Vector3 _punch = Vector3.one;
-        [ShowIf(nameof(_moveMotionType), MoveMotionType.Punch)]
+        [ShowIf(nameof(_motionType), MotionType.Punch)]
         [SerializeField] private int _vibratoPunch = 10;
-        [ShowIf(nameof(_moveMotionType), MoveMotionType.Punch)]
+        [ShowIf(nameof(_motionType), MotionType.Punch)]
         [SerializeField] private float _elasticityPunch = 1f;
 
         private Vector3 _initialStartPos;
@@ -72,10 +67,10 @@ namespace D_Dev.TweenAnimations.Types
             set => _moveObjectType = value;
         }
 
-        public MoveMotionType MotionType
+        public MotionType Motion
         {
-            get => _moveMotionType;
-            set => _moveMotionType = value;
+            get => _motionType;
+            set => _motionType = value;
         }
 
         public Transform MovedObject
@@ -167,15 +162,15 @@ namespace D_Dev.TweenAnimations.Types
             
             SetTarget(_movedObject.gameObject);
             
-            switch (_moveMotionType)
+            switch (_motionType)
             {
-                case MoveMotionType.None:
+                case MotionType.None:
                     Tween = PlayMoveTween();
                     break;
-                case MoveMotionType.Shake:
+                case MotionType.Shake:
                     Tween = _movedObject.DOShakePosition(Duration, _shakeStrength, _vibratoShake, _randomnessShake, _fadeOutShake);
                     break;
-                case MoveMotionType.Punch:
+                case MotionType.Punch:
                     Tween = _movedObject.DOPunchPosition(_punch, Duration, _vibratoPunch, _elasticityPunch);
                     break;
                 default:
