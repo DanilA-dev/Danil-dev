@@ -44,7 +44,6 @@ namespace D_Dev
             string[] paths = new []
             {
                 "Assets/Danil-dev/Assets",
-                "Assets/Danil-dev/Scripts"
             } ;
             var exportDirectory =  "Assets/Danil-dev/Package/Danil-Dev.unitypackage";
             AssetDatabase.ExportPackage(paths, exportDirectory, ExportPackageOptions.Recurse);
