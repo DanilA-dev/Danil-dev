@@ -6,6 +6,7 @@ using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
+using PoolableObject = D_Dev.EntitySpawner.PoolableObject;
 
 namespace D_Dev.CurrencySystem.Extensions
 {
@@ -18,22 +19,36 @@ namespace D_Dev.CurrencySystem.Extensions
         {
             #region Fields
 
-            [Title("General")]
+            [FoldoutGroup("General")] 
             [SerializeField] private EntitySpawnSettings _entitySpawnSettings;
+            [FoldoutGroup("General")] 
             [SerializeField] private int _maxAmount;
+            [FoldoutGroup("General")] 
             [SerializeField] private Vector2 _localScale = new(1, 1);
 
-            [Title("Offsets")] 
+            [FoldoutGroup("UI Settings")]
             [SerializeField] private Vector2 _fromOffset;
+            [FoldoutGroup("UI Settings")]
             [SerializeField] private Vector2 _toOffset;
-            
-            [Title("Canvas")]
+            [FoldoutGroup("UI Settings")]
             [SerializeReference] private PolymorphicValue<Canvas> _canvas;
 
-            [Title("Tween Settings")] 
+            [FoldoutGroup("World Settings")]
+            [SerializeField] private Vector3 _fromOffsetWorld;
+            [FoldoutGroup("World Settings")]
+            [SerializeField] private Vector3 _toOffsetWorld;
+            [FoldoutGroup("World Settings")]
+            [SerializeField] private float _jumpPower = 2f;
+            [FoldoutGroup("World Settings")]
+            [SerializeField] private int _numJumps = 1;
+
+            [FoldoutGroup("Animation Settings")]
             [SerializeField] private float _delayBetweenSpawn;
+            [FoldoutGroup("Animation Settings")]
             [SerializeField] private float _moveTime;
+            [FoldoutGroup("Animation Settings")]
             [SerializeField] private Ease _ease;
+            [FoldoutGroup("Animation Settings")]
             [SerializeField] private bool _ignoreTimeScale;
 
             [FoldoutGroup("Events")] 
@@ -67,7 +82,15 @@ namespace D_Dev.CurrencySystem.Extensions
 
             public Vector2 ToOffset => _toOffset;
 
+            public Vector3 FromOffsetWorld => _fromOffsetWorld;
+
+            public Vector3 ToOffsetWorld => _toOffsetWorld;
+
             public float DelayBetweenSpawn => _delayBetweenSpawn;
+
+            public float JumpPower => _jumpPower;
+
+            public int NumJumps => _numJumps;
 
             #endregion
         }
@@ -130,28 +153,9 @@ namespace D_Dev.CurrencySystem.Extensions
         private async UniTaskVoid StartFlyingCurrencySequence(Transform from, Transform to, long amount)
         {
             int createdAmount = Mathf.Min((int)amount, _flyingCurrencyAnimation.MaxAmount);
-            var canvasRect = _flyingCurrencyAnimation.Canvas.Value.GetComponent<RectTransform>();
-
             bool fromIsUI = from is RectTransform;
             bool toIsUI = to is RectTransform;
-
-            Vector2 fromScreenPos;
-            if (fromIsUI)
-                fromScreenPos = ((RectTransform)from).position;
-            else
-                fromScreenPos = _camera.WorldToScreenPoint(from.position);
-
-            Vector2 toScreenPos;
-            if (toIsUI)
-                toScreenPos = ((RectTransform)to).position;
-            else
-                toScreenPos = _camera.WorldToScreenPoint(to.position);
-
-            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, fromScreenPos, null, out Vector2 fromLocalPos))
-                return;
-
-            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, toScreenPos, null, out Vector2 toLocalPos))
-                return;
+            bool isWorldMode = !fromIsUI && !toIsUI;
 
             for (int i = 0; i < createdAmount; i++)
             {
@@ -159,37 +163,63 @@ namespace D_Dev.CurrencySystem.Extensions
                 if (currencyGo == null)
                     continue;
 
-                RectTransform currencyItem = currencyGo.GetComponent<RectTransform>();
-                currencyItem.SetParent(canvasRect, false);
-
-                var fromAnchoredPos = fromLocalPos + _flyingCurrencyAnimation.FromOffset;
-                currencyItem.anchoredPosition = fromAnchoredPos;
-                currencyItem.localScale = _flyingCurrencyAnimation.LocalScale;
-
-                Vector3 targetWorldPos;
-                if (RectTransformUtility.ScreenPointToWorldPointInRectangle(
-                        canvasRect,
-                        toLocalPos + _flyingCurrencyAnimation.ToOffset,
-                        null,
-                        out Vector3 worldPoint))
+                if (isWorldMode)
                 {
-                    targetWorldPos = worldPoint;
+                    Transform currencyItem = currencyGo.transform;
+                    currencyItem.position = from.position + (Vector3)_flyingCurrencyAnimation.FromOffsetWorld;
+                    currencyItem.localScale = _flyingCurrencyAnimation.LocalScale;
+
+                    currencyItem.DOJump(
+                        to.position + (Vector3)_flyingCurrencyAnimation.ToOffsetWorld, 
+                        _flyingCurrencyAnimation.JumpPower, 
+                        _flyingCurrencyAnimation.NumJumps, 
+                        _flyingCurrencyAnimation.MoveTime)
+                        .SetEase(_flyingCurrencyAnimation.Ease)
+                        .SetUpdate(_flyingCurrencyAnimation.IgnoreTimeScale)
+                        .OnComplete(() =>
+                        {
+                            _flyingCurrencyAnimation.OnSingleAnimationEnd?.Invoke();
+                            if (currencyGo.TryGetComponent(out PoolableObject poolable))
+                            {
+                                poolable?.Release();
+                            }
+                        });
                 }
                 else
-                    targetWorldPos = to.position;
+                {
+                    var canvasRect = _flyingCurrencyAnimation.Canvas.Value.GetComponent<RectTransform>();
 
-                var capturedGo = currencyGo;
-                currencyItem.DOAnchorPos(targetWorldPos, _flyingCurrencyAnimation.MoveTime)
-                    .SetEase(_flyingCurrencyAnimation.Ease)
-                    .SetUpdate(_flyingCurrencyAnimation.IgnoreTimeScale)
-                    .OnComplete(() =>
-                    {
-                        _flyingCurrencyAnimation.OnSingleAnimationEnd?.Invoke();
-                        if (capturedGo.TryGetComponent<PoolableObject>(out var poolable))
+                    Vector2 fromScreenPos = fromIsUI 
+                        ? ((RectTransform)from).position 
+                        : _camera.WorldToScreenPoint(from.position);
+
+                    Vector2 toScreenPos = toIsUI 
+                        ? ((RectTransform)to).position 
+                        : _camera.WorldToScreenPoint(to.position);
+
+                    if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, fromScreenPos, null, out Vector2 fromLocalPos))
+                        continue;
+
+                    if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, toScreenPos, null, out Vector2 toLocalPos))
+                        continue;
+
+                    RectTransform currencyItem = currencyGo.GetComponent<RectTransform>();
+                    currencyItem.SetParent(canvasRect, false);
+                    currencyItem.anchoredPosition = fromLocalPos + _flyingCurrencyAnimation.FromOffset;
+                    currencyItem.localScale = _flyingCurrencyAnimation.LocalScale;
+
+                    currencyItem.DOAnchorPos(toLocalPos + _flyingCurrencyAnimation.ToOffset, _flyingCurrencyAnimation.MoveTime)
+                        .SetEase(_flyingCurrencyAnimation.Ease)
+                        .SetUpdate(_flyingCurrencyAnimation.IgnoreTimeScale)
+                        .OnComplete(() =>
                         {
-                            poolable?.Release();
-                        }
-                    });
+                            _flyingCurrencyAnimation.OnSingleAnimationEnd?.Invoke();
+                            if (currencyGo.TryGetComponent(out PoolableObject poolable))
+                            {
+                                poolable?.Release();
+                            }
+                        });
+                }
 
                 await UniTask.Delay((int)(_flyingCurrencyAnimation.DelayBetweenSpawn * 1000), DelayType.Realtime);
             }
