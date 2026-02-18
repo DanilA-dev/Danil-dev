@@ -73,7 +73,7 @@ namespace D_Dev.CurrencySystem
             {
                 OnDepositSuccess?.Invoke();
                 if(_useFlyingAnimation)
-                    EventManager.Invoke(_flyingAnimationEventName.Value, _from.Value, _to.Value, amount);
+                    EventManager.Invoke(_flyingAnimationEventName.Value, _from.Value, _to.Value, (int)amount);
                 return true;
             }
             OnDepositFailed?.Invoke();
@@ -86,7 +86,7 @@ namespace D_Dev.CurrencySystem
             {
                 OnWithdrawSuccess?.Invoke();
                 if(_useFlyingAnimation)
-                    EventManager.Invoke(_flyingAnimationEventName.Value, _from.Value, _to.Value, amount);
+                    EventManager.Invoke(_flyingAnimationEventName.Value, _from.Value, _to.Value, (int)amount);
                 return true;
             }
             OnWithdrawFailed?.Invoke();

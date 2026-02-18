@@ -10,12 +10,12 @@ using PoolableObject = D_Dev.EntitySpawner.PoolableObject;
 
 namespace D_Dev.CurrencySystem.Extensions
 {
-    public class CurrencyFlyingAnimationHandler : MonoBehaviour
+    public class EntityFlyingAnimationHandler : MonoBehaviour
     {
         #region Classes
 
         [System.Serializable]
-        public class FlyingCurrencyAnimation
+        public class FlyingEntityAnimationConfig
         {
             #region Fields
 
@@ -24,7 +24,7 @@ namespace D_Dev.CurrencySystem.Extensions
             [FoldoutGroup("General")] 
             [SerializeField] private int _maxAmount;
             [FoldoutGroup("General")] 
-            [SerializeField] private Vector2 _localScale = new(1, 1);
+            [SerializeField] private Vector3 _localScale = new(1, 1, 1);
 
             [FoldoutGroup("UI Settings")]
             [SerializeField] private Vector2 _fromOffset;
@@ -72,7 +72,7 @@ namespace D_Dev.CurrencySystem.Extensions
 
             public int MaxAmount => _maxAmount;
 
-            public Vector2 LocalScale
+            public Vector3 LocalScale
             {
                 get => _localScale;
                 set => _localScale = value;
@@ -99,11 +99,11 @@ namespace D_Dev.CurrencySystem.Extensions
         
         #region Fields
 
-        [Title("Currency")] 
-        [SerializeReference] private PolymorphicValue<string> _flyingAnimationEventName = new StringConstantValue();
+        [Title("Event Name")] 
+        [SerializeReference] private PolymorphicValue<string> _flyingEntityEventName = new StringConstantValue();
 
-        [Title("Flying Animations")] 
-        [SerializeField] private FlyingCurrencyAnimation _flyingCurrencyAnimation;
+        [Title("Animation")] 
+        [SerializeField] private FlyingEntityAnimationConfig _flyingEntityAnimationConfig;
 
         private Camera _camera;
         
@@ -118,22 +118,22 @@ namespace D_Dev.CurrencySystem.Extensions
 
         private async void Start()
         {
-            await _flyingCurrencyAnimation.EntitySpawnSettings.Init();
+            await _flyingEntityAnimationConfig.EntitySpawnSettings.Init();
         }
 
         private void OnEnable()
         {
-            EventManager.AddListener<Transform, Transform, long>(_flyingAnimationEventName.Value, OnCurrencyUpdate);
+            EventManager.AddListener<Transform, Transform, int>(_flyingEntityEventName.Value, OnEntityUpdate);
         }
 
         private void OnDisable()
         {
-            EventManager.RemoveListener<Transform, Transform, long>(_flyingAnimationEventName.Value, OnCurrencyUpdate);
+            EventManager.RemoveListener<Transform, Transform, int>(_flyingEntityEventName.Value, OnEntityUpdate);
         }
 
         private void OnDestroy()
         {
-            _flyingCurrencyAnimation?.EntitySpawnSettings?.DisposePool();
+            _flyingEntityAnimationConfig?.EntitySpawnSettings?.DisposePool();
         }
 
 
@@ -141,53 +141,55 @@ namespace D_Dev.CurrencySystem.Extensions
 
         #region Listeners
 
-        private void OnCurrencyUpdate(Transform from, Transform to, long amount)
+        private void OnEntityUpdate(Transform from, Transform to, int amount)
         {
-            StartFlyingCurrencySequence(from, to, amount).Forget();
+            StartFlyingEntitySequence(from, to, amount).Forget();
         }
 
         #endregion
 
         #region Private
 
-        private async UniTaskVoid StartFlyingCurrencySequence(Transform from, Transform to, long amount)
+        private async UniTaskVoid StartFlyingEntitySequence(Transform from, Transform to, int amount)
         {
-            int createdAmount = Mathf.Min((int)amount, _flyingCurrencyAnimation.MaxAmount);
+            int createdAmount = Mathf.Min((int)amount, _flyingEntityAnimationConfig.MaxAmount);
             bool fromIsUI = from is RectTransform;
             bool toIsUI = to is RectTransform;
             bool isWorldMode = !fromIsUI && !toIsUI;
 
             for (int i = 0; i < createdAmount; i++)
             {
-                var currencyGo = await _flyingCurrencyAnimation.EntitySpawnSettings.Get();
-                if (currencyGo == null)
+                var entityGo = await _flyingEntityAnimationConfig.EntitySpawnSettings.Get();
+                if (entityGo == null)
                     continue;
 
                 if (isWorldMode)
                 {
-                    Transform currencyItem = currencyGo.transform;
-                    currencyItem.position = from.position + (Vector3)_flyingCurrencyAnimation.FromOffsetWorld;
-                    currencyItem.localScale = _flyingCurrencyAnimation.LocalScale;
+                    Transform entityTransform = entityGo.transform;
+                    entityTransform.position = from.position + (Vector3)_flyingEntityAnimationConfig.FromOffsetWorld;
+                    entityTransform.localScale = _flyingEntityAnimationConfig.LocalScale;
 
-                    currencyItem.DOJump(
-                        to.position + (Vector3)_flyingCurrencyAnimation.ToOffsetWorld, 
-                        _flyingCurrencyAnimation.JumpPower, 
-                        _flyingCurrencyAnimation.NumJumps, 
-                        _flyingCurrencyAnimation.MoveTime)
-                        .SetEase(_flyingCurrencyAnimation.Ease)
-                        .SetUpdate(_flyingCurrencyAnimation.IgnoreTimeScale)
+                    entityTransform.DOJump(
+                        to.position + (Vector3)_flyingEntityAnimationConfig.ToOffsetWorld, 
+                        _flyingEntityAnimationConfig.JumpPower, 
+                        _flyingEntityAnimationConfig.NumJumps, 
+                        _flyingEntityAnimationConfig.MoveTime)
+                        .SetEase(_flyingEntityAnimationConfig.Ease)
+                        .SetUpdate(_flyingEntityAnimationConfig.IgnoreTimeScale)
                         .OnComplete(() =>
                         {
-                            _flyingCurrencyAnimation.OnSingleAnimationEnd?.Invoke();
-                            if (currencyGo.TryGetComponent(out PoolableObject poolable))
-                            {
+                            _flyingEntityAnimationConfig.OnSingleAnimationEnd?.Invoke();
+                            
+                            if (_flyingEntityAnimationConfig.EntitySpawnSettings.UsePool 
+                                && entityGo.TryGetComponent(out PoolableObject poolable))
                                 poolable?.Release();
-                            }
+                            else
+                                Destroy(entityGo);
                         });
                 }
                 else
                 {
-                    var canvasRect = _flyingCurrencyAnimation.Canvas.Value.GetComponent<RectTransform>();
+                    var canvasRect = _flyingEntityAnimationConfig.Canvas.Value.GetComponent<RectTransform>();
 
                     Vector2 fromScreenPos = fromIsUI 
                         ? ((RectTransform)from).position 
@@ -203,27 +205,29 @@ namespace D_Dev.CurrencySystem.Extensions
                     if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, toScreenPos, null, out Vector2 toLocalPos))
                         continue;
 
-                    RectTransform currencyItem = currencyGo.GetComponent<RectTransform>();
-                    currencyItem.SetParent(canvasRect, false);
-                    currencyItem.anchoredPosition = fromLocalPos + _flyingCurrencyAnimation.FromOffset;
-                    currencyItem.localScale = _flyingCurrencyAnimation.LocalScale;
+                    RectTransform entityRect = entityGo.GetComponent<RectTransform>();
+                    entityRect.SetParent(canvasRect, false);
+                    entityRect.anchoredPosition = fromLocalPos + _flyingEntityAnimationConfig.FromOffset;
+                    entityRect.localScale = _flyingEntityAnimationConfig.LocalScale;
 
-                    currencyItem.DOAnchorPos(toLocalPos + _flyingCurrencyAnimation.ToOffset, _flyingCurrencyAnimation.MoveTime)
-                        .SetEase(_flyingCurrencyAnimation.Ease)
-                        .SetUpdate(_flyingCurrencyAnimation.IgnoreTimeScale)
+                    entityRect.DOAnchorPos(toLocalPos + _flyingEntityAnimationConfig.ToOffset, _flyingEntityAnimationConfig.MoveTime)
+                        .SetEase(_flyingEntityAnimationConfig.Ease)
+                        .SetUpdate(_flyingEntityAnimationConfig.IgnoreTimeScale)
                         .OnComplete(() =>
                         {
-                            _flyingCurrencyAnimation.OnSingleAnimationEnd?.Invoke();
-                            if (currencyGo.TryGetComponent(out PoolableObject poolable))
-                            {
+                            _flyingEntityAnimationConfig.OnSingleAnimationEnd?.Invoke();
+                            
+                            if (_flyingEntityAnimationConfig.EntitySpawnSettings.UsePool 
+                                && entityGo.TryGetComponent(out PoolableObject poolable))
                                 poolable?.Release();
-                            }
+                            else
+                                Destroy(entityGo);
                         });
                 }
 
-                await UniTask.Delay((int)(_flyingCurrencyAnimation.DelayBetweenSpawn * 1000), DelayType.Realtime);
+                await UniTask.Delay((int)(_flyingEntityAnimationConfig.DelayBetweenSpawn * 1000), DelayType.Realtime);
             }
-            _flyingCurrencyAnimation.OnAllAnimationEnd?.Invoke();
+            _flyingEntityAnimationConfig.OnAllAnimationEnd?.Invoke();
         }
 
         #endregion
