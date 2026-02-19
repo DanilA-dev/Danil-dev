@@ -110,7 +110,6 @@ namespace D_Dev.CurrencySystem.Extensions
 
         private Camera _camera;
         private CancellationTokenSource _cancellationTokenSource;
-        private readonly List<Tween> _activeTweens = new();
         
         #endregion
 
@@ -150,17 +149,6 @@ namespace D_Dev.CurrencySystem.Extensions
         public void StopAnimation()
         {
             CancelAndDisposeCts();
-            
-            if(_activeTweens.Count == 0)
-                return;
-
-            foreach (var activeTween in _activeTweens)
-            {
-                if(activeTween.active)
-                    activeTween.Kill();
-            }
-            
-            _activeTweens.Clear();
         }
 
         #endregion
@@ -171,8 +159,6 @@ namespace D_Dev.CurrencySystem.Extensions
         {
             CancelAndDisposeCts();
             _cancellationTokenSource = new CancellationTokenSource();
-            _activeTweens.Clear();
-            
             StartFlyingEntitySequence(from, to, amount).Forget();
         }
 
@@ -218,7 +204,6 @@ namespace D_Dev.CurrencySystem.Extensions
                                 Destroy(entityGo);
                         });
                     
-                    _activeTweens.Add(worldTween);
                 }
                 else
                 {
@@ -256,8 +241,6 @@ namespace D_Dev.CurrencySystem.Extensions
                             else
                                 Destroy(entityGo);
                         });
-                    
-                    _activeTweens.Add(uiTween);
                 }
 
                 await UniTask.Delay((int)(_flyingEntityAnimationConfig.DelayBetweenSpawn * 1000),
