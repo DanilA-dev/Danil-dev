@@ -10,7 +10,7 @@ namespace D_Dev.TweenAnimations.Types
     {
         #region Fields
 
-        [SerializeField] private Transform _rotateObject;
+        [SerializeField] private Transform[] _rotateObjects;
         [SerializeField] private MotionType _motionType;
         [ShowIf(nameof(_motionType), MotionType.None)]
         [SerializeField] private RotateMode _rotateMode;
@@ -40,10 +40,10 @@ namespace D_Dev.TweenAnimations.Types
 
         #region Properties
 
-        public Transform RotateObject
+        public Transform[] RotateObjects
         {
-            get => _rotateObject;
-            set => _rotateObject = value;
+            get => _rotateObjects;
+            set => _rotateObjects = value;
         }
 
         public MotionType Motion
@@ -124,27 +124,41 @@ namespace D_Dev.TweenAnimations.Types
 
         public override Tween Play()
         {
-            if (_rotateObject == null)
+            if (_rotateObjects == null || _rotateObjects.Length == 0)
                 return null;
+
+            Sequence sequence = DOTween.Sequence();
             
-            SetTarget(_rotateObject.gameObject);
-            
-            switch (_motionType)
+            foreach (var rotateObject in _rotateObjects)
             {
-                case MotionType.None:
-                    Tween = _rotateObject.DORotate(_endValue, Duration, _rotateMode).From(_useInitialRotationAsStart
-                        ? _rotateObject.transform.eulerAngles
-                        : _startValue);
-                    break;
-                case MotionType.Shake:
-                    Tween = _rotateObject.DOShakeRotation(Duration, _shakeStrength, _vibratoShake, _randomnessShake, _fadeOutShake);
-                    break;
-                case MotionType.Punch:
-                    Tween = _rotateObject.DOPunchRotation(_punch, Duration, _vibratoPunch, _elasticityPunch);
-                    break;
-                default:
-                    throw new System.ArgumentOutOfRangeException();
+                if (rotateObject == null)
+                    continue;
+
+                Tween objectTween = null;
+                switch (_motionType)
+                {
+                    case MotionType.None:
+                        objectTween = rotateObject.DORotate(_endValue, Duration, _rotateMode)
+                            .From(_useInitialRotationAsStart
+                                ? rotateObject.transform.eulerAngles
+                                : _startValue);
+                        break;
+                    case MotionType.Shake:
+                        objectTween = rotateObject.DOShakeRotation(Duration, _shakeStrength, _vibratoShake, _randomnessShake, _fadeOutShake);
+                        break;
+                    case MotionType.Punch:
+                        objectTween = rotateObject.DOPunchRotation(_punch, Duration, _vibratoPunch, _elasticityPunch);
+                        break;
+                    default:
+                        throw new System.ArgumentOutOfRangeException();
+                }
+                
+                if (objectTween != null)
+                    sequence.Join(objectTween);
             }
+            
+            SetTarget(_rotateObjects[0]?.gameObject);
+            Tween = sequence;
             return Tween;
         }
 

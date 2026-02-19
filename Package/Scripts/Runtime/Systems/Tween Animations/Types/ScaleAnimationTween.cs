@@ -10,7 +10,7 @@ namespace D_Dev.TweenAnimations.Types
     {
         #region Fields
 
-        [SerializeField] private Transform _scaleObject;
+        [SerializeField] private Transform[] _scaleObjects;
         [SerializeField] private MotionType _motionType;
         [ShowIf(nameof(_motionType), MotionType.None)]
         [SerializeField] private bool _useInitialScaleAsStart;
@@ -37,10 +37,10 @@ namespace D_Dev.TweenAnimations.Types
 
         #region Properties
 
-        public Transform ScaleObject
+        public Transform[] ScaleObjects
         {
-            get => _scaleObject;
-            set => _scaleObject = value;
+            get => _scaleObjects;
+            set => _scaleObjects = value;
         }
 
         public MotionType Motion
@@ -115,29 +115,41 @@ namespace D_Dev.TweenAnimations.Types
 
         public override Tween Play()
         {
-            if (_scaleObject == null)
+            if (_scaleObjects == null || _scaleObjects.Length == 0)
                 return null;
+
+            Sequence sequence = DOTween.Sequence();
             
-            SetTarget(_scaleObject.gameObject);
-            
-            switch (_motionType)
+            foreach (var scaleObject in _scaleObjects)
             {
-                case MotionType.None:
-                    Tween = _scaleObject.DOScale(_endScale, Duration)
-                        .From(_useInitialScaleAsStart
-                            ? _scaleObject.transform.localScale
-                            : _startScale);
-                    break;
-                case MotionType.Shake:
-                    Tween = _scaleObject.DOShakeScale(Duration, _shakeStrength, _vibratoShake, _randomnessShake, _fadeOutShake);
-                    break;
-                case MotionType.Punch:
-                    Tween = _scaleObject.DOPunchScale(_punch, Duration, _vibratoPunch, _elasticityPunch);
-                    break;
-                default:
-                    throw new System.ArgumentOutOfRangeException();
+                if (scaleObject == null)
+                    continue;
+
+                Tween objectTween = null;
+                switch (_motionType)
+                {
+                    case MotionType.None:
+                        objectTween = scaleObject.DOScale(_endScale, Duration)
+                            .From(_useInitialScaleAsStart
+                                ? scaleObject.transform.localScale
+                                : _startScale);
+                        break;
+                    case MotionType.Shake:
+                        objectTween = scaleObject.DOShakeScale(Duration, _shakeStrength, _vibratoShake, _randomnessShake, _fadeOutShake);
+                        break;
+                    case MotionType.Punch:
+                        objectTween = scaleObject.DOPunchScale(_punch, Duration, _vibratoPunch, _elasticityPunch);
+                        break;
+                    default:
+                        throw new System.ArgumentOutOfRangeException();
+                }
+                
+                if (objectTween != null)
+                    sequence.Join(objectTween);
             }
             
+            SetTarget(_scaleObjects[0]?.gameObject);
+            Tween = sequence;
             return Tween;
         }
 
