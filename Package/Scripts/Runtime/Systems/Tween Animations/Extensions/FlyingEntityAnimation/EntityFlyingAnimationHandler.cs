@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using D_Dev.CustomEventManager;
 using D_Dev.EntitySpawner;
@@ -106,6 +108,8 @@ namespace D_Dev.CurrencySystem.Extensions
         [SerializeField] private FlyingEntityAnimationConfig _flyingEntityAnimationConfig;
 
         private Camera _camera;
+        private CancellationTokenSource _cancellationTokenSource;
+        private readonly List<Tween> _activeTweens = new();
         
         #endregion
 
@@ -134,15 +138,42 @@ namespace D_Dev.CurrencySystem.Extensions
         private void OnDestroy()
         {
             _flyingEntityAnimationConfig?.EntitySpawnSettings?.DisposePool();
+            StopAnimation();
         }
 
 
         #endregion
 
+        #region Public
+
+        public void StopAnimation()
+        {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
+            
+            if(_activeTweens.Count == 0)
+                return;
+
+            foreach (var activeTween in _activeTweens)
+            {
+                if(activeTween.active)
+                    activeTween.Kill();
+            }
+            
+            _activeTweens.Clear();
+        }
+
+        #endregion
+        
         #region Listeners
 
         private void OnEntityUpdate(Transform from, Transform to, int amount)
         {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = new CancellationTokenSource();
+            _activeTweens.Clear();
+            
             StartFlyingEntitySequence(from, to, amount).Forget();
         }
 
@@ -152,7 +183,8 @@ namespace D_Dev.CurrencySystem.Extensions
 
         private async UniTaskVoid StartFlyingEntitySequence(Transform from, Transform to, int amount)
         {
-            int createdAmount = Mathf.Min((int)amount, _flyingEntityAnimationConfig.MaxAmount);
+            
+            int createdAmount = Mathf.Min(amount, _flyingEntityAnimationConfig.MaxAmount);
             bool fromIsUI = from is RectTransform;
             bool toIsUI = to is RectTransform;
             bool isWorldMode = !fromIsUI && !toIsUI;
@@ -166,11 +198,11 @@ namespace D_Dev.CurrencySystem.Extensions
                 if (isWorldMode)
                 {
                     Transform entityTransform = entityGo.transform;
-                    entityTransform.position = from.position + (Vector3)_flyingEntityAnimationConfig.FromOffsetWorld;
+                    entityTransform.position = from.position + _flyingEntityAnimationConfig.FromOffsetWorld;
                     entityTransform.localScale = _flyingEntityAnimationConfig.LocalScale;
 
-                    entityTransform.DOJump(
-                        to.position + (Vector3)_flyingEntityAnimationConfig.ToOffsetWorld, 
+                    var worldTween = entityTransform.DOJump(
+                        to.position + _flyingEntityAnimationConfig.ToOffsetWorld, 
                         _flyingEntityAnimationConfig.JumpPower, 
                         _flyingEntityAnimationConfig.NumJumps, 
                         _flyingEntityAnimationConfig.MoveTime)
@@ -179,13 +211,15 @@ namespace D_Dev.CurrencySystem.Extensions
                         .OnComplete(() =>
                         {
                             _flyingEntityAnimationConfig.OnSingleAnimationEnd?.Invoke();
-                            
+                                                        
                             if (_flyingEntityAnimationConfig.EntitySpawnSettings.UsePool 
                                 && entityGo.TryGetComponent(out PoolableObject poolable))
                                 poolable?.Release();
                             else
                                 Destroy(entityGo);
                         });
+                    
+                    _activeTweens.Add(worldTween);
                 }
                 else
                 {
@@ -210,7 +244,7 @@ namespace D_Dev.CurrencySystem.Extensions
                     entityRect.anchoredPosition = fromLocalPos + _flyingEntityAnimationConfig.FromOffset;
                     entityRect.localScale = _flyingEntityAnimationConfig.LocalScale;
 
-                    entityRect.DOAnchorPos(toLocalPos + _flyingEntityAnimationConfig.ToOffset, _flyingEntityAnimationConfig.MoveTime)
+                    var uiTween = entityRect.DOAnchorPos(toLocalPos + _flyingEntityAnimationConfig.ToOffset, _flyingEntityAnimationConfig.MoveTime)
                         .SetEase(_flyingEntityAnimationConfig.Ease)
                         .SetUpdate(_flyingEntityAnimationConfig.IgnoreTimeScale)
                         .OnComplete(() =>
@@ -223,9 +257,12 @@ namespace D_Dev.CurrencySystem.Extensions
                             else
                                 Destroy(entityGo);
                         });
+                    
+                    _activeTweens.Add(uiTween);
                 }
 
-                await UniTask.Delay((int)(_flyingEntityAnimationConfig.DelayBetweenSpawn * 1000), DelayType.Realtime);
+                await UniTask.Delay((int)(_flyingEntityAnimationConfig.DelayBetweenSpawn * 1000),
+                    DelayType.Realtime, cancellationToken: _cancellationTokenSource.Token);
             }
             _flyingEntityAnimationConfig.OnAllAnimationEnd?.Invoke();
         }
