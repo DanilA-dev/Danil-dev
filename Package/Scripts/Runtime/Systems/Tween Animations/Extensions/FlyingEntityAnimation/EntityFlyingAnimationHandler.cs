@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -148,8 +149,7 @@ namespace D_Dev.CurrencySystem.Extensions
 
         public void StopAnimation()
         {
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose();
+            CancelAndDisposeCts();
             
             if(_activeTweens.Count == 0)
                 return;
@@ -169,8 +169,7 @@ namespace D_Dev.CurrencySystem.Extensions
 
         private void OnEntityUpdate(Transform from, Transform to, int amount)
         {
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose();
+            CancelAndDisposeCts();
             _cancellationTokenSource = new CancellationTokenSource();
             _activeTweens.Clear();
             
@@ -267,6 +266,19 @@ namespace D_Dev.CurrencySystem.Extensions
             _flyingEntityAnimationConfig.OnAllAnimationEnd?.Invoke();
         }
 
+        private void CancelAndDisposeCts()                  
+        {
+            if (_cancellationTokenSource == null)
+                return;
+            
+            try
+            {
+                _cancellationTokenSource.Cancel();
+            }
+            catch (ObjectDisposedException e) {}
+            _cancellationTokenSource.Dispose();             
+        }     
+        
         #endregion
     }
 }
