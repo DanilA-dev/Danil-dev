@@ -1,4 +1,5 @@
-﻿using D_Dev.EntityVariable;
+﻿using System.Linq;
+using D_Dev.EntityVariable;
 using D_Dev.ScriptableVaiables;
 
 namespace D_Dev.Entity.Extensions
@@ -17,5 +18,13 @@ namespace D_Dev.Entity.Extensions
 
             return null;
         }
+        
+        public static TVariable GetVariableFirst<TVariable>(this EntityInfo entityInfo)
+            where TVariable : BaseEntityVariable
+        {
+            return entityInfo.Variables.           
+                OfType<TVariable>().FirstOrDefault();
+        }
+        
     }
 }
