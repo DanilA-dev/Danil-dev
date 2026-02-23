@@ -48,8 +48,6 @@ namespace D_Dev.Utility
         
         private CompositeDisposable _disposables;
         private RotationHandler _rotationHandler;
-        private Transform _followerTransform;
-        private Transform _targetTransform;
         private Vector3 _lastTargetPosition;
 
         #endregion
@@ -61,17 +59,8 @@ namespace D_Dev.Utility
             _disposables = new CompositeDisposable();
             _rotationHandler = new RotationHandler();
 
-            if (_follower != null)
-                _followerTransform = _follower.Value;
-
-            if (_objectToFollow != null)
-                _targetTransform = _objectToFollow.Value;
-
-            if (_followerTransform != null)
-                _rotationHandler.Initialize(_followerTransform, _rotationSpeed);
-
-            if (_targetTransform != null)
-                _lastTargetPosition = _targetTransform.position;
+            if (!IsFollowerNull())
+                _rotationHandler.Initialize(_follower.Value, _rotationSpeed);
 
             SetupObservables();
         }
@@ -90,8 +79,8 @@ namespace D_Dev.Utility
             Observable.Interval(TimeSpan.FromSeconds(_tickInterval))
                 .Subscribe(_ =>
                 {
-                    if (_targetTransform != null)
-                        _lastTargetPosition = _targetTransform.position;
+                    if (!IsObjectToFollowNull())
+                        _lastTargetPosition = _objectToFollow.Value.position;
                 })
                 .AddTo(_disposables);
 
@@ -106,20 +95,20 @@ namespace D_Dev.Utility
 
         private void UpdatePosition()
         {
-            if (!_updatePosition || _followerTransform == null)
+            if (!_updatePosition || IsFollowerNull())
                 return;
 
-            Vector3 currentPos = _followerTransform.position;
+            Vector3 currentPos = _follower.Value.position;
             Vector3 targetPos = FilterAxis(_lastTargetPosition, currentPos, _posAxisUpdate);
-            _followerTransform.position = Vector3.Lerp(currentPos, targetPos, _positionSpeed * Time.deltaTime);
+            _follower.Value.position = Vector3.Lerp(currentPos, targetPos, _positionSpeed * Time.deltaTime);
         }
 
         private void UpdateRotation()
         {
-            if (!_updateRotation || _followerTransform == null || _targetTransform == null)
+            if (!_updateRotation || IsFollowerNull() || IsObjectToFollowNull())
                 return;
 
-            Vector3 direction = _targetTransform.position - _followerTransform.position;
+            Vector3 direction = _objectToFollow.Value.position - _follower.Value.position;
             Vector3 filteredDirection = FilterAxis(direction, Vector3.zero, _rotAxisUpdate);
             _rotationHandler.RotateTowards(filteredDirection, _rotationSpeed);
         }
@@ -132,6 +121,9 @@ namespace D_Dev.Utility
             if ((axisUpdate & AxisUpdate.Z) != 0) result.z = target.z;
             return result;
         }
+
+        private bool IsFollowerNull() => _follower == null || _follower.Value == null;
+        private bool IsObjectToFollowNull() => _objectToFollow == null || _objectToFollow.Value == null;
 
         #endregion
     }
