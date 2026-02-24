@@ -46,6 +46,8 @@ namespace D_Dev.Utility
         [FoldoutGroup("Update Rotation Settings")] 
         [SerializeField] private float _rotationSpeed = 5f;
         [FoldoutGroup("Update Rotation Settings")] 
+        [SerializeField] private Vector3 _rotationMultiplier = Vector3.one;
+        [FoldoutGroup("Update Rotation Settings")] 
         [ShowIf(nameof(_updateRotation))]
         [SerializeField] private AxisUpdate _rotAxisUpdate = AxisUpdate.All;
         [FoldoutGroup("Update Rotation Settings")]
@@ -127,6 +129,7 @@ namespace D_Dev.Utility
 
             Vector3 direction = _objectToFollow.Value.position - _follower.Value.position;
             Vector3 filteredDirection = FilterAxis(direction, _follower.Value.forward, _rotAxisUpdate);
+            filteredDirection = Vector3.Scale(filteredDirection, _rotationMultiplier);
             _rotationHandler.RotateTowards(filteredDirection, _rotationSpeed, false);
 
             if (_updateRotationOnceOnStart)
@@ -136,9 +139,9 @@ namespace D_Dev.Utility
         private Vector3 FilterAxis(Vector3 target, Vector3 current, AxisUpdate axisUpdate)
         {
             Vector3 result = target;
-            if ((axisUpdate & AxisUpdate.X) == 0) result.x = current.x;
-            if ((axisUpdate & AxisUpdate.Y) == 0) result.y = current.y;
-            if ((axisUpdate & AxisUpdate.Z) == 0) result.z = current.z;
+            if ((axisUpdate & AxisUpdate.X) != 0) result.x = current.x;
+            if ((axisUpdate & AxisUpdate.Y) != 0) result.y = current.y;
+            if ((axisUpdate & AxisUpdate.Z) != 0) result.z = current.z;
             return result;
         }
 
