@@ -31,13 +31,15 @@ namespace D_Dev.Utility
 
         #region Public Methods
 
-        public void RotateTowards(Vector3 direction, float rotationSpeed = -1f)
+        public void RotateTowards(Vector3 direction, float rotationSpeed = -1f, bool ignoreY = true)
         {
             if (_transform == null || direction == Vector3.zero)
                 return;
 
             float speed = rotationSpeed > 0 ? rotationSpeed : _rotationSpeed;
-            Vector3 targetDirection = new Vector3(direction.x, 0, direction.z);
+            Vector3 targetDirection = ignoreY 
+                ? new Vector3(direction.x, 0, direction.z) 
+                : direction;
 
             if (targetDirection.magnitude > 0.1f)
             {

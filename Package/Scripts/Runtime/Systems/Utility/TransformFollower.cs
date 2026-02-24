@@ -38,6 +38,9 @@ namespace D_Dev.Utility
         [FoldoutGroup("Update Position Settings")] 
         [ShowIf(nameof(_updatePosition))]
         [SerializeField] private AxisUpdate _posAxisUpdate = AxisUpdate.All;
+        [FoldoutGroup("Update Position Settings")]
+        [ShowIf(nameof(_updatePosition))]
+        [SerializeField] private bool _updatePositionOnceOnStart;
         
         [ShowIf(nameof(_updateRotation))]
         [FoldoutGroup("Update Rotation Settings")] 
@@ -45,10 +48,15 @@ namespace D_Dev.Utility
         [FoldoutGroup("Update Rotation Settings")] 
         [ShowIf(nameof(_updateRotation))]
         [SerializeField] private AxisUpdate _rotAxisUpdate = AxisUpdate.All;
+        [FoldoutGroup("Update Rotation Settings")]
+        [ShowIf(nameof(_updateRotation))]
+        [SerializeField] private bool _updateRotationOnceOnStart;
         
         private CompositeDisposable _disposables;
         private RotationHandler _rotationHandler;
         private Vector3 _lastTargetPosition;
+        private bool _positionUpdatedOnce;
+        private bool _rotationUpdatedOnce;
 
         #endregion
 
@@ -98,9 +106,15 @@ namespace D_Dev.Utility
             if (!_updatePosition || IsFollowerNull())
                 return;
 
+            if (_updatePositionOnceOnStart && _positionUpdatedOnce)
+                return;
+
             Vector3 currentPos = _follower.Value.position;
             Vector3 targetPos = FilterAxis(_lastTargetPosition, currentPos, _posAxisUpdate);
             _follower.Value.position = Vector3.Lerp(currentPos, targetPos, _positionSpeed * Time.deltaTime);
+
+            if (_updatePositionOnceOnStart)
+                _positionUpdatedOnce = true;
         }
 
         private void UpdateRotation()
@@ -108,17 +122,23 @@ namespace D_Dev.Utility
             if (!_updateRotation || IsFollowerNull() || IsObjectToFollowNull())
                 return;
 
+            if (_updateRotationOnceOnStart && _rotationUpdatedOnce)
+                return;
+
             Vector3 direction = _objectToFollow.Value.position - _follower.Value.position;
-            Vector3 filteredDirection = FilterAxis(direction, Vector3.zero, _rotAxisUpdate);
-            _rotationHandler.RotateTowards(filteredDirection, _rotationSpeed);
+            Vector3 filteredDirection = FilterAxis(direction, _follower.Value.forward, _rotAxisUpdate);
+            _rotationHandler.RotateTowards(filteredDirection, _rotationSpeed, false);
+
+            if (_updateRotationOnceOnStart)
+                _rotationUpdatedOnce = true;
         }
 
         private Vector3 FilterAxis(Vector3 target, Vector3 current, AxisUpdate axisUpdate)
         {
-            Vector3 result = current;
-            if ((axisUpdate & AxisUpdate.X) != 0) result.x = target.x;
-            if ((axisUpdate & AxisUpdate.Y) != 0) result.y = target.y;
-            if ((axisUpdate & AxisUpdate.Z) != 0) result.z = target.z;
+            Vector3 result = target;
+            if ((axisUpdate & AxisUpdate.X) == 0) result.x = current.x;
+            if ((axisUpdate & AxisUpdate.Y) == 0) result.y = current.y;
+            if ((axisUpdate & AxisUpdate.Z) == 0) result.z = current.z;
             return result;
         }
 
