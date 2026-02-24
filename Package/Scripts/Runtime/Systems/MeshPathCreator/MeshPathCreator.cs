@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -75,6 +76,11 @@ namespace D_Dev.MeshPathCreator
         #endregion
 
         #region Monobehaviour
+
+        private void Awake()
+        {
+            UpdateMesh();
+        }
 
         private void Reset()
         {
