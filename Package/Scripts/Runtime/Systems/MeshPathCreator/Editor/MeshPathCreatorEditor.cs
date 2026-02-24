@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 
@@ -243,3 +244,4 @@ namespace D_Dev.MeshPathCreator.Editor
         }
     }
 }
+#endif
