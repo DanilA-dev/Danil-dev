@@ -16,7 +16,7 @@ namespace D_Dev.TweenAnimations.Types
         [SerializeField] private bool _useInitialScaleAsStart;
         [ShowIf(nameof(_motionType), MotionType.None)]
         [SerializeField] private Vector3 _endScale;
-        [ShowIf("@_motionType == MotionType.None && !_useInitialScaleAsStart")]
+        [ShowIf("@!_useInitialScaleAsStart")]
         [SerializeField] private Vector3 _startScale;
         [ShowIf(nameof(_motionType), MotionType.Shake)]
         [SerializeField] private Vector3 _shakeStrength = Vector3.one;
@@ -125,8 +125,6 @@ namespace D_Dev.TweenAnimations.Types
                 if (scaleObject == null)
                     continue;
 
-                var originalScale = scaleObject.localScale;
-                
                 Tween objectTween = null;
                 switch (_motionType)
                 {
@@ -137,14 +135,12 @@ namespace D_Dev.TweenAnimations.Types
                                 : _startScale);
                         break;
                     case MotionType.Shake:
-                        scaleObject.localScale = scaleObject.transform.localScale;
                         objectTween = scaleObject.DOShakeScale(Duration, _shakeStrength, _vibratoShake, _randomnessShake, _fadeOutShake)
-                            .OnComplete(() => scaleObject.localScale = originalScale);
+                            .OnComplete(() => scaleObject.localScale = _startScale);
                         break;
                     case MotionType.Punch:
-                        scaleObject.localScale = scaleObject.transform.localScale;
                         objectTween = scaleObject.DOPunchScale(_punch, Duration, _vibratoPunch, _elasticityPunch)
-                            .OnComplete(() => scaleObject.localScale = originalScale);
+                            .OnComplete(() => scaleObject.localScale = _startScale);
                         break;
                     default:
                         throw new System.ArgumentOutOfRangeException();
