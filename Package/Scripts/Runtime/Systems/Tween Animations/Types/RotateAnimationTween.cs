@@ -1,4 +1,5 @@
 #if DOTWEEN
+using System.Collections.Generic;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -36,6 +37,8 @@ namespace D_Dev.TweenAnimations.Types
         [ShowIf(nameof(_motionType), MotionType.Punch)]
         [SerializeField] private float _elasticityPunch = 1f;
 
+        private Dictionary<Transform, Vector3> _cachedRotations = new();
+        
         #endregion
 
         #region Properties
@@ -133,6 +136,11 @@ namespace D_Dev.TweenAnimations.Types
             {
                 if (rotateObject == null)
                     continue;
+                
+                if (!_cachedRotations.ContainsKey(rotateObject))
+                {
+                    _cachedRotations[rotateObject] = rotateObject.eulerAngles;
+                }
 
                 Tween objectTween = null;
                 switch (_motionType)
@@ -140,13 +148,15 @@ namespace D_Dev.TweenAnimations.Types
                     case MotionType.None:
                         objectTween = rotateObject.DORotate(_endValue, Duration, _rotateMode)
                             .From(_useInitialRotationAsStart
-                                ? rotateObject.transform.eulerAngles
+                                ? _cachedRotations[rotateObject] 
                                 : _startValue);
                         break;
                     case MotionType.Shake:
+                        rotateObject.eulerAngles = _cachedRotations[rotateObject];
                         objectTween = rotateObject.DOShakeRotation(Duration, _shakeStrength, _vibratoShake, _randomnessShake, _fadeOutShake);
                         break;
                     case MotionType.Punch:
+                        rotateObject.eulerAngles = _cachedRotations[rotateObject];
                         objectTween = rotateObject.DOPunchRotation(_punch, Duration, _vibratoPunch, _elasticityPunch);
                         break;
                     default:
