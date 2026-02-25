@@ -69,6 +69,10 @@ namespace D_Dev.DamageableSystem
         }
 
         public void Kill() => OnDie();
+        public virtual void Restore()
+        {
+            CurrentHealth = MaxHealth;
+        }
 
         #endregion
 

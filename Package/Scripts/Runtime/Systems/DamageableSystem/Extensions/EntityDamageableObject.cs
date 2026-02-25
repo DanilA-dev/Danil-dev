@@ -36,6 +36,12 @@ namespace D_Dev.Scripts.DamageableSystem.Extensions
             _currentHealthValue.Value = CurrentHealth;
         }
 
+        public override void Restore()
+        {
+            base.Restore();
+            _currentHealthValue.Value = CurrentHealth;
+        }
+
         #endregion
     }
 }

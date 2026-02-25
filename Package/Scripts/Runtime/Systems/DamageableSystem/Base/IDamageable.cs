@@ -8,6 +8,7 @@ namespace D_Dev.DamageableSystem
         public bool IsDamageable { get; }
         public void TakeDamage(DamageData damageData);
         public void Kill();
-        
+        public void Restore();
+
     }
 }
