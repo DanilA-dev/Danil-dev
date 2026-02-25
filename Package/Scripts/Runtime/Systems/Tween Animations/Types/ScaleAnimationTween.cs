@@ -126,6 +126,7 @@ namespace D_Dev.TweenAnimations.Types
                     continue;
 
                 Tween objectTween = null;
+                scaleObject.localScale = _startScale;
                 switch (_motionType)
                 {
                     case MotionType.None:
