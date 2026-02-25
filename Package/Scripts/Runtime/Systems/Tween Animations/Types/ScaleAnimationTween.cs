@@ -135,10 +135,14 @@ namespace D_Dev.TweenAnimations.Types
                                 : _startScale);
                         break;
                     case MotionType.Shake:
-                        objectTween = scaleObject.DOShakeScale(Duration, _shakeStrength, _vibratoShake, _randomnessShake, _fadeOutShake);
+                        var originalScaleShake = scaleObject.localScale;
+                        objectTween = scaleObject.DOShakeScale(Duration, _shakeStrength, _vibratoShake, _randomnessShake, _fadeOutShake)
+                            .OnStart(() => scaleObject.localScale = originalScaleShake);
                         break;
                     case MotionType.Punch:
-                        objectTween = scaleObject.DOPunchScale(_punch, Duration, _vibratoPunch, _elasticityPunch);
+                        var originalScalePunch = scaleObject.localScale;
+                        objectTween = scaleObject.DOPunchScale(_punch, Duration, _vibratoPunch, _elasticityPunch)
+                            .OnStart(() => scaleObject.localScale = originalScalePunch);
                         break;
                     default:
                         throw new System.ArgumentOutOfRangeException();

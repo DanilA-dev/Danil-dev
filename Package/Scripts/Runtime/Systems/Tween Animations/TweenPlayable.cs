@@ -44,7 +44,6 @@ namespace D_Dev.TweenAnimations
             OnStart?.Invoke();
 
             _currentSequence = DOTween.Sequence();
-
             if (_playMode == PlayMode.Parallel)
             {
                 foreach (var tween in _tweens)
