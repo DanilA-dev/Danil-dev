@@ -126,7 +126,6 @@ namespace D_Dev.TweenAnimations.Types
                     continue;
 
                 Tween objectTween = null;
-                scaleObject.localScale = _startScale;
                 switch (_motionType)
                 {
                     case MotionType.None:
@@ -137,11 +136,11 @@ namespace D_Dev.TweenAnimations.Types
                         break;
                     case MotionType.Shake:
                         objectTween = scaleObject.DOShakeScale(Duration, _shakeStrength, _vibratoShake, _randomnessShake, _fadeOutShake)
-                            .OnComplete(() => scaleObject.localScale = _startScale);
+                            .OnStart(() => scaleObject.localScale = _startScale);
                         break;
                     case MotionType.Punch:
                         objectTween = scaleObject.DOPunchScale(_punch, Duration, _vibratoPunch, _elasticityPunch)
-                            .OnComplete(() => scaleObject.localScale = _startScale);
+                            .OnStart(() => scaleObject.localScale = _startScale);
                         break;
                     default:
                         throw new System.ArgumentOutOfRangeException();
