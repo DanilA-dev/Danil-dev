@@ -1,4 +1,5 @@
 #if DOTWEEN
+using System.Collections.Generic;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -16,7 +17,7 @@ namespace D_Dev.TweenAnimations.Types
         [SerializeField] private bool _useInitialScaleAsStart;
         [ShowIf(nameof(_motionType), MotionType.None)]
         [SerializeField] private Vector3 _endScale;
-        [ShowIf("@!_useInitialScaleAsStart")]
+        [ShowIf("@_motionType == MotionType.None && !_useInitialScaleAsStart")]
         [SerializeField] private Vector3 _startScale;
         [ShowIf(nameof(_motionType), MotionType.Shake)]
         [SerializeField] private Vector3 _shakeStrength = Vector3.one;
@@ -33,6 +34,8 @@ namespace D_Dev.TweenAnimations.Types
         [ShowIf(nameof(_motionType), MotionType.Punch)]
         [SerializeField] private float _elasticityPunch = 1f;
 
+        private Dictionary<Transform, Vector3> _cachedScales = new();
+        
         #endregion
 
         #region Properties
@@ -124,6 +127,11 @@ namespace D_Dev.TweenAnimations.Types
             {
                 if (scaleObject == null)
                     continue;
+                
+                if (!_cachedScales.ContainsKey(scaleObject))
+                {
+                    _cachedScales[scaleObject] = scaleObject.localScale;
+                }
 
                 Tween objectTween = null;
                 switch (_motionType)
@@ -131,16 +139,17 @@ namespace D_Dev.TweenAnimations.Types
                     case MotionType.None:
                         objectTween = scaleObject.DOScale(_endScale, Duration)
                             .From(_useInitialScaleAsStart
-                                ? scaleObject.transform.localScale
+                                ? _cachedScales[scaleObject] 
                                 : _startScale);
                         break;
                     case MotionType.Shake:
-                        objectTween = scaleObject.DOShakeScale(Duration, _shakeStrength, _vibratoShake, _randomnessShake, _fadeOutShake)
-                            .OnStart(() => scaleObject.localScale = _startScale);
+                        scaleObject.localScale = _cachedScales[scaleObject];
+                        objectTween = scaleObject.DOShakeScale(Duration, _shakeStrength, _vibratoShake,
+                            _randomnessShake, _fadeOutShake);
                         break;
                     case MotionType.Punch:
-                        objectTween = scaleObject.DOPunchScale(_punch, Duration, _vibratoPunch, _elasticityPunch)
-                            .OnStart(() => scaleObject.localScale = _startScale);
+                        scaleObject.localScale = _cachedScales[scaleObject];
+                        objectTween = scaleObject.DOPunchScale(_punch, Duration, _vibratoPunch, _elasticityPunch);
                         break;
                     default:
                         throw new System.ArgumentOutOfRangeException();
