@@ -55,9 +55,13 @@ namespace D_Dev.Utility
         [SerializeField] private bool _updateRotationOnceOnStart;
         
         private RotationHandler _rotationHandler;
+        
         private float _lastTickTime;
+        
         private bool _positionUpdatedOnce;
         private bool _rotationUpdatedOnce;
+        
+        private Vector3 _targetPosition;
 
         #endregion
 
@@ -80,10 +84,12 @@ namespace D_Dev.Utility
         {
             if (Time.time - _lastTickTime >= _tickInterval)
             {
-                UpdatePosition();
-                UpdateRotation();
+                _targetPosition = _objectToFollow.Value.position;
                 _lastTickTime = Time.time;
             }
+            
+            UpdatePosition();
+            UpdateRotation();
         }
 
         private void UpdatePosition()
@@ -95,7 +101,7 @@ namespace D_Dev.Utility
                 return;
 
             Vector3 currentPos = _follower.Value.position;
-            Vector3 targetPos = FilterAxis(_objectToFollow.Value.position + _positionOffset, currentPos, _posAxisUpdate);
+            Vector3 targetPos = FilterAxis(_targetPosition + _positionOffset, currentPos, _posAxisUpdate);
             _follower.Value.position = Vector3.Lerp(currentPos, targetPos, _positionSpeed * Time.deltaTime);
 
             if (_updatePositionOnceOnStart)
@@ -110,7 +116,7 @@ namespace D_Dev.Utility
             if (_updateRotationOnceOnStart && _rotationUpdatedOnce)
                 return;
 
-            Vector3 direction = _objectToFollow.Value.position - _follower.Value.position;
+            Vector3 direction = _targetPosition - _follower.Value.position;
             Vector3 filteredDirection = FilterAxis(direction, _follower.Value.forward, _rotAxisUpdate);
             filteredDirection = Vector3.Scale(filteredDirection, _rotationMultiplier);
             _rotationHandler.RotateTowards(filteredDirection, _rotationSpeed, false);
