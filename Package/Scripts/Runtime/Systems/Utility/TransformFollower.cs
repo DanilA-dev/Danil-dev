@@ -95,8 +95,8 @@ namespace D_Dev.Utility
                 return;
 
             Vector3 currentPos = _follower.Value.position;
-            Vector3 targetPos = FilterAxis(_objectToFollow.Value.position, currentPos, _posAxisUpdate);
-            _follower.Value.position = Vector3.Lerp(currentPos, targetPos + _positionOffset, _positionSpeed * Time.deltaTime);
+            Vector3 targetPos = FilterAxis(_objectToFollow.Value.position + _positionOffset, currentPos, _posAxisUpdate);
+            _follower.Value.position = Vector3.Lerp(currentPos, targetPos, _positionSpeed * Time.deltaTime);
 
             if (_updatePositionOnceOnStart)
                 _positionUpdatedOnce = true;
