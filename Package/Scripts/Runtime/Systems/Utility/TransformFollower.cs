@@ -1,8 +1,6 @@
 using System;
 using D_Dev.PolymorphicValueSystem;
 using Sirenix.OdinInspector;
-using UniRx;
-using UniRx.Triggers;
 using UnityEngine;
 
 namespace D_Dev.Utility
@@ -24,15 +22,17 @@ namespace D_Dev.Utility
         
         #region Fields
 
-        [Title("Transforms")]
-        [SerializeReference] private PolymorphicValue<Transform> _follower;
-        [SerializeReference] private PolymorphicValue<Transform> _objectToFollow;
+        [Title("Transforms")] 
+        [SerializeReference] private PolymorphicValue<Transform> _follower = new TransformConstantValue();
+        [SerializeReference] private PolymorphicValue<Transform> _objectToFollow = new TransformConstantValue();
         [Title("Settings")]
         [SerializeField] private float _tickInterval = 0.05f;
         [SerializeField] private bool _updatePosition = true;
         [SerializeField] private bool _updateRotation = true;
 
         [ShowIf(nameof(_updatePosition))]
+        [FoldoutGroup("Update Position Settings")] 
+        [SerializeField] private Vector3 _positionOffset;
         [FoldoutGroup("Update Position Settings")] 
         [SerializeField] private float _positionSpeed = 5f;
         [FoldoutGroup("Update Position Settings")] 
@@ -54,9 +54,8 @@ namespace D_Dev.Utility
         [ShowIf(nameof(_updateRotation))]
         [SerializeField] private bool _updateRotationOnceOnStart;
         
-        private CompositeDisposable _disposables;
         private RotationHandler _rotationHandler;
-        private Vector3 _lastTargetPosition;
+        private float _lastTickTime;
         private bool _positionUpdatedOnce;
         private bool _rotationUpdatedOnce;
 
@@ -66,41 +65,25 @@ namespace D_Dev.Utility
 
         private void Start()
         {
-            _disposables = new CompositeDisposable();
             _rotationHandler = new RotationHandler();
+            _lastTickTime = Time.time;
 
             if (!IsFollowerNull())
                 _rotationHandler.Initialize(_follower.Value, _rotationSpeed);
-
-            SetupObservables();
-        }
-
-        private void OnDestroy()
-        {
-            _disposables?.Dispose();
         }
 
         #endregion
 
         #region Private
 
-        private void SetupObservables()
+        private void Update()
         {
-            Observable.Interval(TimeSpan.FromSeconds(_tickInterval))
-                .Subscribe(_ =>
-                {
-                    if (!IsObjectToFollowNull())
-                        _lastTargetPosition = _objectToFollow.Value.position;
-                })
-                .AddTo(_disposables);
-
-            this.UpdateAsObservable()
-                .Subscribe(_ =>
-                {
-                    UpdatePosition();
-                    UpdateRotation();
-                })
-                .AddTo(_disposables);
+            if (Time.time - _lastTickTime >= _tickInterval)
+            {
+                UpdatePosition();
+                UpdateRotation();
+                _lastTickTime = Time.time;
+            }
         }
 
         private void UpdatePosition()
@@ -112,7 +95,7 @@ namespace D_Dev.Utility
                 return;
 
             Vector3 currentPos = _follower.Value.position;
-            Vector3 targetPos = FilterAxis(_lastTargetPosition, currentPos, _posAxisUpdate);
+            Vector3 targetPos = FilterAxis(_objectToFollow.Value.position + _positionOffset, currentPos, _posAxisUpdate);
             _follower.Value.position = Vector3.Lerp(currentPos, targetPos, _positionSpeed * Time.deltaTime);
 
             if (_updatePositionOnceOnStart)
@@ -138,10 +121,10 @@ namespace D_Dev.Utility
 
         private Vector3 FilterAxis(Vector3 target, Vector3 current, AxisUpdate axisUpdate)
         {
-            Vector3 result = target;
-            if ((axisUpdate & AxisUpdate.X) != 0) result.x = current.x;
-            if ((axisUpdate & AxisUpdate.Y) != 0) result.y = current.y;
-            if ((axisUpdate & AxisUpdate.Z) != 0) result.z = current.z;
+            Vector3 result = current;
+            if ((axisUpdate & AxisUpdate.X) != 0) result.x = target.x;
+            if ((axisUpdate & AxisUpdate.Y) != 0) result.y = target.y;
+            if ((axisUpdate & AxisUpdate.Z) != 0) result.z = target.z;
             return result;
         }
 
