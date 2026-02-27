@@ -140,16 +140,22 @@ namespace D_Dev.TweenAnimations.Types
                         objectTween = scaleObject.DOScale(_endScale, Duration)
                             .From(_useInitialScaleAsStart
                                 ? _cachedScales[scaleObject] 
-                                : _startScale);
+                                : _startScale)
+                            .SetEase(_ease)
+                            .SetLoops(_loops, _loopType);
                         break;
                     case MotionType.Shake:
                         scaleObject.localScale = _cachedScales[scaleObject];
                         objectTween = scaleObject.DOShakeScale(Duration, _shakeStrength, _vibratoShake,
-                            _randomnessShake, _fadeOutShake);
+                            _randomnessShake, _fadeOutShake)
+                            .SetEase(_ease)
+                            .SetLoops(_loops, _loopType);
                         break;
                     case MotionType.Punch:
                         scaleObject.localScale = _cachedScales[scaleObject];
-                        objectTween = scaleObject.DOPunchScale(_punch, Duration, _vibratoPunch, _elasticityPunch);
+                        objectTween = scaleObject.DOPunchScale(_punch, Duration, _vibratoPunch, _elasticityPunch)
+                            .SetEase(_ease)
+                            .SetLoops(_loops, _loopType);
                         break;
                     default:
                         throw new System.ArgumentOutOfRangeException();
@@ -160,7 +166,7 @@ namespace D_Dev.TweenAnimations.Types
             }
             
             SetTarget(_scaleObjects[0]?.gameObject);
-            Tween = sequence;
+            SetTweenRaw(sequence);
             return Tween;
         }
 
