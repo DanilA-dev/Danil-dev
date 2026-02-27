@@ -149,15 +149,21 @@ namespace D_Dev.TweenAnimations.Types
                         objectTween = rotateObject.DORotate(_endValue, Duration, _rotateMode)
                             .From(_useInitialRotationAsStart
                                 ? _cachedRotations[rotateObject]
-                                : _startValue);
+                                : _startValue)
+                            .SetEase(_ease)
+                            .SetLoops(_loops, _loopType);
                         break;
                     case MotionType.Shake:
                         rotateObject.eulerAngles = _cachedRotations[rotateObject];
-                        objectTween = rotateObject.DOShakeRotation(Duration, _shakeStrength, _vibratoShake, _randomnessShake, _fadeOutShake);
+                        objectTween = rotateObject.DOShakeRotation(Duration, _shakeStrength, _vibratoShake, _randomnessShake, _fadeOutShake)
+                            .SetEase(_ease)
+                            .SetLoops(_loops, _loopType);
                         break;
                     case MotionType.Punch:
                         rotateObject.eulerAngles = _cachedRotations[rotateObject];
-                        objectTween = rotateObject.DOPunchRotation(_punch, Duration, _vibratoPunch, _elasticityPunch);
+                        objectTween = rotateObject.DOPunchRotation(_punch, Duration, _vibratoPunch, _elasticityPunch)
+                            .SetEase(_ease)
+                            .SetLoops(_loops, _loopType);
                         break;
                     default:
                         throw new System.ArgumentOutOfRangeException();
@@ -168,7 +174,7 @@ namespace D_Dev.TweenAnimations.Types
             }
             
             SetTarget(_rotateObjects[0]?.gameObject);
-            Tween = sequence;
+            SetTweenRaw(sequence);
             return Tween;
         }
 

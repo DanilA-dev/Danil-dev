@@ -60,7 +60,7 @@ namespace D_Dev.TweenAnimations.Types
                     .SetLoops(_loops, _loopType)
                     .SetUpdate(_ignoreTimeScale)
                     .SetAutoKill();
-                
+        
                 if (_target != null)
                     _tween.SetLink(_target);
                 
@@ -113,6 +113,27 @@ namespace D_Dev.TweenAnimations.Types
         {
             _tween?.Kill();
             _tween = null;
+        }
+
+        #endregion
+
+        #region Protected
+
+        protected void SetTweenRaw(Tween tween)
+        {
+            _tween = tween;
+            if (_tween == null)
+                return;
+
+            _tween.OnStart(() => OnStart?.Invoke())
+                .SetDelay(_delay)
+                .SetUpdate(_ignoreTimeScale)
+                .SetAutoKill();
+
+            if (_target != null)
+                _tween.SetLink(_target);
+
+            _tween.OnComplete(() => OnComplete?.Invoke());
         }
 
         #endregion
