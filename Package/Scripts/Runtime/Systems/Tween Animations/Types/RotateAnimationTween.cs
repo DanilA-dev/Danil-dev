@@ -148,8 +148,9 @@ namespace D_Dev.TweenAnimations.Types
                     case MotionType.None:
                         objectTween = rotateObject.DORotate(_endValue, Duration, _rotateMode)
                             .From(_useInitialRotationAsStart
-                                ? _cachedRotations[rotateObject] 
-                                : _startValue);
+                                ? _cachedRotations[rotateObject]
+                                : _startValue)
+                            .SetRelative();
                         break;
                     case MotionType.Shake:
                         rotateObject.eulerAngles = _cachedRotations[rotateObject];
