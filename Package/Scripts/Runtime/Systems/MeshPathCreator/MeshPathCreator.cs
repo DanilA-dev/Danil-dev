@@ -96,10 +96,17 @@ namespace D_Dev.MeshPathCreator
 
         #region Public
 
-        public void AddPoint(Vector3 position, float radius = 1f, float cornerSmoothing = 0.5f)
+        public void AddPointToEnd(Vector3 position, float radius = 1f, float cornerSmoothing = 0.5f)
         {
             Vector3 localPosition = transform.InverseTransformPoint(position);
             _points.Add(new PathPoint(localPosition, radius, cornerSmoothing));
+            UpdateMesh();
+        }
+
+        public void AddPointToStart(Vector3 position, float radius = 1f, float cornerSmoothing = 0.5f)
+        {
+            Vector3 localPosition = transform.InverseTransformPoint(position);
+            _points.Insert(0, new PathPoint(localPosition, radius, cornerSmoothing));
             UpdateMesh();
         }
 

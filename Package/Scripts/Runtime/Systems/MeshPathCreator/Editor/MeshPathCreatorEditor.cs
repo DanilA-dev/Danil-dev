@@ -23,9 +23,13 @@ namespace D_Dev.MeshPathCreator.Editor
             EditorGUILayout.Space();
 
             EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Add Point"))
+            if (GUILayout.Button("Add Point To End"))
             {
-                AddNewPoint();
+                AddPointToEnd();
+            }
+            if (GUILayout.Button("Add Point To Start"))
+            {
+                AddPointToStart();
             }
             if (GUILayout.Button("Remove Selected"))
             {
@@ -73,7 +77,7 @@ namespace D_Dev.MeshPathCreator.Editor
             }
         }
 
-        private void AddNewPoint()
+        private void AddPointToEnd()
         {
             Vector3 newPosition;
             
@@ -88,8 +92,27 @@ namespace D_Dev.MeshPathCreator.Editor
                 newPosition = lastWorldPos + Vector3.forward * 2f;
             }
 
-            _meshPathCreator.AddPoint(newPosition);
+            _meshPathCreator.AddPointToEnd(newPosition);
             _selectedPointIndex = _meshPathCreator.Points.Count - 1;
+        }
+
+        private void AddPointToStart()
+        {
+            Vector3 newPosition;
+            
+            if (_meshPathCreator.Points.Count == 0)
+            {
+                newPosition = _meshPathCreator.transform.position;
+            }
+            else
+            {
+                var firstPoint = _meshPathCreator.Points[0];
+                Vector3 firstWorldPos = _meshPathCreator.transform.TransformPoint(firstPoint.position);
+                newPosition = firstWorldPos - Vector3.forward * 2f;
+            }
+
+            _meshPathCreator.AddPointToStart(newPosition);
+            _selectedPointIndex = 0;
         }
 
         private void RemoveSelectedPoint()
