@@ -21,6 +21,7 @@ namespace D_Dev.MovementHandler
 
          #region Monobehaviour
 
+         private void Awake() => _movementHandler?.OnAwake();
          private void Start() => _movementHandler?.OnStart();
 
          protected virtual void Update()

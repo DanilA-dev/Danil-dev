@@ -36,6 +36,7 @@ namespace D_Dev.MovementHandler
                 
         #region Abstract
         
+        public virtual void OnAwake() {}
         public virtual void OnStart() {}
         public virtual void OnUpdate() {}
         public virtual void OnFixedUpdate() {}
