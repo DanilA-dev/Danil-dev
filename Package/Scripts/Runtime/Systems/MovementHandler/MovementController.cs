@@ -20,7 +20,9 @@ namespace D_Dev.MovementHandler
          #endregion
 
          #region Monobehaviour
- 
+
+         private void Start() => _movementHandler?.OnStart();
+
          protected virtual void Update()
          {
              if(_isStopped)

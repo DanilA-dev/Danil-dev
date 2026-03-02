@@ -35,6 +35,8 @@ namespace D_Dev.MovementHandler
         #endregion
                 
         #region Abstract
+        
+        public virtual void OnStart() {}
         public virtual void OnUpdate() {}
         public virtual void OnFixedUpdate() {}
         public abstract void StopMovement();
