@@ -138,6 +138,9 @@ namespace D_Dev.MeshPathCreator
         {
             _mesh ??= new Mesh();
             
+            if (_mesh == null)
+                _mesh = new Mesh();
+            
             if (_points.Count < 2)
             {
                 ClearMesh();
@@ -154,11 +157,15 @@ namespace D_Dev.MeshPathCreator
 
         private void ClearMesh()
         {
-            _mesh?.Clear();
+            if (_mesh != null)
+                _mesh.Clear();
         }
 
         private void GenerateMesh()
         {
+            if (_mesh == null)
+                _mesh = new Mesh();
+            
             List<Vector3> vertices = new List<Vector3>();
             List<int> triangles = new List<int>();
             List<Vector2> uvs = new List<Vector2>();
@@ -231,15 +238,14 @@ namespace D_Dev.MeshPathCreator
                 triangles.Add(baseIndex + 3);
             }
 
-            _mesh?.Clear();
-            _mesh?.SetVertices(vertices);
-            _mesh?.SetTriangles(triangles, 0);
-            _mesh?.SetUVs(0, uvs);
-            _mesh?.RecalculateNormals();
-            _mesh?.RecalculateBounds();
+            _mesh.Clear();
+            _mesh.SetVertices(vertices);
+            _mesh.SetTriangles(triangles, 0);
+            _mesh.SetUVs(0, uvs);
+            _mesh.RecalculateNormals();
+            _mesh.RecalculateBounds();
             
-            if(_mesh != null)
-                _meshFilter.mesh = _mesh;
+            _meshFilter.mesh = _mesh;
         }
 
         private List<(Vector3 position, float radius)> GetSplinePoints()
