@@ -10,7 +10,7 @@ namespace D_Dev.ColliderEvents
         private void Reset()
         {
             if (TryGetComponent(out Collider c))
-                c.isTrigger = false;
+                c.isTrigger = true;
         }
 
         #endregion
