@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using D_Dev.ColliderChecker;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -6,17 +6,13 @@ using UnityEngine.Events;
 
 namespace D_Dev.ColliderEvents
 {
+    [RequireComponent(typeof(Collider))]
     public abstract class BaseColliderObservable : MonoBehaviour
     {
         #region Fields
 
         [Title("Dimension")]
         [SerializeField] protected CollisionDimension _collisionDimension;
-        [Title("Rigidbody")]
-        [ShowIf(nameof(_collisionDimension), CollisionDimension.Collider3d)]
-        [SerializeField] protected Rigidbody _rigidbody;
-        [ShowIf(nameof(_collisionDimension), CollisionDimension.Collider2d)]
-        [SerializeField] protected Rigidbody2D _rigidbody2D;
         [SerializeField] protected ColliderChecker.ColliderChecker _colliderChecker;
         [Space]
         [SerializeField] protected bool _checkEnter;
@@ -41,9 +37,8 @@ namespace D_Dev.ColliderEvents
             set => _collisionDimension = value;
         }
 
-        public List<Collider> Colliders { get; private set; } = new();
-
-        public List<Collider2D> Colliders2D { get; private set; } = new();
+        public HashSet<Collider> Colliders { get; private set; } = new();
+        public HashSet<Collider2D> Colliders2D { get; private set; } = new();
 
         public UnityEvent<Collider> OnEnter
         {
@@ -91,19 +86,29 @@ namespace D_Dev.ColliderEvents
 
         #region Monobehaviour
 
-        private void Awake() => InitColliderEvents();
+        private void Awake()
+        {
+            _colliderChecker.Init();
+            InitColliderEvents();
+        }
 
         #endregion
 
         #region Abstract
-        protected abstract void InitColliderEvents();
+
+        protected virtual void InitColliderEvents() {}
 
         #endregion
 
         #region Public
 
-        public void ForceClearColliders() => Colliders.Clear();
+        public void ForceClearColliders()
+        {
+            Colliders.Clear();
+            Colliders2D.Clear();
+        }
 
         #endregion
+
     }
 }

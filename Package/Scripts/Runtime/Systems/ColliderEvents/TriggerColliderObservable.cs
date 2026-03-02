@@ -1,73 +1,72 @@
-﻿using D_Dev.ColliderChecker;
-using UniRx;
-using UniRx.Triggers;
+using D_Dev.ColliderChecker;
+using UnityEngine;
 
 namespace D_Dev.ColliderEvents
 {
     public class TriggerColliderObservable : BaseColliderObservable
     {
-        #region Override
+        #region Monobehaviour
 
-        protected override void InitColliderEvents()
+        private void Reset()
         {
-            if (_collisionDimension == CollisionDimension.Collider3d)
-            {
-                if (CheckEnter)
-                    _rigidbody.OnTriggerEnterAsObservable()
-                        .Subscribe((c) =>
-                        {
-                            var passed = _colliderChecker.IsColliderPassed(c);
+            if (TryGetComponent(out Collider c))
+                c.isTrigger = false;
+        }
 
-                            if (passed)
-                            {
-                                OnEnter?.Invoke(c);
-                                Colliders.Add(c);
-                            }
-                        });
+        #endregion
+        
+        #region Trigger 3D
 
-                if (CheckExit)
-                    _rigidbody.OnTriggerExitAsObservable()
-                        .Subscribe((c) =>
-                        {
-                            var passed = _colliderChecker.IsColliderPassed(c);
+        private void OnTriggerEnter(Collider other)
+        {
+            if (!_checkEnter || _collisionDimension != CollisionDimension.Collider3d)
+                return;
+            
+            if (!_colliderChecker.IsColliderPassed(other))
+                return;
 
-                            if (passed)
-                            {
-                                OnExit?.Invoke(c);
-                                if (Colliders.Contains(c))
-                                    Colliders.Remove(c);
-                            }
-                        });
-            }
-            else 
-            {
-                if (CheckEnter)
-                    _rigidbody2D.OnTriggerEnter2DAsObservable()
-                        .Subscribe((c) =>
-                        {
-                            var passed = _colliderChecker.IsColliderPassed(c);
+            Colliders.Add(other);
+            _onEnter?.Invoke(other);
+        }
 
-                            if (passed)
-                            {
-                                OnEnter2D?.Invoke(c);
-                                Colliders2D.Add(c);
-                            }
-                        });
+        private void OnTriggerExit(Collider other)
+        {
+            if (!_checkExit || _collisionDimension != CollisionDimension.Collider3d)
+                return;
+            
+            if (!_colliderChecker.IsColliderPassed(other))
+                return;
 
-                if (CheckExit)
-                    _rigidbody2D.OnTriggerExit2DAsObservable()
-                        .Subscribe((c) =>
-                        {
-                            var passed = _colliderChecker.IsColliderPassed(c);
+            Colliders.Remove(other);
+            _onExit?.Invoke(other);
+        }
 
-                            if (passed)
-                            {
-                                OnExit2D?.Invoke(c);
-                                if (Colliders2D.Contains(c))
-                                    Colliders2D.Remove(c);
-                            }
-                        });
-            }
+        #endregion
+
+        #region Trigger 2D
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (!_checkEnter || _collisionDimension != CollisionDimension.Collider2d)
+                return;
+            
+            if (!_colliderChecker.IsColliderPassed(other))
+                return;
+
+            Colliders2D.Add(other);
+            _onEnter2D?.Invoke(other);
+        }
+
+        private void OnTriggerExit2D(Collider2D other)
+        {
+            if (!_checkExit || _collisionDimension != CollisionDimension.Collider2d)
+                return;
+            
+            if (!_colliderChecker.IsColliderPassed(other))
+                return;
+
+            Colliders2D.Remove(other);
+            _onExit2D?.Invoke(other);
         }
 
         #endregion

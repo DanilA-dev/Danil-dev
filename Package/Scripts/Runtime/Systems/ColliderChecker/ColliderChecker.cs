@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Collections.Generic;
 using D_Dev.TagSystem;
 using D_Dev.TagSystem.Extensions;
 using Sirenix.OdinInspector;
@@ -50,6 +50,9 @@ namespace D_Dev.ColliderChecker
         [Title("Debug")]
         [SerializeField] protected bool _debugColliders;
 
+        private HashSet<Collider> _ignoredCollidersSet;
+        private HashSet<Collider2D> _ignoredColliders2DSet;
+
         #endregion
 
         #region Properties
@@ -93,13 +96,21 @@ namespace D_Dev.ColliderChecker
         public Collider[] IgnoredColliders
         {
             get => _ignoredColliders;
-            set => _ignoredColliders = value;
+            set
+            {
+                _ignoredColliders = value;
+                RebuildIgnoredCollidersSet();
+            }
         }
 
         public Collider2D[] IgnoredColliders2D
         {
             get => _ignoredColliders2D;
-            set => _ignoredColliders2D = value;
+            set
+            {
+                _ignoredColliders2D = value;
+                RebuildIgnoredColliders2DSet();
+            }
         }
 
         public CollisionDimension CollisionDimension
@@ -136,25 +147,20 @@ namespace D_Dev.ColliderChecker
 
         #region Public
 
+        public void Init()
+        {
+            RebuildIgnoredCollidersSet();
+            RebuildIgnoredColliders2DSet();
+        }
+
         public bool IsColliderPassed(Collider collider)
         {
             if (collider == null || collider.gameObject == null)
                 return false;
 
-            bool checkPassed = true;
-            bool ignorePassed = true;
+            bool passed = IsCheckPassed(collider.gameObject)
+                       && IsIgnorePassed(collider.gameObject, collider.isTrigger, collider);
 
-            if (_checkLayer && ((1 << collider.gameObject.layer) & _checkLayerMask) == 0
-                || _checkTag && !collider.gameObject.HasTags(_checkTags))
-                checkPassed = false;
-
-            if (_ignoreTrigger && collider.isTrigger
-                || _ignoreColliders && _ignoredColliders != null && _ignoredColliders.Any(c => c.Equals(collider))
-                || _ignoreLayer && ((1 << collider.gameObject.layer) & _ignoreLayerMask) != 0
-                || _ignoreTag && collider.gameObject.HasTags(_ignoreTags))
-                ignorePassed = false;
-
-            bool passed = checkPassed && ignorePassed;
             DebugCollider(collider, passed);
             return passed;
         }
@@ -164,44 +170,114 @@ namespace D_Dev.ColliderChecker
             if (collider2D == null || collider2D.gameObject == null)
                 return false;
 
-            bool checkPassed = true;
-            bool ignorePassed = true;
+            bool passed = IsCheckPassed(collider2D.gameObject)
+                       && IsIgnorePassed(collider2D.gameObject, collider2D.isTrigger, collider2D);
 
-            if (_checkLayer && ((1 << collider2D.gameObject.layer) & _checkLayerMask) == 0
-                || _checkTag && !collider2D.gameObject.HasTags(_checkTags))
-                checkPassed = false;
-
-            if (_ignoreTrigger && collider2D.isTrigger
-                || _ignoreColliders && _ignoredColliders2D != null && _ignoredColliders2D.Any(c => c.Equals(collider2D))
-                || _ignoreLayer && ((1 << collider2D.gameObject.layer) & _ignoreLayerMask) != 0
-                || _ignoreTag && collider2D.gameObject.HasTags(_ignoreTags))
-                ignorePassed = false;
-
-            bool passed = checkPassed && ignorePassed;
             DebugCollider(collider2D, passed);
             return passed;
         }
 
         #endregion
-        
+
+        #region Private
+
+        private bool IsCheckPassed(GameObject go)
+        {
+            if (_checkLayer && ((1 << go.layer) & _checkLayerMask) == 0)
+                return false;
+
+            if (_checkTag && !go.HasTags(_checkTags))
+                return false;
+
+            return true;
+        }
+
+        private bool IsIgnorePassedCommon(GameObject go, bool isTrigger)
+        {
+            if (_ignoreTrigger && isTrigger)
+                return false;
+
+            if (_ignoreLayer && ((1 << go.layer) & _ignoreLayerMask) != 0)
+                return false;
+
+            if (_ignoreTag && go.HasTags(_ignoreTags))
+                return false;
+
+            return true;
+        }
+
+        private bool IsIgnorePassed(GameObject go, bool isTrigger, Collider collider)
+        {
+            if (!IsIgnorePassedCommon(go, isTrigger))
+                return false;
+
+            if (_ignoreColliders && _ignoredCollidersSet != null && _ignoredCollidersSet.Contains(collider))
+                return false;
+
+            return true;
+        }
+
+        private bool IsIgnorePassed(GameObject go, bool isTrigger, Collider2D collider2D)
+        {
+            if (!IsIgnorePassedCommon(go, isTrigger))
+                return false;
+
+            if (_ignoreColliders && _ignoredColliders2DSet != null && _ignoredColliders2DSet.Contains(collider2D))
+                return false;
+
+            return true;
+        }
+
+        private void RebuildIgnoredCollidersSet()
+        {
+            if (_ignoredColliders == null || _ignoredColliders.Length == 0)
+            {
+                _ignoredCollidersSet = null;
+                return;
+            }
+
+            _ignoredCollidersSet ??= new HashSet<Collider>(_ignoredColliders.Length);
+            _ignoredCollidersSet.Clear();
+
+            foreach (var c in _ignoredColliders)
+                if (c != null) _ignoredCollidersSet.Add(c);
+        }
+
+        private void RebuildIgnoredColliders2DSet()
+        {
+            if (_ignoredColliders2D == null || _ignoredColliders2D.Length == 0)
+            {
+                _ignoredColliders2DSet = null;
+                return;
+            }
+
+            _ignoredColliders2DSet ??= new HashSet<Collider2D>(_ignoredColliders2D.Length);
+            _ignoredColliders2DSet.Clear();
+
+            foreach (var c in _ignoredColliders2D)
+                if (c != null) _ignoredColliders2DSet.Add(c);
+        }
+
+        #endregion
+
         #region Debug
 
         private void DebugCollider(Collider collider, bool isPassed)
         {
-            string color = isPassed ? "green" : "red";
-            string result = isPassed ? "is passed" : "don't passed";
+            if (!_debugColliders) return;
 
-            if(_debugColliders)
-                Debug.Log($"{collider.name}, collider <color={color}> {result} </color>");
+            string color = isPassed ? "green" : "red";
+            string result = isPassed ? "passed" : "not passed";
+            Debug.Log($"{collider.name}, collider <color={color}>{result}</color>");
         }
 
         private void DebugCollider(Collider2D collider2D, bool isPassed)
         {
-            string color = isPassed ? "green" : "red";
-            string result = isPassed ? "is passed" : "don't passed";
+            if (!_debugColliders) return;
 
-            if(_debugColliders)
-                Debug.Log($"{collider2D.name}, collider2D <color={color}> {result} </color>");
+            string color = isPassed ? "green" : "red";
+            string result = isPassed ? "passed" : "not passed";
+            Debug.Log($"{collider2D.name}, collider2D <color={color}>{result}</color>");
         }
 
         #endregion
