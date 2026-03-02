@@ -2,17 +2,16 @@
 
 namespace D_Dev.MovementHandler
 {
-    public class MovementController : MonoBehaviour
+    public abstract class BaseMovementController : MonoBehaviour
     {
         #region Fields
 
-        [SerializeReference] private BaseMovementHandler _movementHandler;
+        [SerializeReference] protected BaseMovementHandler _movementHandler;
 
-        [SerializeField, Min(0f)] private float _updateInterval = 0f;
+        [SerializeField, Min(0f)] protected float _updateInterval = 0f;
 
         protected bool _isStopped;
-
-        private float _updateTimer;
+        protected float _updateTimer;
 
         #endregion
 
@@ -30,10 +29,14 @@ namespace D_Dev.MovementHandler
 
         #region Monobehaviour
 
-        private void Awake() => _movementHandler?.OnAwake();
-        private void Start() => _movementHandler?.OnStart();
+        protected virtual void Awake() => _movementHandler?.OnAwake();
+        protected virtual void Start() => _movementHandler?.OnStart();
 
-        protected virtual void Update()
+        #endregion
+
+        #region Protected
+
+        protected void PerformUpdate()
         {
             if (_isStopped)
                 return;
@@ -49,7 +52,7 @@ namespace D_Dev.MovementHandler
             _movementHandler?.OnUpdate();
         }
 
-        protected virtual void FixedUpdate()
+        protected void PerformFixedUpdate()
         {
             if (_isStopped)
                 return;

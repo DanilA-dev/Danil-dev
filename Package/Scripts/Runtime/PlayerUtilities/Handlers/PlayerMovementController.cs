@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace D_Dev.PlayerStateController
 {
-    public class PlayerMovementController : MovementController
+    public class PlayerMovementController : AutonomousMovementController
     {
         #region Fields
 
