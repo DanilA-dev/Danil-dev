@@ -1,12 +1,15 @@
-﻿using UnityEngine;
+using UnityEngine;
+using D_Dev.UpdateManagerSystem;
 
 namespace D_Dev.MovementHandler
 {
-    public class MovementController : MonoBehaviour
+    public class TickedMovementController : MonoBehaviour, ITickable, IFixedTickable
     {
         #region Fields
 
         [SerializeReference] private BaseMovementHandler _movementHandler;
+
+        [SerializeField] private int _priority = 0;
 
         [SerializeField, Min(0f)] private float _updateInterval = 0f;
 
@@ -31,9 +34,25 @@ namespace D_Dev.MovementHandler
         #region Monobehaviour
 
         private void Awake() => _movementHandler?.OnAwake();
-        private void Start() => _movementHandler?.OnStart();
 
-        protected virtual void Update()
+        private void Start()
+        {
+            _movementHandler?.OnStart();
+            UpdateManager.AddWithPriority(this, _priority);
+            FixedUpdateManager.AddWithPriority(this, _priority);
+        }
+
+        private void OnDestroy()
+        {
+            UpdateManager.Remove(this);
+            FixedUpdateManager.Remove(this);
+        }
+
+        #endregion
+
+        #region ITickable
+
+        public void Tick()
         {
             if (_isStopped)
                 return;
@@ -49,7 +68,11 @@ namespace D_Dev.MovementHandler
             _movementHandler?.OnUpdate();
         }
 
-        protected virtual void FixedUpdate()
+        #endregion
+
+        #region IFixedTickable
+
+        public void FixedTick()
         {
             if (_isStopped)
                 return;
@@ -74,6 +97,9 @@ namespace D_Dev.MovementHandler
         public void ResumeMovement() => _isStopped = false;
         public float GetVelocity() => _movementHandler.GetVelocity();
         public bool IsMoving() => _movementHandler.IsMoving();
+
+        public int GetPriority() => _priority;
+        public void SetPriority(int priority) => _priority = priority;
 
         #endregion
     }
