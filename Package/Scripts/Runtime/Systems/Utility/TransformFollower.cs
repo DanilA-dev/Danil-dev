@@ -82,7 +82,7 @@ namespace D_Dev.Utility
 
         private void Update()
         {
-            if (Time.time - _lastTickTime >= _tickInterval)
+            if (!IsObjectToFollowNull() && Time.time - _lastTickTime >= _tickInterval)
             {
                 _targetPosition = _objectToFollow.Value.position;
                 _lastTickTime = Time.time;
