@@ -220,6 +220,8 @@ namespace D_Dev.EntitySpawner
                 {
                     if (p != null && p.gameObject != null && !p.gameObject.activeInHierarchy)
                         p.gameObject.SetActive(true);
+                    
+                    p.Get();
                 },
                 actionOnRelease: p => { if (p != null && p.gameObject != null) p.gameObject.SetActive(false); },
                 actionOnDestroy: p => { if (p != null && p.gameObject != null) Object.Destroy(p.gameObject); },

@@ -10,6 +10,9 @@ namespace D_Dev.EntitySpawner
 
         [PropertyOrder(100)]
         [FoldoutGroup("Events")]
+        public UnityEvent<PoolableObject> OnEntityGet;
+        [PropertyOrder(100)]
+        [FoldoutGroup("Events")]
         public UnityEvent<PoolableObject> OnEntityRelease;
         [PropertyOrder(100)]
         [FoldoutGroup("Events")]
@@ -20,6 +23,19 @@ namespace D_Dev.EntitySpawner
         #region Monobehaviour
 
         private void OnDestroy() => OnEntityDestroy?.Invoke(this);
+        
+        
+
+        #endregion
+
+        #region Public
+
+        public void Get()
+        {
+            OnGet();
+            OnEntityGet?.Invoke(this);
+        }
+        
         public void Release()
         {
             OnRelease();
@@ -30,7 +46,8 @@ namespace D_Dev.EntitySpawner
 
         #region Virtual
 
-        public virtual void OnRelease() {}
+        protected virtual void OnGet() {}
+        protected virtual void OnRelease() {}
 
         #endregion
     }
