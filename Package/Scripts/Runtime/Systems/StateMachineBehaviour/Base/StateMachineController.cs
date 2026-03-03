@@ -93,8 +93,8 @@ namespace D_Dev.StateMachineBehaviour
             _stateMachine?.UpdateStatesFixed();
         }
 
-        public void ForceChangeState(string state) => ChangeState(state);
-
+        public void ReloadStartState() => ChangeState(_startState.Value);
+        
         #endregion
 
         #region Virtual/Abstract
