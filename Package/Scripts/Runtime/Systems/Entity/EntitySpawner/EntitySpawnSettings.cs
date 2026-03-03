@@ -9,6 +9,7 @@ using D_Dev.RuntimeEntityVariables;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Pool;
+using D_Dev.EntityPool;
 
 namespace D_Dev.EntitySpawner
 {
@@ -48,6 +49,10 @@ namespace D_Dev.EntitySpawner
         [FoldoutGroup("Pool")]
         [ShowIf(nameof(_usePool))]
         [SerializeField] private int _poolMaxSize;
+
+        [Title("Global Pool")]
+        [FoldoutGroup("Pool")]
+        [SerializeField] private PoolableDataList _globalPool;
 
         private ObjectPool<PoolableObject> _pool;
         private List<PoolableObject> _poolableEntities;
@@ -141,13 +146,21 @@ namespace D_Dev.EntitySpawner
 
         public List<PoolableObject> PoolableEntities => _poolableEntities;
 
+        public PoolableDataList GlobalPool
+        {
+            get => _globalPool;
+            set => _globalPool = value;
+        }
+
+        private bool UseGlobalPool => _globalPool != null;
+
         #endregion
 
         #region Public
 
         public async UniTask Init()
         {
-            if (_usePool)
+            if (!UseGlobalPool && _usePool)
             {
                 PrewarmPool();
                 CreatePool();
@@ -159,6 +172,9 @@ namespace D_Dev.EntitySpawner
 
         public void DisposePool()
         {
+            if (UseGlobalPool)
+                return;
+
             if(!_usePool || _pool == null)
                 return;
 
@@ -178,6 +194,18 @@ namespace D_Dev.EntitySpawner
 
         public async UniTask<GameObject> Get()
         {
+            // Делегируем в глобальный пул, если он задан
+            if (UseGlobalPool)
+            {
+                var obj = await _globalPool.Get(_data.Value);
+                if (obj != null && _applyPosConfigOnGet)
+                {
+                    obj.transform.position = _positionSettings.GetPosition() + _positionOffset;
+                    obj.transform.rotation = _rotationSettings.GetRotation();
+                }
+                return obj;
+            }
+
             GameObject returnObj = null;
             if (_usePool)
             {
@@ -196,6 +224,12 @@ namespace D_Dev.EntitySpawner
 
         public void ReleasePoolObject(PoolableObject poolableObject)
         {
+            if (UseGlobalPool)
+            {
+                poolableObject.gameObject.SetActive(false);
+                return;
+            }
+
             if(_usePool)
                 _pool?.Release(poolableObject);
         }

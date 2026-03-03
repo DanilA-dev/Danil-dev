@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace D_Dev.EntitySpawner
+namespace D_Dev.EntityPool
 {
     public class PoolableObject : MonoBehaviour
     {

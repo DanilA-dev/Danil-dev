@@ -1,15 +1,14 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using D_Dev.CustomEventManager;
+using D_Dev.EntityPool;
 using D_Dev.EntitySpawner;
 using D_Dev.PolymorphicValueSystem;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
-using PoolableObject = D_Dev.EntitySpawner.PoolableObject;
 
 namespace D_Dev.CurrencySystem.Extensions
 {
