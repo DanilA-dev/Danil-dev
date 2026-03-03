@@ -5,7 +5,6 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
-
 namespace D_Dev.StateMachineBehaviour
 {
     public abstract class StateMachineController : MonoBehaviour
@@ -93,6 +92,8 @@ namespace D_Dev.StateMachineBehaviour
             _stateMachine?.UpdateFixedTransitions();
             _stateMachine?.UpdateStatesFixed();
         }
+
+        public void ForceChangeState(string state) => ChangeState(state);
 
         #endregion
 
