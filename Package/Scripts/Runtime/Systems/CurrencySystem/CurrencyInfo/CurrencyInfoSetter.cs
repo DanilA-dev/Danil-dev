@@ -110,6 +110,8 @@ namespace D_Dev.CurrencySystem
             return false;
         }
 
+        public void SetAmount(int amount) => _amount.Value = amount;
+
         #endregion
 
         #region Private
