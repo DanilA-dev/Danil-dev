@@ -14,14 +14,17 @@ namespace D_Dev.CurrencySystem
         
         [FoldoutGroup("Deposit Events")]
         public UnityEvent<int> OnDepositSuccess;
+        [FoldoutGroup("Deposit Events")]
         public UnityEvent<int> OnDepositFailed;
         
         [FoldoutGroup("Withdraw Events")]
         public UnityEvent<int> OnWithdrawSuccess;
+        [FoldoutGroup("Withdraw Events")]
         public UnityEvent<int> OnWithdrawFailed;
         
         [FoldoutGroup("Set Events")]
         public UnityEvent<int> OnSetSuccess;
+        [FoldoutGroup("Set Events")]
         public UnityEvent<int> OnSetFailed;
         
         #endregion
