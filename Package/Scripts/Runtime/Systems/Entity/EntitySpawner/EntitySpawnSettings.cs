@@ -194,7 +194,6 @@ namespace D_Dev.EntitySpawner
 
         public async UniTask<GameObject> Get()
         {
-            // Делегируем в глобальный пул, если он задан
             if (UseGlobalPool)
             {
                 var obj = await _globalPool.Get(_data.Value);

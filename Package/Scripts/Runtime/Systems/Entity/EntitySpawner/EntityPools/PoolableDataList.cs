@@ -86,6 +86,13 @@ namespace D_Dev.EntityPool
         }
 
         public bool HasPool(EntityInfo entityInfo) => _pools.ContainsKey(entityInfo);
+        
+        public void ReleaseAll()
+        {
+            foreach (var keyValuePair in _pools)
+                foreach (var valuePoolableEntity in keyValuePair.Value.PoolableEntities)
+                    valuePoolableEntity.Release();
+        }
 
         #endregion
 
