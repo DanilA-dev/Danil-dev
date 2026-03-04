@@ -39,17 +39,17 @@ namespace D_Dev.CurrencySystem
         [SerializeReference] private PolymorphicValue<Transform> _to;
         [Space]
         [FoldoutGroup("Deposit Events")]
-        public UnityEvent OnDepositSuccess;
+        public UnityEvent<int> OnDepositSuccess;
         [FoldoutGroup("Deposit Events")]
-        public UnityEvent OnDepositFailed;
+        public UnityEvent<int> OnDepositFailed;
         [FoldoutGroup("Withdraw Events")]
-        public UnityEvent OnWithdrawSuccess;
+        public UnityEvent<int> OnWithdrawSuccess;
         [FoldoutGroup("Withdraw Events")]
-        public UnityEvent OnWithdrawFailed;
+        public UnityEvent<int> OnWithdrawFailed;
         [FoldoutGroup("Set Events")]
-        public UnityEvent OnSetSuccess;
+        public UnityEvent<int> OnSetSuccess;
         [FoldoutGroup("Set Events")]
-        public UnityEvent OnSetFailed;
+        public UnityEvent<int> OnSetFailed;
             
         #endregion
 
@@ -75,12 +75,12 @@ namespace D_Dev.CurrencySystem
         {
             if (_currencyInfo != null && _currencyInfo.Value.Currency.TryDeposit(amount))
             {
-                OnDepositSuccess?.Invoke();
+                OnDepositSuccess?.Invoke((int)amount);
                 if(_useFlyingAnimation)
                     EventManager.Invoke(_flyingAnimationEventName.Value, _from.Value, _to.Value, (int)amount);
                 return true;
             }
-            OnDepositFailed?.Invoke();
+            OnDepositFailed?.Invoke((int)amount);
             return false;
         }
 
@@ -88,12 +88,12 @@ namespace D_Dev.CurrencySystem
         {
             if (_currencyInfo != null && _currencyInfo.Value.Currency.TryWithdraw(amount))
             {
-                OnWithdrawSuccess?.Invoke();
+                OnWithdrawSuccess?.Invoke((int)amount);
                 if(_useFlyingAnimation)
                     EventManager.Invoke(_flyingAnimationEventName.Value, _from.Value, _to.Value, (int)amount);
                 return true;
             }
-            OnWithdrawFailed?.Invoke();
+            OnWithdrawFailed?.Invoke((int)amount);
             return false;
         }
 
@@ -103,10 +103,10 @@ namespace D_Dev.CurrencySystem
         {
             if (_currencyInfo != null && _currencyInfo.Value.Currency.TrySet(amount))
             {
-                OnSetSuccess?.Invoke();
+                OnSetSuccess?.Invoke((int)amount);
                 return true;
             }
-            OnSetFailed?.Invoke();
+            OnSetFailed?.Invoke((int)amount);
             return false;
         }
 
