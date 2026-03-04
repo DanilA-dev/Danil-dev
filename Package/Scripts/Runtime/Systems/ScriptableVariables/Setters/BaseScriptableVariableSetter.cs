@@ -6,11 +6,11 @@ namespace D_Dev.ScriptableVaiables.Setters
     {
         #region Fields
 
-        [SerializeField] private TVariable _variable;
-        [SerializeField] private T _value;
+        [SerializeField] protected TVariable _variable;
+        [SerializeField] protected T _value;
         [Space]
-        [SerializeField] private bool _setOnAwake;
-        [SerializeField] private bool _setOnStart;
+        [SerializeField] protected bool _setOnAwake;
+        [SerializeField] protected bool _setOnStart;
 
         #endregion
 
