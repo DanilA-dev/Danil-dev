@@ -23,7 +23,7 @@ namespace D_Dev.Scripts.DamageableSystem.Extensions
         
         #region Overrides
 
-        protected override void Init()
+        public override void Init()
         {
             MaxHealth = _maxHealthValue.Value;
             CurrentHealth = MaxHealth;

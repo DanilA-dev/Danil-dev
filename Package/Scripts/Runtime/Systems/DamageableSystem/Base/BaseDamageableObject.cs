@@ -77,7 +77,7 @@ namespace D_Dev.DamageableSystem
         #endregion
 
         #region Virtual
-        protected virtual void Init() => CurrentHealth = MaxHealth;
+        public virtual void Init() => CurrentHealth = MaxHealth;
 
         #endregion
         
