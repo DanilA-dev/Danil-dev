@@ -26,7 +26,7 @@ namespace D_Dev.Singleton
                     {
                         _instance = FindObjectOfType<T>();
 
-                        if (_instance == null && !_createInstanceIfNotFound)
+                        if (_instance == null && _createInstanceIfNotFound)
                         {
                             var singletonObject = new GameObject();
                             _instance = singletonObject.AddComponent<T>();
