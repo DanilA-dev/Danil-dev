@@ -9,8 +9,11 @@ namespace D_Dev.CustomEventManager
 
         [SerializeReference] private List<BaseEventNameType> _eventNameTypes = new();
         [SerializeField] private bool _invokeOnStart;
+        [SerializeField] private bool _invokeOnlyOnce;
         [Space]
         [SerializeField] private bool _debug;
+        
+        private bool _isInvoked;
 
         #endregion
 
@@ -34,6 +37,9 @@ namespace D_Dev.CustomEventManager
 
         public void Raise()
         {
+            if(_invokeOnlyOnce && _isInvoked)
+                return;
+            
             if (_eventNameTypes != null && _eventNameTypes.Count > 0)
             {
                 foreach (var eventNameType in _eventNameTypes)
@@ -48,11 +54,15 @@ namespace D_Dev.CustomEventManager
                                   $" with parameter {paramInfo} : {Param?.ToString()}");
                     });
                 }
+                _isInvoked = true;
             }
         }
         
         public void Raise(T t = default)
         {
+            if(_invokeOnlyOnce && _isInvoked)
+                return;
+            
             if (_eventNameTypes != null && _eventNameTypes.Count > 0)
             {
                 foreach (var eventNameType in _eventNameTypes)
@@ -67,6 +77,7 @@ namespace D_Dev.CustomEventManager
                                   $" with parameter {paramInfo} : {t?.ToString()}");
                     });
                 }
+                _isInvoked = true;
             }
         }
 

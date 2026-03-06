@@ -9,6 +9,7 @@ namespace D_Dev.CustomEventManager.Listeners
         #region Fields
 
         [SerializeReference] private List<BaseEventNameType> _eventNameTypes = new();
+        [SerializeField] private bool _raiseOnlyOnce;
         [SerializeField] private UnityEvent _onRaised;
         [Space]
         [SerializeField] private bool _debug;
@@ -17,7 +18,14 @@ namespace D_Dev.CustomEventManager.Listeners
 
         #region Monobehaviour
 
-        private void Awake()
+        private void Awake() => Subscribe();
+        private void OnDestroy() => Unsubscribe();
+
+        #endregion
+
+        #region Private
+
+        private void Subscribe()
         {
             if (_eventNameTypes != null && _eventNameTypes.Count > 0)
             {
@@ -45,7 +53,7 @@ namespace D_Dev.CustomEventManager.Listeners
             }
         }
 
-        private void OnDestroy()
+        private void Unsubscribe()
         {
             if (_eventNameTypes != null && _eventNameTypes.Count > 0)
             {
@@ -74,10 +82,16 @@ namespace D_Dev.CustomEventManager.Listeners
         }
 
         #endregion
-
+        
         #region Listeners
 
-        private void OnRaised() => _onRaised?.Invoke();
+        private void OnRaised()
+        {
+            _onRaised?.Invoke();
+
+            if (_raiseOnlyOnce)
+                Unsubscribe();
+        }
 
         #endregion
     }
