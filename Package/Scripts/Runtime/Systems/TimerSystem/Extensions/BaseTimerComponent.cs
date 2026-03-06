@@ -1,4 +1,3 @@
-using System;
 using D_Dev.PolymorphicValueSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -11,6 +10,7 @@ namespace D_Dev.TimerSystem
         #region Fields
 
         [SerializeField] protected bool _invokeOnStart;
+        [SerializeField] protected bool _repeat;
         [SerializeReference] protected PolymorphicValue<float> _timeValue = new FloatConstantValue();
 
         [FoldoutGroup("Events")]
@@ -21,9 +21,6 @@ namespace D_Dev.TimerSystem
         public UnityEvent<float> OnTimerEnd;
 
         protected CountdownTimer _timer;
-        protected Action _onTimerStartDelegate;
-        protected Action _onTimerEndDelegate;
-        protected Action<float> _onTimerProgressUpdateDelegate;
              
         #endregion
 
@@ -49,13 +46,9 @@ namespace D_Dev.TimerSystem
         {
             _timer = new CountdownTimer(_timeValue.Value);
             
-            _onTimerStartDelegate = () => OnTimerStart?.Invoke(_timeValue.Value);
-            _onTimerEndDelegate = () => OnTimerEnd?.Invoke(_timer.RemainingTime);
-            _onTimerProgressUpdateDelegate = (value) => OnTimerUpdate?.Invoke(value);
-            
-            _timer.OnTimerStart += _onTimerStartDelegate;
-            _timer.OnTimerEnd += _onTimerEndDelegate;
-            _timer.OnTimerProgressUpdate += _onTimerProgressUpdateDelegate;
+            _timer.OnTimerStart += OnStart;
+            _timer.OnTimerEnd += OnEnd;
+            _timer.OnTimerProgressUpdate += OnProgress;
             
             if (_invokeOnStart)
                 StartTimer();
@@ -65,9 +58,9 @@ namespace D_Dev.TimerSystem
         {
             if (_timer != null)
             {
-                _timer.OnTimerStart -= _onTimerStartDelegate;
-                _timer.OnTimerEnd -= _onTimerEndDelegate;
-                _timer.OnTimerProgressUpdate -= _onTimerProgressUpdateDelegate;
+                _timer.OnTimerStart -= OnStart;
+                _timer.OnTimerEnd -= OnEnd;
+                _timer.OnTimerProgressUpdate -= OnProgress;
             }
         }
 
@@ -90,6 +83,20 @@ namespace D_Dev.TimerSystem
 
         public void StopTimer() => _timer?.Stop();
         public void PauseTimer() => _timer?.Pause();
+
+        #endregion
+
+        #region Listeners
+
+        private void OnStart() => OnTimerStart?.Invoke(_timer.RemainingTime);
+        private void OnProgress(float progress) => OnTimerUpdate?.Invoke(progress);
+        private void OnEnd()
+        {
+            OnTimerEnd?.Invoke(_timer.RemainingTime);
+            
+            if (_repeat)
+                StartTimer();
+        }
 
         #endregion
     }
