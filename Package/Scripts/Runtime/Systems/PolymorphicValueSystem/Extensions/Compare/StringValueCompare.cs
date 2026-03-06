@@ -6,15 +6,7 @@ namespace D_Dev.PolymorphicValueSystem.Compare
     {
         #region Public
 
-        public override void CheckValue(string value)
-        {
-            string valueTo = _compareValueTo.Value;
-
-            if (value == valueTo)
-                OnValueCompareTrue?.Invoke();
-            else
-                OnValueCompareFalse?.Invoke();
-        }
+        public override bool Compare(string value, string valueTo) => value == valueTo;
 
         #endregion
     }

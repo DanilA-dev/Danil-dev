@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -6,26 +7,49 @@ namespace D_Dev.PolymorphicValueSystem.Compare
 {
     public abstract class BasePolymorphicValueCompare<T> : MonoBehaviour
     {
+        #region Classes
+
+        [System.Serializable]
+        public class CompareValuePair
+        {
+            #region Fields
+
+            [SerializeReference] public PolymorphicValue<T> CompareValue;
+            [SerializeReference] public PolymorphicValue<T> CompareValueTo;
+
+            [FoldoutGroup("Events"), PropertyOrder(100)]
+            [SerializeField] public UnityEvent OnValueCompareTrue;
+            [FoldoutGroup("Events"), PropertyOrder(100)]
+            [SerializeField] public UnityEvent OnValueCompareFalse;
+
+            #endregion
+        }
+
+        #endregion
+
         #region Fields
 
         [SerializeField, PropertyOrder(-1)] protected bool _checkOnStart;
-        [SerializeReference] protected PolymorphicValue<T> _compareValue;
-        [SerializeReference] protected PolymorphicValue<T> _compareValueTo;
-
-        [FoldoutGroup("Events"), PropertyOrder(100)]
-        [SerializeField] protected UnityEvent OnValueCompareTrue;
-        [FoldoutGroup("Events"), PropertyOrder(100)]
-        [SerializeField] protected UnityEvent OnValueCompareFalse;
+        [SerializeField] protected List<CompareValuePair> _comparePairs = new();
 
         #endregion
 
         #region Public
 
-        public abstract void CheckValue(T value);
+        public abstract bool Compare(T value, T valueTo);
+
         public void CheckValues()
         {
-            T value = _compareValue.Value;
-            CheckValue(value);
+            foreach (CompareValuePair pair in _comparePairs)
+            {
+                T value = pair.CompareValue.Value;
+                T valueTo = pair.CompareValueTo.Value;
+
+                if (Compare(value, valueTo))
+                    pair.OnValueCompareTrue?.Invoke();
+                else
+                    pair.OnValueCompareFalse?.Invoke();
+            }
         }
 
         #endregion
