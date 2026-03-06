@@ -8,7 +8,7 @@ namespace D_Dev.Singleton
         #region Fields
         
         [SerializeField] private bool _dontDestroyOnLoad = true;
-        [ShowInInspector] private static bool _createInstanceIfNotFound = true;
+        [SerializeField] private bool _createInstanceIfNotFound = true;
       
         protected static T _instance;
         private static readonly object _lock = new object();
@@ -16,6 +16,7 @@ namespace D_Dev.Singleton
         #endregion
 
         #region Properties
+
         public static T Instance
         {
             get
@@ -26,13 +27,17 @@ namespace D_Dev.Singleton
                     {
                         _instance = FindObjectOfType<T>();
 
-                        if (_instance == null && _createInstanceIfNotFound)
+                        if (_instance == null)
                         {
-                            var singletonObject = new GameObject();
-                            _instance = singletonObject.AddComponent<T>();
-                            singletonObject.name = $"{typeof(T).Name} (Singleton)";
-                            
-                            Debug.Log($"[Singleton] Created new instance of {typeof(T)}");
+                            var baseSingleton = FindObjectOfType<BaseSingleton<T>>();
+                            if (baseSingleton != null && baseSingleton._createInstanceIfNotFound)
+                            {
+                                var singletonObject = new GameObject();
+                                _instance = singletonObject.AddComponent<T>();
+                                singletonObject.name = $"{typeof(T).Name} (Singleton)";
+
+                                Debug.Log($"[Singleton] Created new instance of {typeof(T)}");
+                            }
                         }
                     }
                     return _instance;
@@ -43,6 +48,7 @@ namespace D_Dev.Singleton
         #endregion
 
         #region Monobehaviour
+
         protected virtual void Awake()
         {
             if (_instance == null)
