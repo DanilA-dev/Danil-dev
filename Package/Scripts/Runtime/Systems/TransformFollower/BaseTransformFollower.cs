@@ -1,11 +1,12 @@
 using System;
 using D_Dev.PolymorphicValueSystem;
+using D_Dev.Utility;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace D_Dev.Utility
+namespace D_Dev.TransformFollower
 {
-    public class TransformFollower : MonoBehaviour
+    public abstract class BaseTransformFollower : MonoBehaviour
     {
         #region Enum
 
@@ -80,7 +81,7 @@ namespace D_Dev.Utility
 
         #region Private
 
-        private void Update()
+        protected virtual void OnUpdate()
         {
             if (!IsObjectToFollowNull() && Time.time - _lastTickTime >= _tickInterval)
             {
