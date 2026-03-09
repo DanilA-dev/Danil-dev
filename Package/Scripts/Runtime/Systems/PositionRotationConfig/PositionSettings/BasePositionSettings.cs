@@ -5,15 +5,30 @@ using Random = UnityEngine.Random;
 
 namespace D_Dev.PositionRotationConfig
 {
+    #region Enum
+
+    [Flags]
+    public enum AxisUpdate
+    {
+        X = 1 << 0,
+        Y = 1 << 1,
+        Z = 1 << 2,
+        All = X | Y | Z
+    }
+
+    #endregion
+    
     [Serializable]
     public class BasePositionSettings
     {
         #region Fields
 
-        [FoldoutGroup("Random")]
+        [Title("Random")]
         [SerializeField] private bool _useRandomSphere;
-        [FoldoutGroup("Random"), ShowIf(nameof(_useRandomSphere))]
+        [ShowIf(nameof(_useRandomSphere))]
         [SerializeField] private float _radius;
+        [ShowIf(nameof(_useRandomSphere))]
+        [SerializeField] private AxisUpdate _axis;
 
         #endregion
 
@@ -31,6 +46,12 @@ namespace D_Dev.PositionRotationConfig
             set => _radius = value;
         }
 
+        public AxisUpdate Axis
+        {
+            get => _axis;
+            set => _axis = value;
+        }
+
         #endregion
         
         #region Public
@@ -38,7 +59,9 @@ namespace D_Dev.PositionRotationConfig
         public Vector3 GetPosition()
         {
             Vector3 randomOffset = Random.insideUnitSphere * _radius;
-            randomOffset.y = 0;
+            randomOffset.y = _axis.HasFlag(AxisUpdate.Y) ? randomOffset.y : 0;
+            randomOffset.x = _axis.HasFlag(AxisUpdate.X) ? randomOffset.x : 0;
+            randomOffset.z = _axis.HasFlag(AxisUpdate.Z) ? randomOffset.z : 0;
 
             if (_useRandomSphere)
                 return OnGetPosition() + randomOffset;
