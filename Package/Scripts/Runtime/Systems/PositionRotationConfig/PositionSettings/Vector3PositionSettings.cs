@@ -8,7 +8,7 @@ namespace D_Dev.PositionRotationConfig
     {
         #region Fields
 
-        [SerializeReference] private PolymorphicValue<Vector3> _value;
+        [SerializeReference] private PolymorphicValue<Vector3> _value = new Vector3ConstantValue();
 
         #endregion
 

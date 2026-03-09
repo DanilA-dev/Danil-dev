@@ -9,7 +9,7 @@ namespace D_Dev.PositionRotationConfig
     {
         #region Fields
 
-        [SerializeReference] private PolymorphicValue<Transform> _value;
+        [SerializeReference] private PolymorphicValue<Transform> _value = new TransformConstantValue();
         [SerializeField] private bool _isLocal;
 
         #endregion
