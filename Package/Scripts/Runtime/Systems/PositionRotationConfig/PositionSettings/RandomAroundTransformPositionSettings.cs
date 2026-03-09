@@ -40,7 +40,7 @@ namespace D_Dev.PositionRotationConfig
 
         #region Overrides
 
-        public override Vector3 GetPosition()
+        public override Vector3 OnGetPosition()
         {
             if (_target?.Value == null)
             {

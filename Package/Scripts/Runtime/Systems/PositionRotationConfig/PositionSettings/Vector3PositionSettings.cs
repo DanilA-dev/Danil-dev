@@ -24,7 +24,7 @@ namespace D_Dev.PositionRotationConfig
         
         #region Overrides
         
-        public override Vector3 GetPosition() => _value.Value;
+        public override Vector3 OnGetPosition() => _value.Value;
 
         #endregion
     }
