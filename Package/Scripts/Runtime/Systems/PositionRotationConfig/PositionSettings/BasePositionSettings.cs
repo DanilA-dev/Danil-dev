@@ -27,8 +27,8 @@ namespace D_Dev.PositionRotationConfig
         [SerializeField] private bool _useRandomSphere;
         [ShowIf(nameof(_useRandomSphere))]
         [SerializeField] private float _radius;
-        [ShowIf(nameof(_useRandomSphere))]
-        [SerializeField] private AxisUpdate _axis;
+        [ShowIf(nameof(_useRandomSphere))] 
+        [SerializeField] private AxisUpdate _axis = AxisUpdate.All;
 
         #endregion
 
