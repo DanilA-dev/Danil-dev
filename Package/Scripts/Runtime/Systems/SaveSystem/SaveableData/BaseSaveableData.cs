@@ -61,10 +61,22 @@ namespace D_Dev.SaveSystem.SaveableData
         public override void SetSaveData(object data)
         {
             if (data is TData typedData)
+            {
                 SetTypedSaveData(typedData);
-            else
+                return;
+            }
+
+            try
+            {
+                var converted = (TData)Convert.ChangeType(data, typeof(TData));
+                SetTypedSaveData(converted);
+            }
+            catch (Exception e)
+            {
                 Debug.LogError($"[SaveableData] Type mismatch for key '{Key.Value}': " +
-                                 $"expected {typeof(TData).Name}, got {data?.GetType().Name}");
+                                 $"expected {typeof(TData).Name}, got {data?.GetType().Name}. " +
+                                 $"Conversion failed: {e.Message}");
+            }
         }
 
         #endregion
