@@ -106,6 +106,14 @@ namespace D_Dev.TweenAnimations
             _tweenPlayer.Pause();
         }
 
+        public void Stop()
+        {
+            if(_tweenPlayer == null)
+                return;
+            
+            _tweenPlayer.Kill();
+        }
+
         #endregion
 
         #region Listeners
