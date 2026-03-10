@@ -1,3 +1,4 @@
+using System.Linq;
 using D_Dev.ScriptableVaiables;
 using UnityEngine;
 
@@ -66,14 +67,14 @@ namespace D_Dev.PolymorphicValueSystem
     {
         #region Fields
 
-        [SerializeReference] private PolymorphicValue<string[]> _values = new StringArrayConstantValue();
+        [SerializeReference] private PolymorphicValue<string>[] _values;
 
         #endregion
         
         #region Properties
         public override string Value
         {
-            get => string.Concat(_values.Value);
+            get => string.Concat(_values.Select(x => x.Value));
             set {}
         }
 
