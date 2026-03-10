@@ -46,8 +46,6 @@ namespace D_Dev.PolymorphicValueSystem
         }
 
         #endregion
-        
-        
     }
 
     [System.Serializable]
@@ -58,6 +56,30 @@ namespace D_Dev.PolymorphicValueSystem
         public override PolymorphicValue<string> Clone()
         {
             return new StringScriptableVariableValue { _variable = _variable };
+        }
+
+        #endregion
+    }
+
+    [System.Serializable]
+    public sealed class StringConcatValue : StringValue
+    {
+        #region Fields
+
+        [SerializeReference] private PolymorphicValue<string[]> _values = new StringArrayConstantValue();
+
+        #endregion
+        
+        #region Properties
+        public override string Value
+        {
+            get => string.Concat(_values.Value);
+            set {}
+        }
+
+        public override PolymorphicValue<string> Clone()
+        {
+            return new StringConcatValue() { Value = Value };
         }
 
         #endregion
