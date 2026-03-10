@@ -1,5 +1,5 @@
 {
-    "name": "D-Dev.SaveSystemService",
+    "name": "D-Dev.SaveSystem.Extensions",
     "rootNamespace": "",
     "references": [
         "GUID:a947a454b8df3474d81c9577867188ff",

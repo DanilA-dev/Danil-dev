@@ -1,10 +1,11 @@
 {
-    "name": "D-Dev.PolymorphicValueSystem.Extensions",
+    "name": "D-Dev.SaveSystem.SaveableData",
     "rootNamespace": "",
     "references": [
-        "D-Dev.PolymorphicValueSystem",
-        "D-Dev.Base",
-        "D-Dev.SaveSystem.SaveableData"
+        "GUID:01190eca76617ac469f1fc00df21c641",
+        "GUID:503706f3a4f20a84e9d03c39b73461cb",
+        "GUID:ba7d088f93a8e1649b9edc0955fab802",
+        "GUID:a947a454b8df3474d81c9577867188ff"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
