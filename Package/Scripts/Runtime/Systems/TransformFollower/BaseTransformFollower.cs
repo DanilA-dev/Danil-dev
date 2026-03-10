@@ -120,7 +120,7 @@ namespace D_Dev.TransformFollower
             Vector3 direction = _targetPosition - _follower.Value.position;
             Vector3 filteredDirection = FilterAxis(direction, _follower.Value.forward, _rotAxisUpdate);
             filteredDirection = Vector3.Scale(filteredDirection, _rotationMultiplier);
-            _rotationHandler.RotateTowards(filteredDirection, _rotationSpeed, false);
+            _rotationHandler?.RotateTowards(filteredDirection, _rotationSpeed, false);
 
             if (_updateRotationOnceOnStart)
                 _rotationUpdatedOnce = true;
