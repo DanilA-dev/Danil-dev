@@ -23,7 +23,12 @@ namespace D_Dev.AudioSystem
 
         [SerializeField] private StringScriptableVariable _audioConfigName;
         [SerializeField] private AudioMixerGroup _soundMixerGroup;
-        [Space]
+
+        [Space] [Title("Base")] 
+        [SerializeField] private bool _routeThroughManager;
+        [ShowIf(nameof(_routeThroughManager))]
+        [Range(0.1f, 10f)]
+        [SerializeField] private float _priority = 1f;
         [Title("Clips")]
         [HideIf(nameof(_isRandomClip))]
         [SerializeField] private AudioClip _clip;
@@ -54,6 +59,7 @@ namespace D_Dev.AudioSystem
         [SerializeField] private double _scheduledTime;
         [SerializeField] private bool _playOnAwake;
         [SerializeField] private bool _isLooping;
+        
 
         #endregion
 
@@ -177,6 +183,18 @@ namespace D_Dev.AudioSystem
         {
             get => _delayType;
             set => _delayType = value;
+        }
+        
+        public bool RouteThroughManager
+        {
+            get => _routeThroughManager;
+            set => _routeThroughManager = value;
+        }
+
+        public float Priority
+        {
+            get => _priority;
+            set => _priority = value;
         }
 
         #endregion

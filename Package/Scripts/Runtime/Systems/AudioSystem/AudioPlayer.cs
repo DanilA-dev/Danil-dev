@@ -103,6 +103,12 @@ namespace D_Dev.AudioSystem
         {
             if(audioConfig == null)
                 return;
+
+            if (audioConfig.RouteThroughManager && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.RequestSound(audioConfig, transform.position);
+                return;
+            }
             
             audioConfig.SetAudioSource(ref _audioSource);
             _lastAudioConfig = audioConfig;
@@ -126,7 +132,13 @@ namespace D_Dev.AudioSystem
         {
             if(audioConfig == null)
                 return;
-            
+
+            if (audioConfig.RouteThroughManager && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.RequestSound(audioConfig, transform.position);
+                return;
+            }
+
             audioConfig.SetAudioSource(ref _audioSource);
             _lastAudioConfig = audioConfig;
             _audioSource.PlayOneShot(audioConfig.GetClip());
