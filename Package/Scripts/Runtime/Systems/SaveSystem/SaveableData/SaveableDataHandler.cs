@@ -97,17 +97,17 @@ namespace D_Dev.SaveSystem.SaveableData
             if (GlobalSaveService.Instance == null)
                 return;
             
-            GlobalSaveService.Instance.Save(data.Key.Value, data.GetSaveData());
+            GlobalSaveService.Instance.SaveAsync(data.Key.Value, data.GetSaveData());
             if (_debug)
                 Debug.Log($"[SaveableDataHandler] Save {data.Key.Value}");
         }
 
-        private void Load(BaseSaveableData data)
+        private async void Load(BaseSaveableData data)
         {
             if (GlobalSaveService.Instance == null)
                 return;
             
-            var loaded = GlobalSaveService.Instance.Load<object>(data.Key.Value, data.GetDefaultValue());
+            var loaded = await GlobalSaveService.Instance.LoadAsync<object>(data.Key.Value, data.GetDefaultValue());
             
             if (loaded != null)
                 data.SetSaveData(loaded);
@@ -129,10 +129,9 @@ namespace D_Dev.SaveSystem.SaveableData
             }
             
             if(Application.isPlaying)
-                GlobalSaveService.Instance.DeleteKey(key);
+                GlobalSaveService.Instance.DeleteKeyAsync(key);
         }
 
         #endregion
-
     }
 }
