@@ -26,9 +26,8 @@ namespace D_Dev.AudioSystem
 
         [Space] [Title("Base")] 
         [SerializeField] private bool _routeThroughManager;
-        [ShowIf(nameof(_routeThroughManager))]
-        [Range(0.1f, 10f)]
-        [SerializeField] private float _priority = 1f;
+        [Range(1f, 10f)]
+        [SerializeField] private int _priority = 1;
         [Title("Clips")]
         [HideIf(nameof(_isRandomClip))]
         [SerializeField] private AudioClip _clip;
@@ -191,7 +190,7 @@ namespace D_Dev.AudioSystem
             set => _routeThroughManager = value;
         }
 
-        public float Priority
+        public int Priority
         {
             get => _priority;
             set => _priority = value;
@@ -206,6 +205,7 @@ namespace D_Dev.AudioSystem
             audioSource.clip = GetClip();
             audioSource.volume = _isRandomVolume ? Random.Range(_minVolume, _maxVolume) : _volume;
             audioSource.pitch = _isRandomPitch ? Random.Range(_minPitch, _maxPitch) : _pitch;
+            audioSource.priority = _priority;
             audioSource.loop = _isLooping;
             audioSource.playOnAwake = _playOnAwake;
             audioSource.outputAudioMixerGroup = _soundMixerGroup;
