@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System.Collections;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
@@ -9,7 +10,7 @@ namespace D_Dev.LocalizationSystem
     {
         #region Fields
 
-        private const string DefaultLocaleCode = "en";
+        private const string DEFAULT_LOCALE_CODE = "en";
 
         [SerializeField] private bool _autoAssignLocale;
         [ShowIf(nameof(_autoAssignLocale))]
@@ -22,7 +23,7 @@ namespace D_Dev.LocalizationSystem
         private void Awake()
         {
             if (_autoAssignLocale)
-                TryAssignAutoLocale();
+                StartCoroutine(InitializeAndAssignLocale());
         }
 
         #endregion
@@ -49,7 +50,17 @@ namespace D_Dev.LocalizationSystem
 
         private static Locale GetDefaultLocale()
         {
-            return LocalizationSettings.AvailableLocales.GetLocale(DefaultLocaleCode);
+            return LocalizationSettings.AvailableLocales.GetLocale(DEFAULT_LOCALE_CODE);
+        }
+
+        #endregion
+
+        #region Coroutine
+
+        private IEnumerator InitializeAndAssignLocale()
+        {
+            yield return LocalizationSettings.InitializationOperation;
+            TryAssignAutoLocale();
         }
 
         #endregion
