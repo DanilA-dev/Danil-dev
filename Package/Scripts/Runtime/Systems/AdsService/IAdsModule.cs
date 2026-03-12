@@ -6,6 +6,7 @@ namespace D_Dev.AdsService
     {
         public bool IsInitialized { get; }
         public void Initialize();
+        public void Dispose();
         public void ShowBannerAd(Action<bool> callback);
         public void ShowInterstitialAd(Action<bool> callback);
         public void ShowRewardedAd(Action<bool> callback);

@@ -61,6 +61,9 @@ namespace D_Dev.AdsService
         
             foreach (var module in _adsModules)
             {
+                if(module == null)
+                    continue;
+                
                 if (module.IsInitialized)
                 {
                     module.ShowBannerAd((adShown) => {
@@ -86,6 +89,9 @@ namespace D_Dev.AdsService
 
             foreach (var module in _adsModules)
             {
+                if(module == null)
+                    continue;
+                
                 if (module.IsInitialized)
                 {
                     module.ShowInterstitialAd(callback);
@@ -109,6 +115,9 @@ namespace D_Dev.AdsService
 
             foreach (var module in _adsModules)
             {
+                if(module == null)
+                    continue;
+                
                 if (module.IsInitialized)
                 {
                     module.ShowRewardedAd(callback);
@@ -127,12 +136,26 @@ namespace D_Dev.AdsService
         {
             foreach (var module in _adsModules)
             {
+                if(module == null)
+                    continue;
+                
                 module.Initialize();
                 Debug.Log($"[AdsModule] Initialized module {module.GetType().Name}");
             }
             
             if(_loadAllTypesOnStart)
                 LoadAllAdTypes();
+        }
+
+        private void DisposeAdsModules()
+        {
+            foreach (var module in _adsModules)
+            {
+                if(module == null)
+                    continue;
+                
+                module.Dispose();
+            }
         }
         #endregion
     }
