@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using D_Dev.Singleton;
 using UnityEngine;
 
 namespace D_Dev.AdsService
@@ -15,7 +16,7 @@ namespace D_Dev.AdsService
 
     #endregion
     
-    public class AdsService : MonoBehaviour
+    public class AdsService : BaseSingleton<AdsService>
     {
         #region Fields
 
@@ -34,6 +35,7 @@ namespace D_Dev.AdsService
         #region Monobehaviour
 
         private void Start() => InitializeAdsModules();
+        private void OnDestroy() => DisposeAdsModules();
 
         #endregion
 
