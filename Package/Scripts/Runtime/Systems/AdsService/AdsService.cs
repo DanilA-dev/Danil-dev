@@ -36,9 +36,9 @@ namespace D_Dev.AdsService
 
         private Dictionary<AdType, bool> _adTypes = new Dictionary<AdType, bool>
         {
-            { AdType.Banner, true },
-            { AdType.Interstitial, true },
-            { AdType.Rewarded, true }
+            { AdType.Banner, false },
+            { AdType.Interstitial, false },
+            { AdType.Rewarded, false }
         };
 
         #endregion
