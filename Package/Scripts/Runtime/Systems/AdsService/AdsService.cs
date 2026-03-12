@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using D_Dev.Singleton;
 using UnityEngine;
 
@@ -47,10 +48,9 @@ namespace D_Dev.AdsService
         
         public void LoadAllAdTypes()
         {
-            foreach (var (adType, isLoaded) in _adTypes)
+            foreach (var adType in _adTypes.Keys.ToList())
                 SetAdTypeLoadState(adType, true);
         }
-
 
         public void ShowBanner(Action<bool> callback)
         {
@@ -134,14 +134,14 @@ namespace D_Dev.AdsService
         #endregion
 
         #region Private
-        private void InitializeAdsModules()
+        private async void InitializeAdsModules()
         {
             foreach (var module in _adsModules)
             {
                 if(module == null)
                     continue;
                 
-                module.Initialize();
+                await module.Initialize();
                 Debug.Log($"[AdsModule] Initialized module {module.GetType().Name}");
             }
             
