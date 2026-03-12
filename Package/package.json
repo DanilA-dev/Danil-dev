@@ -6,7 +6,8 @@
   {
     "com.unity.inputsystem": "1.7.0",
     "com.unity.cinemachine":  "2.10.3",
-    "com.unity.addressables": "2.7.6"
+    "com.unity.addressables": "2.7.6",
+    "com.unity.localization": "1.5.9"
   }
 }
 
