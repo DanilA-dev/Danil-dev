@@ -15,10 +15,20 @@ namespace D_Dev.AdsService
         Rewarded
     }
 
+    public enum AdResult
+    {
+        Shown, 
+        Rewarded,  
+        Skipped,    
+        Failed,     
+        NotSupported
+    }
+
     #endregion
     
     public class AdsService : BaseSingleton<AdsService>
     {
+        
         #region Fields
 
         [SerializeField] private bool _loadAllTypesOnStart = true;
@@ -52,12 +62,12 @@ namespace D_Dev.AdsService
                 SetAdTypeLoadState(adType, true);
         }
 
-        public void ShowBanner(Action<bool> callback)
+        public void ShowBanner(Action<AdResult> callback)
         {
             if (!_adTypes[AdType.Banner])
             {
                 Debug.Log("[AdsService] Banner ad is not loaded");
-                callback?.Invoke(false);
+                callback?.Invoke(AdResult.Failed);
                 return;
             }
         
@@ -68,69 +78,70 @@ namespace D_Dev.AdsService
                 
                 if (module.IsInitialized)
                 {
-                    module.ShowBannerAd((adShown) => {
-                        Debug.Log("[AdsService] " + module.GetType().Name + " banner ad shown: " + adShown);
-                        callback?.Invoke(adShown);
+                    module.ShowBannerAd((result) => {
+                        Debug.Log("[AdsService] " + module.GetType().Name + " banner ad result: " + result);
+                        callback?.Invoke(result);
                     });
                     return;
                 }
             }
         
             Debug.Log("[AdsService] No banner ad modules are initialized");
-            callback?.Invoke(false);
+            callback?.Invoke(AdResult.Failed);
         }
 
-        public void ShowInterstitial(Action<bool> callback)
+        public void ShowInterstitial(Action<AdResult> callback)
         {
             if (!_adTypes[AdType.Interstitial])
             {
                 Debug.Log("[AdsService] Interstitial ad is not loaded");
-                callback?.Invoke(false);
+                callback?.Invoke(AdResult.Failed);
                 return;
             }
-
+ 
             foreach (var module in _adsModules)
             {
-                if(module == null)
-                    continue;
-                
+                if (module == null) continue;
                 if (module.IsInitialized)
                 {
-                    module.ShowInterstitialAd(callback);
-                    Debug.Log("[AdsService] " + module.GetType().Name + " interstitial ad shown: true");
+                    module.ShowInterstitialAd((result) => {
+                        Debug.Log($"[AdsService] {module.GetType().Name} interstitial ad result: {result}");
+                        callback?.Invoke(result);
+                    });
                     return;
                 }
             }
-
+ 
             Debug.Log("[AdsService] No interstitial ad modules are initialized");
-            callback?.Invoke(false);
+            callback?.Invoke(AdResult.Failed);
         }
 
-        public void ShowRewarded(Action<bool> callback)
+        public void ShowRewarded(Action<AdResult> callback)
         {
             if (!_adTypes[AdType.Rewarded])
             {
                 Debug.Log("[AdsService] Rewarded ad is not loaded");
-                callback?.Invoke(false);
+                callback?.Invoke(AdResult.Failed);
                 return;
             }
-
+ 
             foreach (var module in _adsModules)
             {
-                if(module == null)
-                    continue;
-                
+                if (module == null) continue;
                 if (module.IsInitialized)
                 {
-                    module.ShowRewardedAd(callback);
-                    Debug.Log("[AdsService] " + module.GetType().Name + " rewarded ad shown: true");
+                    module.ShowRewardedAd((result) => {
+                        Debug.Log($"[AdsService] {module.GetType().Name} rewarded ad result: {result}");
+                        callback?.Invoke(result);
+                    });
                     return;
                 }
             }
-
+ 
             Debug.Log("[AdsService] No rewarded ad modules are initialized");
-            callback?.Invoke(false);
+            callback?.Invoke(AdResult.Failed);
         }
+        
         #endregion
 
         #region Private
