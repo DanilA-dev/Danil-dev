@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 
@@ -11,6 +12,7 @@ namespace D_Dev.LocalizationSystem
         private const string DefaultLocaleCode = "en";
 
         [SerializeField] private bool _autoAssignLocale;
+        [ShowIf(nameof(_autoAssignLocale))]
         [SerializeReference] private ILocaleAutoAssigner _localeAutoAssigner;
 
         #endregion
