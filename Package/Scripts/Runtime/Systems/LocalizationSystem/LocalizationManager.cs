@@ -14,15 +14,17 @@ namespace D_Dev.LocalizationSystem
 
         [SerializeField] private bool _autoAssignLocale;
         [ShowIf(nameof(_autoAssignLocale))]
+        [SerializeField] private bool _assingOnStart;
+        [ShowIf(nameof(_autoAssignLocale))]
         [SerializeReference] private ILocaleAutoAssigner _localeAutoAssigner;
 
         #endregion
 
         #region MonoBehaviour
 
-        private void Awake()
+        private void Start()
         {
-            if (_autoAssignLocale)
+            if (_assingOnStart && _autoAssignLocale)
                 StartCoroutine(InitializeAndAssignLocale());
         }
 
@@ -35,12 +37,8 @@ namespace D_Dev.LocalizationSystem
             if (locale != null)
                 LocalizationSettings.SelectedLocale = locale;
         }
-
-        #endregion
-
-        #region Private
-
-        private void TryAssignAutoLocale()
+        
+        public void TryAssignAutoLocale()
         {
             Locale locale = _localeAutoAssigner?.GetLocale() ?? GetDefaultLocale();
             
@@ -48,12 +46,13 @@ namespace D_Dev.LocalizationSystem
                 LocalizationSettings.SelectedLocale = locale;
         }
 
-        private static Locale GetDefaultLocale()
+        public static Locale GetDefaultLocale()
         {
             return LocalizationSettings.AvailableLocales.GetLocale(DEFAULT_LOCALE_CODE);
         }
 
         #endregion
+
 
         #region Coroutine
 
