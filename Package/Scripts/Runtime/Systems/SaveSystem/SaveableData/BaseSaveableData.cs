@@ -44,8 +44,8 @@ namespace D_Dev.SaveSystem.SaveableData
 
         #region Public
 
-        public abstract object GetSaveData();
-        public abstract void SetSaveData(object data);
+        public abstract object SaveData();
+        public abstract void LoadData(object data);
         public abstract object GetDefaultValue();
 
         #endregion
@@ -65,21 +65,21 @@ namespace D_Dev.SaveSystem.SaveableData
         
         #region Overrides
 
-        public override object GetSaveData()
+        public override object SaveData()
         {
             var saveData = GetTypedSaveData();
-            OnLoadData?.Invoke(saveData);
+            OnSaveData?.Invoke(saveData);
             return saveData;
         }
 
         public override object GetDefaultValue() => GetTypedDefaultValue();
 
-        public override void SetSaveData(object data)
+        public override void LoadData(object data)
         {
             if (data is TData typedData)
             {
                 SetTypedSaveData(typedData);
-                OnSaveData?.Invoke(typedData);
+                OnLoadData?.Invoke(typedData);
                 return;
             }
 
@@ -87,7 +87,7 @@ namespace D_Dev.SaveSystem.SaveableData
             {
                 var converted = (TData)Convert.ChangeType(data, typeof(TData));
                 SetTypedSaveData(converted);
-                OnSaveData?.Invoke(converted);
+                OnLoadData?.Invoke(converted);
             }
             catch (Exception e)
             {

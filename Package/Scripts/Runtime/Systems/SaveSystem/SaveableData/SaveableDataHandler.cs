@@ -97,7 +97,7 @@ namespace D_Dev.SaveSystem.SaveableData
             if (GlobalSaveService.Instance == null)
                 return;
             
-            GlobalSaveService.Instance.SaveAsync(data.Key.Value, data.GetSaveData());
+            GlobalSaveService.Instance.SaveAsync(data.Key.Value, data.SaveData());
             if (_debug)
                 Debug.Log($"[SaveableDataHandler] Save {data.Key.Value}");
         }
@@ -110,7 +110,7 @@ namespace D_Dev.SaveSystem.SaveableData
             var loaded = await GlobalSaveService.Instance.LoadAsync<object>(data.Key.Value, data.GetDefaultValue());
             
             if (loaded != null)
-                data.SetSaveData(loaded);
+                data.LoadData(loaded);
             
             if (_debug)
                 Debug.Log($"[SaveableDataHandler] Load {data.Key.Value}");
