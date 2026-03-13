@@ -2,6 +2,7 @@
 using D_Dev.PolymorphicValueSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace D_Dev.SaveSystem.SaveableData
 {
@@ -53,9 +54,24 @@ namespace D_Dev.SaveSystem.SaveableData
     [Serializable]
     public abstract class BaseSaveableData<TData> : BaseSaveableData
     {
+        #region Fields
+
+        [FoldoutGroup("Events"), PropertyOrder(100)]
+        public UnityEvent<TData> OnSaveData;
+        [FoldoutGroup("Events"), PropertyOrder(100)]
+        public UnityEvent<TData> OnLoadData;
+
+        #endregion
+        
         #region Overrides
 
-        public override object GetSaveData() => GetTypedSaveData();
+        public override object GetSaveData()
+        {
+            var saveData = GetTypedSaveData();
+            OnLoadData?.Invoke(saveData);
+            return saveData;
+        }
+
         public override object GetDefaultValue() => GetTypedDefaultValue();
 
         public override void SetSaveData(object data)
@@ -63,6 +79,7 @@ namespace D_Dev.SaveSystem.SaveableData
             if (data is TData typedData)
             {
                 SetTypedSaveData(typedData);
+                OnSaveData?.Invoke(typedData);
                 return;
             }
 
@@ -70,6 +87,7 @@ namespace D_Dev.SaveSystem.SaveableData
             {
                 var converted = (TData)Convert.ChangeType(data, typeof(TData));
                 SetTypedSaveData(converted);
+                OnSaveData?.Invoke(converted);
             }
             catch (Exception e)
             {
