@@ -3,11 +3,11 @@ using UnityEngine;
 namespace D_Dev.MovementHandler
 {
     [System.Serializable]
-    public class TransformMovementHandler : BaseMovementHandler
+    public class CharacterControllerMovementHandler : BaseMovementHandler
     {
         #region Fields
 
-        [SerializeField] private Transform _targetTransform;
+        [SerializeField] private CharacterController _characterController;
         private Vector3 _currentVelocity;
 
         #endregion
@@ -16,7 +16,7 @@ namespace D_Dev.MovementHandler
 
         public override void OnUpdate()
         {
-            if (_targetTransform == null)
+            if (_characterController == null)
                 return;
 
             if (Direction.magnitude > 0.1f)
@@ -26,11 +26,9 @@ namespace D_Dev.MovementHandler
                     _currentVelocity = Vector3.ClampMagnitude(_currentVelocity, MaxVelocity);
             }
             else
-            {
                 _currentVelocity = Vector3.Lerp(_currentVelocity, Vector3.zero, Time.deltaTime * Acceleration);
-            }
 
-            _targetTransform.position += _currentVelocity * Time.deltaTime;
+            _characterController.Move(_currentVelocity * Time.deltaTime);
         }
 
         public override void StopMovement()
