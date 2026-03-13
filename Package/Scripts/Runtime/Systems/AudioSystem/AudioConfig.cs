@@ -13,6 +13,12 @@ namespace D_Dev.AudioSystem
         SimpleDelay = 1,
         ScheduledDelay = 2,
     }
+    
+    public enum MixerGroupType
+    {
+        SFX = 0,
+        Music = 1
+    }
 
     #endregion
     

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using D_Dev.Singleton;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace D_Dev.AudioSystem
@@ -7,7 +9,7 @@ namespace D_Dev.AudioSystem
     public class AudioManager : BaseSingleton<AudioManager>
     {
         #region Classes
-
+        
         private struct SoundRequest
         {
             public AudioClip Clip;
@@ -19,7 +21,10 @@ namespace D_Dev.AudioSystem
         
         #region Fields
 
-        [Header("Optimizations")]
+        [Title("Audio Mixer Groups")]
+        [SerializeField] private AudioMixerGroupVolumeConfig[] _mixerGroupVolumeConfigs;
+        
+        [Title("Optimizations")]
         [SerializeField] private int maxSimultaneousSFX = 10;
         [SerializeField] private int poolSize = 14;
         [SerializeField] private float cullDistance = 30f;
@@ -73,6 +78,29 @@ namespace D_Dev.AudioSystem
 
         #region Public
 
+        public void SetVolume(MixerGroupType type, float value)
+        {
+            var config = _mixerGroupVolumeConfigs.FirstOrDefault(x => x.Type == type);
+            config?.SetVolume(value);
+        }
+
+        public AudioMixerGroupVolumeConfig GetMixerGroup(MixerGroupType type)
+        {
+            return _mixerGroupVolumeConfigs.FirstOrDefault(x => x.Type == type);
+        }
+
+        public void SetMusicVolume(float value)
+        {
+            var config = _mixerGroupVolumeConfigs.FirstOrDefault(x => x.Type == MixerGroupType.Music);
+            config?.SetVolume(value);
+        }
+        
+        public void SetSFXVolume(float value)
+        {
+            var config = _mixerGroupVolumeConfigs.FirstOrDefault(x => x.Type == MixerGroupType.SFX);
+            config?.SetVolume(value);
+        }
+        
         public void RequestSound(AudioConfig config, Vector3 worldPos)
         {
             if (config == null)
