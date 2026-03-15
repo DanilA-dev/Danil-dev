@@ -46,7 +46,7 @@ namespace D_Dev.MenuHandler
 
         #region Public
 
-        public void CreateMenus()
+        public async void CreateMenus()
         {
             if (_menuInfos.Count <= 0)
             {
@@ -56,7 +56,7 @@ namespace D_Dev.MenuHandler
 
             foreach (var menuInfo in _menuInfos)
             {
-                var newMenu = CreateMenu(menuInfo);
+                var newMenu = await CreateMenu(menuInfo);
                 if(menuInfo.OpenOnCreate)
                     newMenu.Open();
                 
@@ -64,13 +64,13 @@ namespace D_Dev.MenuHandler
             }
         }
 
-        public void OpenMenu(MenuInfo menuInfo)
+        public async void OpenMenu(MenuInfo menuInfo)
         {
             if(_createdMenus.TryGetValue(menuInfo, out var menu))
                 menu.Open();
             else
             {
-                var newMenu = CreateMenu(menuInfo);
+                var newMenu = await CreateMenu(menuInfo);
                 _createdMenus.TryAdd(menuInfo,newMenu);
                 newMenu.Open();
             }
@@ -137,13 +137,13 @@ namespace D_Dev.MenuHandler
 
         #region Private
 
-        private BaseMenu CreateMenu(MenuInfo menuInfo)
+        private async UniTask<BaseMenu> CreateMenu(MenuInfo menuInfo)
         {
             var menuParent = menuInfo.Canvas == 
                              MenuInfo.CanvasType.Overlay ? _overlayCanvas : _cameraCanvas;
-            var newMenu = Instantiate(menuInfo.MenuPrefab, menuParent);
+            var newMenu  = await menuInfo.MenuPrefab.InstantiateAsync(menuParent);
             newMenu.gameObject.SetActive(false);
-            return newMenu;
+            return newMenu.GetComponent<BaseMenu>();
         }
 
         #endregion
