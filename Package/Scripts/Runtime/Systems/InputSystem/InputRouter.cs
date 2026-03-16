@@ -14,11 +14,11 @@ namespace D_Dev.InputSystem
         
         public event Action<Vector2> Move;
         public event Action<Vector2> Look;
-        public event Action<bool> JumpPressed;
-        public event Action<bool> SprintPressed;
-        public event Action<bool> CrouchPressed;
+        public event Action<bool> SpacePressed;
+        public event Action<bool> ShiftPressed;
+        public event Action<bool> CtrlPressed;
         public event Action<bool> EscPressed;
-        public event Action<bool> InteractPressed;
+        public event Action<bool> EPressed;
         public event Action<bool> RmbPressed;
         public event Action<bool> LmbPressed;
 
@@ -77,10 +77,10 @@ namespace D_Dev.InputSystem
             switch (context.phase)
             {
                 case InputActionPhase.Started:
-                    InteractPressed?.Invoke(true);
+                    EPressed?.Invoke(true);
                     break;
                 case InputActionPhase.Canceled:
-                    InteractPressed?.Invoke(false);
+                    EPressed?.Invoke(false);
                     break;
             }
         }
@@ -88,7 +88,7 @@ namespace D_Dev.InputSystem
         public void OnSprint(InputAction.CallbackContext context)
         {
             bool isPressed = context.ReadValueAsButton();
-            SprintPressed?.Invoke(isPressed);
+            ShiftPressed?.Invoke(isPressed);
         }
 
         public void OnCrouch(InputAction.CallbackContext context)
@@ -96,10 +96,10 @@ namespace D_Dev.InputSystem
             switch (context.phase)
             {
                 case InputActionPhase.Started:
-                    CrouchPressed?.Invoke(true);
+                    CtrlPressed?.Invoke(true);
                     break;
                 case InputActionPhase.Canceled:
-                    CrouchPressed?.Invoke(false);
+                    CtrlPressed?.Invoke(false);
                     break;
             }
         }
@@ -109,10 +109,10 @@ namespace D_Dev.InputSystem
             switch (context.phase)
             {
                 case InputActionPhase.Started:
-                    JumpPressed?.Invoke(true);
+                    SpacePressed?.Invoke(true);
                     break;
                 case InputActionPhase.Canceled:
-                    JumpPressed?.Invoke(false);
+                    SpacePressed?.Invoke(false);
                     break;
             }
         }
