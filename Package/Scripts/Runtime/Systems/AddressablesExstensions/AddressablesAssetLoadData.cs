@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
-using System.Threading;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.AddressableAssets;
@@ -25,8 +24,7 @@ namespace D_Dev.AddressablesExstensions
         [SerializeField] protected AssetReference _assetReference;
 
         protected AsyncOperationHandle<T>? _loadHandle;
-
-        private UniTask<T>? _pendingLoad;
+        protected bool _isLoaded = false;
 
         #endregion
 
@@ -40,50 +38,38 @@ namespace D_Dev.AddressablesExstensions
 
         #region Public
 
-        public UniTask<T> LoadAsync(CancellationToken cancellationToken = default)
+        public async UniTask<T> LoadAsync()
         {
             if (!_makeAddressable)
-                return UniTask.FromResult(_asset);
+                return _asset;
 
-            if (_loadHandle.HasValue && _loadHandle.Value.IsValid())
-                return UniTask.FromResult(_loadHandle.Value.Result);
-
-            if (_pendingLoad.HasValue)
-                return _pendingLoad.Value.AttachExternalCancellation(cancellationToken);
-
-            _pendingLoad = LoadInternalAsync(cancellationToken);
-            return _pendingLoad.Value.AttachExternalCancellation(cancellationToken);
-        }
-
-        public virtual void Release()
-        {
-            _pendingLoad = null;
-
-            if (_loadHandle.HasValue && _loadHandle.Value.IsValid())
-            {
-                Addressables.Release(_loadHandle.Value);
-                _loadHandle = null;
-            }
-        }
-
-        #endregion
-
-        #region Private
-
-        private async UniTask<T> LoadInternalAsync(CancellationToken cancellationToken)
-        {
             if (_assetReference == null)
             {
                 Debug.LogError($"AssetReference not set for {typeof(T)}");
                 return null;
             }
 
-            _loadHandle = _assetReference.LoadAssetAsync<T>();
-            await _loadHandle.Value.ToUniTask(cancellationToken: cancellationToken);
+            if (_loadHandle.HasValue && _loadHandle.Value.IsValid())
+                return _loadHandle.Value.Result;
 
-            _pendingLoad = null;
+            _loadHandle = _assetReference.LoadAssetAsync<T>();
+            await _loadHandle.Value.ToUniTask();
+
             return _loadHandle.Value.Result;
         }
+
+        public virtual void Release()
+        {
+            if (_loadHandle.HasValue && _loadHandle.Value.IsValid())
+            {
+                Addressables.Release(_loadHandle.Value);
+                _loadHandle = null;
+            }
+        }
+        
+        #endregion
+
+        #region Private
 
         private void OnUseAddressablesChanged()
         {
@@ -95,10 +81,14 @@ namespace D_Dev.AddressablesExstensions
                     var settings = AddressableAssetSettingsDefaultObject.Settings;
                     string assetPath = AssetDatabase.GetAssetPath(_asset);
                     string guid = AssetDatabase.AssetPathToGUID(assetPath);
-                    if (settings != null && settings.FindAssetEntry(guid) == null)
+                    if (settings != null)
                     {
-                        settings.CreateOrMoveEntry(guid, settings.DefaultGroup);
-                        AssetDatabase.SaveAssets();
+                        
+                        if (settings.FindAssetEntry(guid) == null)
+                        {
+                            settings.CreateOrMoveEntry(guid, settings.DefaultGroup);
+                            AssetDatabase.SaveAssets();
+                        }
                     }
                     _assetReference = new AssetReference(guid);
                     _asset = null;
@@ -109,7 +99,7 @@ namespace D_Dev.AddressablesExstensions
                 if (_assetReference != null && _assetReference.RuntimeKeyIsValid())
                 {
                     string assetPath = AssetDatabase.GUIDToAssetPath(_assetReference.AssetGUID);
-                    _asset = (T)AssetDatabase.LoadAssetAtPath(assetPath, typeof(T));
+                    _asset = (T) AssetDatabase.LoadAssetAtPath(assetPath, typeof(T));
                     _assetReference = null;
                 }
             }
@@ -120,7 +110,7 @@ namespace D_Dev.AddressablesExstensions
 
         #region Protected
 
-        protected virtual void OnAssetFieldUpdate() { }
+        protected virtual void OnAssetFieldUpdate() {}
 
         #endregion
     }
