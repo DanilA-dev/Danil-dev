@@ -105,7 +105,8 @@ namespace D_Dev.AudioSystem
             config?.SetVolume(value);
         }
 
-        public void ToggleAudioListener(bool enable) => AudioListener.volume = enable ? 1f : 0f;
+        public void SetAudioListenerVolume(float volume01) => AudioListener.volume = volume01;
+        public float GetAudioListenerVolume() => AudioListener.volume;
 
         public void RequestSound(AudioConfig config, Vector3 worldPos)
         {
