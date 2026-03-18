@@ -4,6 +4,7 @@ using System.Linq;
 using D_Dev.Singleton;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace D_Dev.AudioSystem
 {
@@ -31,6 +32,9 @@ namespace D_Dev.AudioSystem
         [SerializeField] private int poolSize = 14;
         [SerializeField] private float cullDistance = 30f;
         [SerializeField] private float throttleTime = 0.05f;
+
+        [FoldoutGroup("Events")] 
+        [SerializeField] private UnityEvent<float> _onAudioListenerVolumeChange;
 
         private List<SoundRequest> _requests = new(64);
         private Dictionary<AudioClip, float> _lastPlayed = new();
@@ -105,7 +109,12 @@ namespace D_Dev.AudioSystem
             config?.SetVolume(value);
         }
 
-        public void SetAudioListenerVolume(float volume01) => AudioListener.volume = volume01;
+        public void SetAudioListenerVolume(float volume01)
+        {
+            AudioListener.volume = volume01;
+            _onAudioListenerVolumeChange?.Invoke(volume01);
+        }
+
         public float GetAudioListenerVolume() => AudioListener.volume;
 
         public void RequestSound(AudioConfig config, Vector3 worldPos)
