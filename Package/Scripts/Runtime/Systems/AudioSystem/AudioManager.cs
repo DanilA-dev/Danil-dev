@@ -15,6 +15,7 @@ namespace D_Dev.AudioSystem
             public AudioClip Clip;
             public AudioConfig Config;
             public float Priority;
+            public Vector3 WorldPos;
         }
 
         #endregion
@@ -67,7 +68,7 @@ namespace D_Dev.AudioSystem
                     continue;
 
                 _lastPlayed[req.Clip] = now;
-                PlayFromPool(req.Config);
+                PlayFromPool(req.Config, req.WorldPos);
                 played++;
             }
 
@@ -112,20 +113,26 @@ namespace D_Dev.AudioSystem
 
             float priority = config.Priority;
 
-            if (_mainCamera != null)
+            if (_mainCamera != null && config.SpatialBlend > 0f)
             {
                 float dist = Vector3.Distance(worldPos, _mainCamera.transform.position);
                 if (dist > cullDistance) return;
                 priority /= 1f + dist * 0.1f;
             }
 
-            _requests.Add(new SoundRequest { Clip = clip, Config = config, Priority = priority });
+            _requests.Add(new SoundRequest
+            {
+                Clip = clip,
+                Config = config,
+                Priority = priority,
+                WorldPos = worldPos
+            });
         }
         #endregion
 
         #region Private
 
-        private void PlayFromPool(AudioConfig config)
+        private void PlayFromPool(AudioConfig config, Vector3 worldPos)
         {
             AudioSource src = null;
             for (int i = 0; i < _pool.Length; i++)
@@ -138,6 +145,7 @@ namespace D_Dev.AudioSystem
             _poolIdx = (_poolIdx + 1) % _pool.Length;
 
             config.SetAudioSource(ref src);
+            src.transform.position = worldPos;
             src.Play();
         }
 

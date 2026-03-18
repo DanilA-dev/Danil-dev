@@ -43,8 +43,9 @@ namespace D_Dev.AudioSystem
         [Title("Audio Settings")]
         [HideIf(nameof(_isRandomVolume))]
         [Range(0, 1),SerializeField] private float _volume;
-        [HideIf(nameof(_isRandomPitch))]
-        [SerializeField] private float _pitch;
+
+        [HideIf(nameof(_isRandomPitch))] 
+        [SerializeField] private float _pitch = 1;
         [SerializeField] private bool _isRandomVolume;
         [SerializeField] private bool _isRandomPitch;
         [ShowIf(nameof(_isRandomVolume))]
@@ -64,7 +65,6 @@ namespace D_Dev.AudioSystem
         [SerializeField] private double _scheduledTime;
         [SerializeField] private bool _playOnAwake;
         [SerializeField] private bool _isLooping;
-        
 
         #endregion
 
@@ -215,6 +215,7 @@ namespace D_Dev.AudioSystem
             audioSource.loop = _isLooping;
             audioSource.playOnAwake = _playOnAwake;
             audioSource.outputAudioMixerGroup = _soundMixerGroup;
+            audioSource.spatialBlend = _spatialBlend;
         }
 
         public AudioClip GetClip() => _isRandomClip ? _clips[Random.Range(0, _clips.Length)] : _clip;
