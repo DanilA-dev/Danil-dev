@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using D_Dev.Singleton;
@@ -9,7 +10,7 @@ namespace D_Dev.AudioSystem
     public class AudioManager : BaseSingleton<AudioManager>
     {
         #region Classes
-        
+
         private struct SoundRequest
         {
             public AudioClip Clip;
@@ -19,12 +20,12 @@ namespace D_Dev.AudioSystem
         }
 
         #endregion
-        
+
         #region Fields
 
         [Title("Audio Mixer Groups")]
         [SerializeField] private AudioMixerGroupVolumeConfig[] _mixerGroupVolumeConfigs;
-        
+
         [Title("Optimizations")]
         [SerializeField] private int maxSimultaneousSFX = 10;
         [SerializeField] private int poolSize = 14;
@@ -33,11 +34,13 @@ namespace D_Dev.AudioSystem
 
         private List<SoundRequest> _requests = new(64);
         private Dictionary<AudioClip, float> _lastPlayed = new();
-        
+
+        private Dictionary<AudioConfig, AudioSource> _activeSources = new();
+
         private AudioSource[] _pool;
         private Camera _mainCamera;
         private int _poolIdx;
-            
+
         #endregion
 
         #region Monobehaviour
@@ -74,7 +77,7 @@ namespace D_Dev.AudioSystem
 
             _requests.Clear();
         }
-        
+
         #endregion
 
         #region Public
@@ -95,13 +98,13 @@ namespace D_Dev.AudioSystem
             var config = _mixerGroupVolumeConfigs.FirstOrDefault(x => x.Type == MixerGroupType.Music);
             config?.SetVolume(value);
         }
-        
+
         public void SetSFXVolume(float value)
         {
             var config = _mixerGroupVolumeConfigs.FirstOrDefault(x => x.Type == MixerGroupType.SFX);
             config?.SetVolume(value);
         }
-        
+
         public void RequestSound(AudioConfig config, Vector3 worldPos)
         {
             if (config == null)
@@ -120,14 +123,24 @@ namespace D_Dev.AudioSystem
                 priority /= 1f + dist * 0.1f;
             }
 
-            _requests.Add(new SoundRequest
-            {
-                Clip = clip,
-                Config = config,
-                Priority = priority,
-                WorldPos = worldPos
-            });
+            _requests.Add(new SoundRequest { Clip = clip, Config = config, Priority = priority, WorldPos = worldPos });
         }
+
+        public void StopSound(AudioConfig config)
+        {
+            if (_activeSources.TryGetValue(config, out var src))
+            {
+                src.Stop();
+                _activeSources.Remove(config);
+            }
+        }
+
+        public void StopSoundWithFade(AudioConfig config)
+        {
+            if (_activeSources.TryGetValue(config, out var src))
+                StartCoroutine(FadeStop(src, config));
+        }
+
         #endregion
 
         #region Private
@@ -139,13 +152,20 @@ namespace D_Dev.AudioSystem
             {
                 int j = (_poolIdx + i) % _pool.Length;
                 if (!_pool[j].isPlaying)
-                { src = _pool[j]; break; }
+                {
+                    src = _pool[j];
+                    break;
+                }
             }
+
             src ??= _pool[_poolIdx % _pool.Length];
             _poolIdx = (_poolIdx + 1) % _pool.Length;
 
             config.SetAudioSource(ref src);
-            src.transform.position = worldPos;
+            src.transform.position = worldPos; 
+
+            _activeSources[config] = src;
+
             src.Play();
         }
 
@@ -161,6 +181,21 @@ namespace D_Dev.AudioSystem
                 src.playOnAwake = false;
                 _pool[i] = src;
             }
+        }
+
+        private IEnumerator FadeStop(AudioSource src, AudioConfig config)
+        {
+            float startVolume = src.volume;
+
+            for (float i = 0; i < config.FadeTime; i += Time.deltaTime)
+            {
+                src.volume = startVolume * (1 - i / config.FadeTime);
+                yield return null;
+            }
+
+            src.Stop();
+            src.volume = startVolume;
+            _activeSources.Remove(config);
         }
 
         #endregion

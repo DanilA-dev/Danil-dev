@@ -15,7 +15,7 @@ namespace D_Dev.AudioSystem
 
         private AudioSource _audioSource;
         private AudioConfig _lastAudioConfig;
-            
+
         #endregion
 
         #region Monobehaviour
@@ -25,7 +25,7 @@ namespace D_Dev.AudioSystem
             GetOrCreateAudioSource();
             TryStartAwakeAudio();
         }
-      
+
         #endregion
 
         #region Public
@@ -33,83 +33,84 @@ namespace D_Dev.AudioSystem
         public void Play(StringScriptableVariable configName)
         {
             var configByName = _audioConfigs.FirstOrDefault(a => a.AudioConfigName == configName);
-            if(configByName == null)
+            if (configByName == null)
                 return;
-            
+
             Play(configByName);
         }
-        
+
         public void PlayOneShot(StringScriptableVariable configName)
         {
             var configByName = _audioConfigs.FirstOrDefault(a => a.AudioConfigName == configName);
-            if(configByName == null)
+            if (configByName == null)
                 return;
-            
+
             PlayOneShot(configByName);
         }
 
         public void PlayOneShotWithDelay(StringScriptableVariable configName)
         {
             var configByName = _audioConfigs.FirstOrDefault(a => a.AudioConfigName == configName);
-            if(configByName == null)
+            if (configByName == null)
                 return;
-            
+
             PlayOneShotWithDelay(configByName);
         }
-        
+
         public void PlayWithFade(StringScriptableVariable configName)
         {
             var configByName = _audioConfigs.FirstOrDefault(a => a.AudioConfigName == configName);
-            if(configByName == null)
+            if (configByName == null)
                 return;
-            
+
             PlayWithFade(configByName);
         }
-        
+
 
         public void Play(int configIndex)
         {
-            if(_audioConfigs[configIndex] == null)
+            if (_audioConfigs[configIndex] == null)
                 return;
-            
+
             Play(_audioConfigs[configIndex]);
         }
-        
+
         public void PlayOneShot(int configIndex)
         {
-            if(_audioConfigs[configIndex] == null)
+            if (_audioConfigs[configIndex] == null)
                 return;
-            
+
             PlayOneShot(_audioConfigs[configIndex]);
         }
 
         public void PlayOneShotWithDelay(int configIndex)
         {
-            if(_audioConfigs[configIndex] == null)
+            if (_audioConfigs[configIndex] == null)
                 return;
-            
+
             PlayOneShotWithDelay(_audioConfigs[configIndex]);
         }
-        
+
         public void PlayWithFade(int configIndex)
         {
-            if(_audioConfigs[configIndex] == null)
+            if (_audioConfigs[configIndex] == null)
                 return;
-            
+
             PlayWithFade(_audioConfigs[configIndex]);
         }
-        
+
         public void Play(AudioConfig audioConfig)
         {
-            if(audioConfig == null)
+            if (audioConfig == null)
                 return;
 
             if (audioConfig.RouteThroughManager && AudioManager.Instance != null)
             {
+                _lastAudioConfig = audioConfig;
                 AudioManager.Instance.RequestSound(audioConfig, transform.position);
                 return;
             }
-            
+
             audioConfig.SetAudioSource(ref _audioSource);
             _lastAudioConfig = audioConfig;
             switch (audioConfig.DelayType)
@@ -130,11 +131,12 @@ namespace D_Dev.AudioSystem
 
         public void PlayOneShot(AudioConfig audioConfig)
         {
-            if(audioConfig == null)
+            if (audioConfig == null)
                 return;
 
             if (audioConfig.RouteThroughManager && AudioManager.Instance != null)
             {
+                _lastAudioConfig = audioConfig;
                 AudioManager.Instance.RequestSound(audioConfig, transform.position);
                 return;
             }
@@ -146,7 +148,7 @@ namespace D_Dev.AudioSystem
 
         public void PlayOneShotWithDelay(AudioConfig audioConfig)
         {
-            if(audioConfig == null)
+            if (audioConfig == null)
                 return;
 
             StartCoroutine(OneShotAudioDelayed(audioConfig));
@@ -154,7 +156,7 @@ namespace D_Dev.AudioSystem
 
         public void PlayWithFade(AudioConfig audioConfig)
         {
-            if(audioConfig == null)
+            if (audioConfig == null)
                 return;
 
             audioConfig.SetAudioSource(ref _audioSource);
@@ -166,11 +168,27 @@ namespace D_Dev.AudioSystem
 
         public void Stop()
         {
+            if (_lastAudioConfig != null
+                && _lastAudioConfig.RouteThroughManager
+                && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.StopSound(_lastAudioConfig);
+                return;
+            }
+
             _audioSource?.Stop();
         }
 
         public void StopWithFade()
         {
+            if (_lastAudioConfig != null
+                && _lastAudioConfig.RouteThroughManager
+                && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.StopSoundWithFade(_lastAudioConfig);
+                return;
+            }
+
             if (_audioSource != null && _audioSource.isPlaying && _lastAudioConfig != null)
                 StartCoroutine(FadeStop());
             else
@@ -186,25 +204,26 @@ namespace D_Dev.AudioSystem
         {
             _audioSource?.UnPause();
         }
+
         #endregion
-        
+
         #region Private
 
         private void TryStartAwakeAudio()
         {
-           if(_audioConfigs.Count <= 0)
-               return;
+            if (_audioConfigs.Count <= 0)
+                return;
 
-           var firstAwakeAudio = _audioConfigs.FirstOrDefault(a => a.PlayOnAwake);
-           if(firstAwakeAudio == null)
-               return;
-           
-           Play(firstAwakeAudio);
+            var firstAwakeAudio = _audioConfigs.FirstOrDefault(a => a.PlayOnAwake);
+            if (firstAwakeAudio == null)
+                return;
+
+            Play(firstAwakeAudio);
         }
-        
+
         private void GetOrCreateAudioSource()
         {
-            if(!TryGetComponent(out _audioSource))
+            if (!TryGetComponent(out _audioSource))
                 _audioSource = gameObject.AddComponent<AudioSource>();
         }
 
@@ -218,21 +237,22 @@ namespace D_Dev.AudioSystem
             {
                 for (float i = 0; i < _lastAudioConfig.FadeTime; i += Time.deltaTime)
                 {
-                    _audioSource.volume = (_lastAudioConfig.Volume - (i / _lastAudioConfig.FadeTime));
+                    _audioSource.volume = _lastAudioConfig.Volume - (i / _lastAudioConfig.FadeTime);
                     yield return null;
                 }
             }
+
             _audioSource.Stop();
             audioConfig.SetAudioSource(ref _audioSource);
             _audioSource.Play();
 
             for (float i = 0; i < audioConfig.FadeTime; i += Time.deltaTime)
             {
-                _audioSource.volume = ((i / audioConfig.FadeTime) * 1);
+                _audioSource.volume = (i / audioConfig.FadeTime) * 1;
                 yield return null;
             }
         }
-        
+
         private IEnumerator OneShotAudioDelayed(AudioConfig audioConfig)
         {
             yield return new WaitForSeconds(audioConfig.Delay);
@@ -246,10 +266,11 @@ namespace D_Dev.AudioSystem
                 float startVolume = _audioSource.volume;
                 for (float i = 0; i < _lastAudioConfig.FadeTime; i += Time.deltaTime)
                 {
-                    _audioSource.volume = startVolume * (1 - (i / _lastAudioConfig.FadeTime));
+                    _audioSource.volume = startVolume * (1 - i / _lastAudioConfig.FadeTime);
                     yield return null;
                 }
             }
+
             _audioSource.Stop();
             _audioSource.volume = _lastAudioConfig.Volume;
         }
