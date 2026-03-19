@@ -8,20 +8,20 @@ namespace D_Dev.PolymorphicValueSystem.Extensions
     {
         #region Fields
 
-        [SerializeReference] private PolymorphicValue<T> _value;
-        [SerializeField] private bool _isExists;
+        [SerializeReference] protected PolymorphicValue<T> _value;
+        [SerializeField] protected bool _isExists;
 
         #endregion
         
         #region ICondition
 
-        public bool IsConditionMet()
+        public virtual bool IsConditionMet()
         {
             var result = _value.Value!= null;
             return result == _isExists;
         }
 
-        public void Reset()
+        public virtual void Reset()
         {
         }
 
