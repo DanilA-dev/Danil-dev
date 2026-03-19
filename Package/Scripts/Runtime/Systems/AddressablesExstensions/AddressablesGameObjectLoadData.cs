@@ -47,6 +47,12 @@ namespace D_Dev.AddressablesExstensions
             _instance = Object.Instantiate(_asset, parent, worldPositionStays);
             return _instance;
         }
+        
+        public void ResetInstance()
+        {
+            _instance = null;
+            _instantiateHandle = null;
+        }
 
         #endregion
 

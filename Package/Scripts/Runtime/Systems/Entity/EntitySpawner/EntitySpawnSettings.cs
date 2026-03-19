@@ -160,6 +160,8 @@ namespace D_Dev.EntitySpawner
 
         public async UniTask Init()
         {
+            _data?.Value?.EntityPrefab?.ResetInstance();
+            
             if (!UseGlobalPool && _usePool)
             {
                 PrewarmPool();
