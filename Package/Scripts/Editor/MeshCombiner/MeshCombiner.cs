@@ -216,12 +216,12 @@ namespace D_Dev.MeshCombiner
                 {
                     Material              mat   = pair.Key;
                     List<CombineInstance> insts = pair.Value;
-                    string                mName = _root.name + "_" + insts[0].mesh.name;
+                    string                mName = mat != null ? mat.name : "NoMaterial";
 
                     Mesh combined = BuildMeshFromInstances(insts, mName);
                     if (combined == null) continue;
 
-                    SaveMesh(combined);
+                    SaveMesh(combined, mName);
                     CreateResultObject(combined, mat, container.transform, mName);
                     meshesCreated++;
                 }
@@ -253,7 +253,7 @@ namespace D_Dev.MeshCombiner
                 Mesh combined = BuildMeshFromInstances(allInstances, _root.name, mergeSubMeshes: false);
                 if (combined != null)
                 {
-                    SaveMesh(combined);
+                    SaveMesh(combined, _root.name);
                     CreateResultObjectMultiMat(combined, allMaterials.ToArray(),
                         container.transform, _root.name);
                     meshesCreated++;
@@ -316,9 +316,9 @@ namespace D_Dev.MeshCombiner
             go.AddComponent<MeshRenderer>().sharedMaterials = mats;
         }
 
-        private void SaveMesh(Mesh mesh)
+        private void SaveMesh(Mesh mesh, string name)
         {
-            string path     = $"{_savePath}/{mesh.name}_Combined.asset";
+            string path     = $"{_savePath}/{name}_Combined.asset";
             Mesh   existing = AssetDatabase.LoadAssetAtPath<Mesh>(path);
             if (existing != null)
             {
