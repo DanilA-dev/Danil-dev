@@ -186,6 +186,13 @@ namespace D_Dev.AnimatorView.AnimationPlayableHandler
                 : 0f;
 
             CancelBlendIn(layer);
+
+            if (AnimationPlayableBlendManager.Instance == null)
+            {
+                Debug.LogError("[AnimationPlayableBlendManager] = null");
+                return;
+            }
+
             _blendInIds[layer] = AnimationPlayableBlendManager.Instance.Schedule(
                 _targetLayerMixerPlayable, layer, current, config.TargetWeight, crossFade);
         }
@@ -201,6 +208,13 @@ namespace D_Dev.AnimatorView.AnimationPlayableHandler
                 : config.FadeDelay;
 
             CancelBlendOut(layer);
+
+            if (AnimationPlayableBlendManager.Instance == null)
+            {
+                Debug.LogError("[AnimationPlayableBlendManager] = null");
+                return;
+            }
+
             _blendOutIds[layer] = AnimationPlayableBlendManager.Instance.Schedule(
                 _targetLayerMixerPlayable, layer, config.TargetWeight, 0f, crossFade, delay,
                 onComplete: () =>
@@ -218,6 +232,12 @@ namespace D_Dev.AnimatorView.AnimationPlayableHandler
             if (!_blendInIds.TryGetValue(layer, out int id))
                 return;
 
+            if (AnimationPlayableBlendManager.Instance == null)
+            {
+                Debug.LogError("[AnimationPlayableBlendManager] = null");
+                return;
+            }
+
             AnimationPlayableBlendManager.Instance.Cancel(id);
             _blendInIds.Remove(layer);
         }
@@ -226,6 +246,12 @@ namespace D_Dev.AnimatorView.AnimationPlayableHandler
         {
             if (!_blendOutIds.TryGetValue(layer, out int id))
                 return;
+
+            if (AnimationPlayableBlendManager.Instance == null)
+            {
+                Debug.LogError("[AnimationPlayableBlendManager] = null");
+                return;
+            }
 
             AnimationPlayableBlendManager.Instance.Cancel(id);
             _blendOutIds.Remove(layer);
@@ -239,6 +265,12 @@ namespace D_Dev.AnimatorView.AnimationPlayableHandler
 
         private void CancelAllBlends()
         {
+            if (AnimationPlayableBlendManager.Instance == null)
+            {
+                Debug.LogError("[AnimationPlayableBlendManager] = null");
+                return;
+            }
+
             foreach (var id in _blendInIds.Values)
                 AnimationPlayableBlendManager.Instance.Cancel(id);
 
