@@ -80,7 +80,11 @@ namespace D_Dev.SceneLoader
                 if (SceneLoader.Scenes[sceneName])
                 {
                     SceneLoader.LoadSceneAsync(sceneName, LoadSceneMode.Additive,
-                        () => _onSceneLoadStart?.Invoke(),
+                        () =>
+                        {
+                            EventManager.Invoke(EventNameConstants.SceneLoadStart.ToString());
+                            _onSceneLoadStart?.Invoke();
+                        },
                         () => SetActiveScene(sceneName),
                         _tokenSource.Token).Forget();
                     SceneLoader.UnloadUnloadableScenesExcept(sceneName).Forget();
