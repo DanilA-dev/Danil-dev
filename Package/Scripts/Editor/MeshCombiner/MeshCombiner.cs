@@ -318,7 +318,7 @@ namespace D_Dev.MeshCombiner
 
         private void SaveMesh(Mesh mesh, string name)
         {
-            string path     = $"{_savePath}/{name}_Combined.asset";
+            string path     = $"{_savePath}/{_root.name}_{name}_Combined.asset";
             Mesh   existing = AssetDatabase.LoadAssetAtPath<Mesh>(path);
             if (existing != null)
             {
