@@ -8,15 +8,15 @@ namespace D_Dev.MeshCombiner
     public class MeshCombiner : EditorWindow
     {
         private GameObject _root;
-        private bool       _combineByMaterial  = true;
-        private bool       _createNewParent    = true;
-        private bool       _deactivateOriginal = true;
-        private bool       _makeStatic         = true;
-        private string     _savePath           = "Assets/CombinedMeshes";
+        private bool _combineByMaterial = true;
+        private bool _createNewParent = true;
+        private bool _deactivateOriginal = true;
+        private bool _makeStatic = true;
+        private string _savePath = "Assets/CombinedMeshes";
 
-        private Vector2  _scroll;
-        private string   _lastResult = "";
-        private bool     _resultOk   = true;
+        private Vector2 _scroll;
+        private string _lastResult = "";
+        private bool _resultOk = true;
 
         private GUIStyle _titleStyle;
         private GUIStyle _sectionStyle;
@@ -179,10 +179,10 @@ namespace D_Dev.MeshCombiner
                 container.transform.SetParent(_root.transform.parent);
                 container.transform.localPosition = _root.transform.localPosition;
                 container.transform.localRotation = _root.transform.localRotation;
-                container.transform.localScale    = _root.transform.localScale;
+                container.transform.localScale = _root.transform.localScale;
             }
 
-            int totalBefore   = renderers.Length;
+            int totalBefore = renderers.Length;
             int meshesCreated = 0;
 
             if (_combineByMaterial)
@@ -194,8 +194,8 @@ namespace D_Dev.MeshCombiner
                     MeshFilter mf = r.GetComponent<MeshFilter>();
                     if (mf == null || mf.sharedMesh == null) continue;
 
-                    Material[] mats     = r.sharedMaterials;
-                    int        subCount = mf.sharedMesh.subMeshCount;
+                    Material[] mats = r.sharedMaterials;
+                    int subCount = mf.sharedMesh.subMeshCount;
 
                     for (int i = 0; i < mats.Length && i < subCount; i++)
                     {
@@ -205,18 +205,18 @@ namespace D_Dev.MeshCombiner
 
                         groups[mat].Add(new CombineInstance
                         {
-                            mesh         = mf.sharedMesh,
+                            mesh = mf.sharedMesh,
                             subMeshIndex = i,
-                            transform    = mf.transform.localToWorldMatrix
+                            transform = mf.transform.localToWorldMatrix
                         });
                     }
                 }
 
                 foreach (var pair in groups)
                 {
-                    Material              mat   = pair.Key;
+                    Material mat = pair.Key;
                     List<CombineInstance> insts = pair.Value;
-                    string                mName = mat != null ? mat.name : "NoMaterial";
+                    string mName = mat != null ? mat.name : "NoMaterial";
 
                     Mesh combined = BuildMeshFromInstances(insts, mName);
                     if (combined == null) continue;
@@ -241,9 +241,9 @@ namespace D_Dev.MeshCombiner
                     {
                         allInstances.Add(new CombineInstance
                         {
-                            mesh         = mf.sharedMesh,
+                            mesh = mf.sharedMesh,
                             subMeshIndex = i,
-                            transform    = mf.transform.localToWorldMatrix
+                            transform = mf.transform.localToWorldMatrix
                         });
                         if (i < r.sharedMaterials.Length)
                             allMaterials.Add(r.sharedMaterials[i]);
@@ -254,8 +254,7 @@ namespace D_Dev.MeshCombiner
                 if (combined != null)
                 {
                     SaveMesh(combined, _root.name);
-                    CreateResultObjectMultiMat(combined, allMaterials.ToArray(),
-                        container.transform, _root.name);
+                    CreateResultObjectMultiMat(combined, allMaterials.ToArray(), container.transform, _root.name);
                     meshesCreated++;
                 }
             }
@@ -265,19 +264,16 @@ namespace D_Dev.MeshCombiner
                     r.gameObject.SetActive(false);
 
             if (_makeStatic)
-                GameObjectUtility.SetStaticEditorFlags(
-                    container, StaticEditorFlags.BatchingStatic);
+                GameObjectUtility.SetStaticEditorFlags(container, StaticEditorFlags.BatchingStatic);
 
             Undo.RegisterCreatedObjectUndo(container, "Mesh Combine");
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            SetResult(true,
-                $"✓ Done! {totalBefore} objects → {meshesCreated} meshes. Saved to {_savePath}");
+            SetResult(true, $"✓ Done! {totalBefore} objects → {meshesCreated} meshes. Saved to {_savePath}");
         }
 
-        private Mesh BuildMeshFromInstances(List<CombineInstance> instances,
-            string meshName, bool mergeSubMeshes = true)
+        private Mesh BuildMeshFromInstances(List<CombineInstance> instances, string meshName, bool mergeSubMeshes = true)
         {
             if (instances == null || instances.Count == 0) return null;
 
@@ -298,9 +294,8 @@ namespace D_Dev.MeshCombiner
             go.transform.SetParent(parent);
             go.transform.localPosition = Vector3.zero;
             go.transform.localRotation = Quaternion.identity;
-            go.transform.localScale    = Vector3.one;
-
-            go.AddComponent<MeshFilter>().sharedMesh       = mesh;
+            go.transform.localScale = Vector3.one;
+            go.AddComponent<MeshFilter>().sharedMesh = mesh;
             go.AddComponent<MeshRenderer>().sharedMaterial = mat;
         }
 
@@ -310,16 +305,15 @@ namespace D_Dev.MeshCombiner
             go.transform.SetParent(parent);
             go.transform.localPosition = Vector3.zero;
             go.transform.localRotation = Quaternion.identity;
-            go.transform.localScale    = Vector3.one;
-
-            go.AddComponent<MeshFilter>().sharedMesh        = mesh;
+            go.transform.localScale = Vector3.one;
+            go.AddComponent<MeshFilter>().sharedMesh = mesh;
             go.AddComponent<MeshRenderer>().sharedMaterials = mats;
         }
 
         private void SaveMesh(Mesh mesh, string name)
         {
-            string path     = $"{_savePath}/{_root.name}_{name}_Combined.asset";
-            Mesh   existing = AssetDatabase.LoadAssetAtPath<Mesh>(path);
+            string path = $"{_savePath}/{_root.name}_{name}_Combined.asset";
+            Mesh existing = AssetDatabase.LoadAssetAtPath<Mesh>(path);
             if (existing != null)
             {
                 EditorUtility.CopySerialized(mesh, existing);
@@ -337,7 +331,7 @@ namespace D_Dev.MeshCombiner
 
         private void SetResult(bool ok, string msg)
         {
-            _resultOk   = ok;
+            _resultOk = ok;
             _lastResult = msg;
             Repaint();
         }
@@ -355,7 +349,7 @@ namespace D_Dev.MeshCombiner
 
             _titleStyle = new GUIStyle(EditorStyles.boldLabel)
             {
-                fontSize  = 15,
+                fontSize = 15,
                 alignment = TextAnchor.MiddleCenter
             };
 
@@ -367,7 +361,7 @@ namespace D_Dev.MeshCombiner
             _resultStyle = new GUIStyle(EditorStyles.wordWrappedLabel)
             {
                 fontStyle = FontStyle.Bold,
-                wordWrap  = true
+                wordWrap = true
             };
         }
     }
