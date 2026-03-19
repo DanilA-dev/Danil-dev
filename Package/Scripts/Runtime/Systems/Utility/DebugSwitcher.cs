@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using System;
 
 namespace D_Dev.Utility
@@ -16,6 +17,7 @@ namespace D_Dev.Utility
 
         [SerializeField] private DebugMode _debugMode = DebugMode.All;
         [SerializeField] private DebugMode _releaseDebugMode = DebugMode.OnlyExceptions;
+        [SerializeField] private UnityEvent _onDevelopmentBuild;
 
         #endregion
 
@@ -28,6 +30,7 @@ namespace D_Dev.Utility
             return;
 #endif
             Apply(_debugMode);
+            _onDevelopmentBuild?.Invoke();
         }
 
 #if UNITY_EDITOR
