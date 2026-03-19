@@ -30,7 +30,10 @@ namespace D_Dev.Utility
             return;
 #endif
             Apply(_debugMode);
+
+#if DEVELOPMENT_BUILD
             _onDevelopmentBuild?.Invoke();
+#endif
         }
 
 #if UNITY_EDITOR
