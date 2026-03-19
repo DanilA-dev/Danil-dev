@@ -170,8 +170,7 @@ namespace D_Dev.AudioSystem
 
         private bool IsMusic(AudioConfig config)
         {
-            var group = _mixerGroupVolumeConfigs.FirstOrDefault(x => x.MixerGroup == config.SoundMixer);
-            return group != null && group.Type == MixerGroupType.Music;
+            return config.GroupType == MixerGroupType.Music;
         }
 
         private void PlayFromMusicPool(AudioConfig config, Vector3 worldPos)

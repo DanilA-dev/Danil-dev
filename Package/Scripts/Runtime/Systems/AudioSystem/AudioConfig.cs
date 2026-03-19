@@ -29,6 +29,7 @@ namespace D_Dev.AudioSystem
 
         [SerializeField] private StringScriptableVariable _audioConfigName;
         [SerializeField] private AudioMixerGroup _soundMixerGroup;
+        [SerializeField] private MixerGroupType _mixerGroupType;
 
         [Space] [Title("Base")] 
         [SerializeField] private bool _routeThroughManager;
@@ -200,6 +201,12 @@ namespace D_Dev.AudioSystem
         {
             get => _priority;
             set => _priority = value;
+        }
+
+        public MixerGroupType GroupType
+        {
+            get => _mixerGroupType;
+            set => _mixerGroupType = value;
         }
 
         #endregion
