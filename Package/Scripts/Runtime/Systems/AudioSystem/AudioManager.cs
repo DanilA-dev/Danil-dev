@@ -30,20 +30,22 @@ namespace D_Dev.AudioSystem
         [Title("Optimizations")]
         [SerializeField] private int maxSimultaneousSFX = 10;
         [SerializeField] private int poolSize = 14;
+        [SerializeField] private int musicPoolSize = 2;
         [SerializeField] private float cullDistance = 30f;
         [SerializeField] private float throttleTime = 0.05f;
 
-        [FoldoutGroup("Events")] 
+        [FoldoutGroup("Events")]
         [SerializeField] private UnityEvent<float> _onAudioListenerVolumeChange;
 
         private List<SoundRequest> _requests = new(64);
         private Dictionary<AudioClip, float> _lastPlayed = new();
-
         private Dictionary<AudioConfig, AudioSource> _activeSources = new();
 
-        private AudioSource[] _pool;
+        private AudioSource[] _sfxPool;
+        private AudioSource[] _musicPool;
         private Camera _mainCamera;
-        private int _poolIdx;
+        private int _sfxPoolIdx;
+        private int _musicPoolIdx;
 
         #endregion
 
@@ -67,15 +69,24 @@ namespace D_Dev.AudioSystem
             float now = Time.time;
             int played = 0;
 
-            for (int i = 0; i < _requests.Count && played < maxSimultaneousSFX; i++)
+            for (int i = 0; i < _requests.Count; i++)
             {
                 var req = _requests[i];
+
+                if (IsMusic(req.Config))
+                {
+                    PlayFromMusicPool(req.Config, req.WorldPos);
+                    continue;
+                }
+
+                if (played >= maxSimultaneousSFX)
+                    continue;
 
                 if (_lastPlayed.TryGetValue(req.Clip, out float last) && now - last < throttleTime)
                     continue;
 
                 _lastPlayed[req.Clip] = now;
-                PlayFromPool(req.Config, req.WorldPos);
+                PlayFromSfxPool(req.Config, req.WorldPos);
                 played++;
             }
 
@@ -157,33 +168,66 @@ namespace D_Dev.AudioSystem
 
         #region Private
 
-        private void PlayFromPool(AudioConfig config, Vector3 worldPos)
+        private bool IsMusic(AudioConfig config)
+        {
+            var group = _mixerGroupVolumeConfigs.FirstOrDefault(x => x.MixerGroup == config.SoundMixer);
+            return group != null && group.Type == MixerGroupType.Music;
+        }
+
+        private void PlayFromMusicPool(AudioConfig config, Vector3 worldPos)
         {
             AudioSource src = null;
-            for (int i = 0; i < _pool.Length; i++)
+            for (int i = 0; i < _musicPool.Length; i++)
             {
-                int j = (_poolIdx + i) % _pool.Length;
-                if (!_pool[j].isPlaying)
+                int j = (_musicPoolIdx + i) % _musicPool.Length;
+                if (!_musicPool[j].isPlaying)
                 {
-                    src = _pool[j];
+                    src = _musicPool[j];
                     break;
                 }
             }
 
-            src ??= _pool[_poolIdx % _pool.Length];
-            _poolIdx = (_poolIdx + 1) % _pool.Length;
+            if (src == null)
+            {
+                if (_activeSources.TryGetValue(config, out var existing) && existing.isPlaying)
+                    return;
+
+                src = _musicPool[_musicPoolIdx % _musicPool.Length];
+            }
+
+            _musicPoolIdx = (_musicPoolIdx + 1) % _musicPool.Length;
 
             config.SetAudioSource(ref src);
-            src.transform.position = worldPos; 
-
+            src.transform.position = worldPos;
             _activeSources[config] = src;
+            src.Play();
+        }
 
+        private void PlayFromSfxPool(AudioConfig config, Vector3 worldPos)
+        {
+            AudioSource src = null;
+            for (int i = 0; i < _sfxPool.Length; i++)
+            {
+                int j = (_sfxPoolIdx + i) % _sfxPool.Length;
+                if (!_sfxPool[j].isPlaying)
+                {
+                    src = _sfxPool[j];
+                    break;
+                }
+            }
+
+            src ??= _sfxPool[_sfxPoolIdx % _sfxPool.Length];
+            _sfxPoolIdx = (_sfxPoolIdx + 1) % _sfxPool.Length;
+
+            config.SetAudioSource(ref src);
+            src.transform.position = worldPos;
+            _activeSources[config] = src;
             src.Play();
         }
 
         private void InitPool()
         {
-            _pool = new AudioSource[poolSize];
+            _sfxPool = new AudioSource[poolSize];
             for (int i = 0; i < poolSize; i++)
             {
                 var go = new GameObject($"SFX_Pool_{i}");
@@ -191,7 +235,18 @@ namespace D_Dev.AudioSystem
                 var src = go.AddComponent<AudioSource>();
                 src.priority = 128;
                 src.playOnAwake = false;
-                _pool[i] = src;
+                _sfxPool[i] = src;
+            }
+
+            _musicPool = new AudioSource[musicPoolSize];
+            for (int i = 0; i < musicPoolSize; i++)
+            {
+                var go = new GameObject($"Music_Pool_{i}");
+                go.transform.SetParent(transform);
+                var src = go.AddComponent<AudioSource>();
+                src.priority = 0;
+                src.playOnAwake = false;
+                _musicPool[i] = src;
             }
         }
 
