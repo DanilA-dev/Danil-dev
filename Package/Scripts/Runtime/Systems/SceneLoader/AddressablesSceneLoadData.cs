@@ -36,7 +36,16 @@ namespace D_Dev.AddressablesExstensions
         {
             if (!_makeAddressable)
             {
-                await SceneManager.LoadSceneAsync(sceneName, mode);
+                var operation = SceneManager.LoadSceneAsync(sceneName, mode);
+                if (operation == null)
+                {
+                    Debug.LogError($"[AddressablesSceneLoadData] Failed to load scene '{sceneName}'");
+                    return;
+                }
+                operation.allowSceneActivation = false;
+                await UniTask.WaitUntil(() => operation.progress >= 0.9f);
+                operation.allowSceneActivation = true;
+                await operation;
                 return;
             }
 
@@ -50,7 +59,7 @@ namespace D_Dev.AddressablesExstensions
             {
                 if (_loadHandle.Value.Result.Scene.isLoaded)
                 {
-                    Debug.LogWarning($"[AddressablesSceneLoadData] Scene '{sceneName}' is already loaded");
+                    Debug.Log($"[AddressablesSceneLoadData] Scene '{sceneName}' is already loaded");
                     return;
                 }
                 Addressables.Release(_loadHandle.Value);
@@ -71,7 +80,7 @@ namespace D_Dev.AddressablesExstensions
 
             if (!_loadHandle.HasValue || !_loadHandle.Value.IsValid())
             {
-                Debug.LogWarning($"[AddressablesSceneLoadData] Scene '{sceneName}' is not loaded, nothing to unload");
+                Debug.Log($"[AddressablesSceneLoadData] Scene '{sceneName}' is not loaded, nothing to unload");
                 return;
             }
 
