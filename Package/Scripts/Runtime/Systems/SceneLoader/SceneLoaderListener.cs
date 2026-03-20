@@ -102,18 +102,25 @@ namespace D_Dev.SceneLoader
 
         private void OnSceneReload()
         {
+            ReloadSceneAsync().Forget();
+        }
+
+        private async UniTaskVoid ReloadSceneAsync()
+        {
             var currentScene = GetLastActiveUnloadableScene();
             if (SceneLoader.Scenes.TryGetValue(currentScene, out var sceneInfo) && sceneInfo.IsUnloadable)
             {
-                SceneLoader.UnloadUnloadableScenesExcept(string.Empty,
-                    onStart: () => _onSceneLoadStart?.Invoke()).Forget();
-                SceneLoader.LoadSceneAsync(currentScene, LoadSceneMode.Additive,
+                await SceneLoader.UnloadUnloadableScenesExcept(string.Empty,
+                    onStart: () => _onSceneLoadStart?.Invoke());
+
+                await SceneLoader.LoadSceneAsync(currentScene, LoadSceneMode.Additive,
                     onComplete: () => SetActiveScene(currentScene),
-                    cancellationToken: _tokenSource.Token).Forget();
+                    cancellationToken: _tokenSource.Token);
             }
             else
             {
-                SceneLoader.LoadSceneAsync(currentScene, LoadSceneMode.Additive, cancellationToken: _tokenSource.Token).Forget();
+                await SceneLoader.LoadSceneAsync(currentScene, LoadSceneMode.Additive,
+                    cancellationToken: _tokenSource.Token);
             }
         }
       
