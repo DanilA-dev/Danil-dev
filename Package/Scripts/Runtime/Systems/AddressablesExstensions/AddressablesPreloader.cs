@@ -14,6 +14,7 @@ namespace D_Dev.AddressablesExstensions
 
         [SerializeField] private bool _preloadOnAwake;
         [SerializeField] private AssetReference[] _assetReferences;
+        [SerializeField] private AssetLabelReference[] _labelReferences;
 
         [FoldoutGroup("Events")]
         [SerializeField] private UnityEvent _onPreloadComplete;
@@ -88,6 +89,16 @@ namespace D_Dev.AddressablesExstensions
                 tasks.Add(handle.ToUniTask());
             }
 
+            foreach (var label in _labelReferences)
+            {
+                if (label == null || string.IsNullOrEmpty(label.labelString))
+                    continue;
+
+                var handle = Addressables.LoadAssetsAsync<Object>(label.labelString, null);
+                _handles.Add(handle);
+                tasks.Add(handle.ToUniTask());
+            }
+
             bool success = true;
 
             try
@@ -104,12 +115,12 @@ namespace D_Dev.AddressablesExstensions
                 _isPreloading = false;
             }
 
+            IsLoaded = true;
+
             if (success)
                 _onPreloadComplete?.Invoke();
             else
                 _onPreloadFailed?.Invoke();
-
-            IsLoaded = true;
         }
 
         #endregion
