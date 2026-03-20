@@ -41,10 +41,22 @@ namespace D_Dev.EntitySpawner
         public async void CreateEntityAsync(int settingsIndex) => await GetEntitiesAsync(settingsIndex);
         public async void CreateEntityAsync(EntityInfo data) => await GetEntitiesAsync(data);
 
+        public async void SpawnAll() => await SpawnAllAsync();
+
+
         #endregion
 
         #region Private
 
+        private async UniTask<List<GameObject>> SpawnAllAsync()
+        {
+            var allResults = new List<GameObject>();
+            foreach (var settings in _spawnSettings)
+                for (int i = 0; i < settings.Amount.Value; i++)
+                    allResults.Add(await settings.Get());
+            return allResults;
+        }
+        
         public async UniTask<List<GameObject>> GetEntitiesAsync(EntityInfo data)                  
         {                                                 
             var spawnSettings = _spawnSettings.           
