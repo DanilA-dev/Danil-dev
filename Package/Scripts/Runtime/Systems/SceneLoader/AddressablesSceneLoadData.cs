@@ -48,8 +48,13 @@ namespace D_Dev.AddressablesExstensions
 
             if (_loadHandle.HasValue && _loadHandle.Value.IsValid())
             {
-                Debug.LogWarning($"[AddressablesSceneLoadData] Scene '{sceneName}' is already loaded");
-                return;
+                if (_loadHandle.Value.Result.Scene.isLoaded)
+                {
+                    Debug.LogWarning($"[AddressablesSceneLoadData] Scene '{sceneName}' is already loaded");
+                    return;
+                }
+                Addressables.Release(_loadHandle.Value);
+                _loadHandle = null;
             }
 
             _loadHandle = Addressables.LoadSceneAsync(_sceneReference, mode);
