@@ -122,6 +122,7 @@ namespace D_Dev.AudioSystem
 
         public void SetAudioListenerVolume(float volume01)
         {
+            volume01 = Mathf.Clamp01(volume01);
             AudioListener.volume = volume01;
             _onAudioListenerVolumeChange?.Invoke(volume01);
         }
