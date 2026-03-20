@@ -122,8 +122,8 @@ namespace D_Dev.AudioSystem
 
         public void SetAudioListenerVolume(float volume01)
         {
-            volume01 = Mathf.Clamp01(volume01);
-            AudioListener.volume = volume01;
+            var volume = (int)Mathf.Clamp01(volume01);
+            AudioListener.pause = volume != 1;
             _onAudioListenerVolumeChange?.Invoke(volume01);
         }
 
