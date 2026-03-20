@@ -48,7 +48,7 @@ namespace D_Dev.SceneLoader
 
             if (Scenes.TryGetValue(sceneName, out var sceneInfo) && sceneInfo.SceneLoadData != null)
             {
-                await sceneInfo.SceneLoadData.LoadAsync(mode).AttachExternalCancellation(cancellationToken);
+                await sceneInfo.SceneLoadData.LoadAsync(sceneName, mode).AttachExternalCancellation(cancellationToken);
                 Debug.Log($"[SceneLoader] Scene '{sceneName}' loaded successfully");
                 onComplete?.Invoke();
                 return;
@@ -90,7 +90,7 @@ namespace D_Dev.SceneLoader
 
                 if (info.SceneLoadData != null && info.SceneLoadData.IsAddressable)
                 {
-                    await info.SceneLoadData.UnloadAsync();
+                    await info.SceneLoadData.UnloadAsync(info.SceneName);
                 }
                 else
                 {
