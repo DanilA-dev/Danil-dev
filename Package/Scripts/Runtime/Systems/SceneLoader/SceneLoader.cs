@@ -11,7 +11,7 @@ namespace D_Dev.SceneLoader
     {
         #region Fields
 
-        public static Dictionary<string, bool> Scenes;
+        public static Dictionary<string, SceneInfo> Scenes;
 
         #endregion
 
@@ -25,25 +25,35 @@ namespace D_Dev.SceneLoader
             var projectScenes = Resources.Load<ProjectScenesConfig>(path);
             if (projectScenes != null)
             {
-                if(projectScenes.Scenes.Count <= 0)
+                if (projectScenes.Scenes.Count <= 0)
                     return UniTask.CompletedTask;
-                
+
                 foreach (var scene in projectScenes.Scenes)
                 {
-                    Scenes.Add(scene.SceneName, scene.IsUnloadable);
+                    Scenes[scene.SceneName] = scene;
                     if (scene.AddSceneOnStartup)
                         LoadSceneAsync(scene.SceneName, LoadSceneMode.Additive).Forget();
                 }
             }
             else
                 Debug.LogError($"[SceneLoader] Failed to load project scenes config at path: Resources/{path}");
+
             return UniTask.CompletedTask;
         }
-        
+
         public static async UniTask LoadSceneAsync(string sceneName, LoadSceneMode mode = LoadSceneMode.Single,
-            Action OnStart = null, Action OnComplete = null, CancellationToken cancellationToken = default)
+            Action onStart = null, Action onComplete = null, CancellationToken cancellationToken = default)
         {
-            OnStart?.Invoke();
+            onStart?.Invoke();
+
+            if (Scenes.TryGetValue(sceneName, out var sceneInfo) && sceneInfo.SceneLoadData != null)
+            {
+                await sceneInfo.SceneLoadData.LoadAsync(mode).AttachExternalCancellation(cancellationToken);
+                Debug.Log($"[SceneLoader] Scene '{sceneName}' loaded successfully");
+                onComplete?.Invoke();
+                return;
+            }
+
             var operation = SceneManager.LoadSceneAsync(sceneName, mode);
             if (operation == null)
             {
@@ -55,34 +65,43 @@ namespace D_Dev.SceneLoader
             await UniTask.WaitUntil(() => operation.progress >= 0.9f, cancellationToken: cancellationToken);
             operation.allowSceneActivation = true;
             await operation;
+
             Debug.Log($"[SceneLoader] Scene '{sceneName}' loaded successfully");
-            OnComplete?.Invoke();
+            onComplete?.Invoke();
         }
 
-        public static async UniTask UnloadUnloadableScenesExcept(string exceptScene, Action OnStart = null, Action OnComplete = null)
+        public static async UniTask UnloadUnloadableScenesExcept(string exceptScene,
+            Action onStart = null, Action onComplete = null)
         {
-            var unloadableScenes = new List<string>();
+            var toUnload = new List<SceneInfo>();
+
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {
                 var scene = SceneManager.GetSceneAt(i);
-                if (Scenes.TryGetValue(scene.name, out var isUnloadable) && isUnloadable && scene.name != exceptScene)
-                    unloadableScenes.Add(scene.name);
+                if (Scenes.TryGetValue(scene.name, out var info) && info.IsUnloadable && scene.name != exceptScene)
+                    toUnload.Add(info);
             }
 
-            OnStart?.Invoke();
-            foreach (var sceneName in unloadableScenes)
+            onStart?.Invoke();
+
+            foreach (var info in toUnload)
             {
-                if (SceneManager.GetSceneByName(sceneName).isLoaded)
+                if (!SceneManager.GetSceneByName(info.SceneName).isLoaded) continue;
+
+                if (info.SceneLoadData != null && info.SceneLoadData.IsAddressable)
                 {
-                    var op = SceneManager.UnloadSceneAsync(sceneName);
-                    if (op != null)
-                    {
-                        await op;
-                        Debug.Log($"[SceneLoader] Unloaded scene '{sceneName}'");
-                    }
+                    await info.SceneLoadData.UnloadAsync();
                 }
+                else
+                {
+                    var op = SceneManager.UnloadSceneAsync(info.SceneName);
+                    if (op != null) await op;
+                }
+
+                Debug.Log($"[SceneLoader] Unloaded scene '{info.SceneName}'");
             }
-            OnComplete?.Invoke();
+
+            onComplete?.Invoke();
         }
 
         #endregion

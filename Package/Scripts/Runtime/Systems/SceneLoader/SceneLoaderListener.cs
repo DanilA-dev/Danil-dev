@@ -53,11 +53,11 @@ namespace D_Dev.SceneLoader
 
         private string GetLastActiveUnloadableScene()
         {
-            List<string> unloadableScenes = new List<string>();
+            var unloadableScenes = new List<string>();
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {
                 var scene = SceneManager.GetSceneAt(i);
-                if (SceneLoader.Scenes.TryGetValue(scene.name, out var isUnloadable) && isUnloadable)
+                if (SceneLoader.Scenes.TryGetValue(scene.name, out var info) && info.IsUnloadable)
                     unloadableScenes.Add(scene.name);
             }
             return unloadableScenes[^1];
@@ -75,18 +75,18 @@ namespace D_Dev.SceneLoader
                 return;
             }
 
-            if (SceneLoader.Scenes.ContainsKey(sceneName))
+            if (SceneLoader.Scenes.TryGetValue(sceneName, out var sceneInfo))
             {
-                if (SceneLoader.Scenes[sceneName])
+                if (sceneInfo.IsUnloadable)
                 {
                     SceneLoader.LoadSceneAsync(sceneName, LoadSceneMode.Additive,
-                        () =>
+                        onStart: () =>
                         {
                             EventManager.Invoke(EventNameConstants.SceneLoadStart.ToString());
                             _onSceneLoadStart?.Invoke();
                         },
-                        () => SetActiveScene(sceneName),
-                        _tokenSource.Token).Forget();
+                        onComplete: () => SetActiveScene(sceneName),
+                        cancellationToken: _tokenSource.Token).Forget();
                     SceneLoader.UnloadUnloadableScenesExcept(sceneName).Forget();
                 }
                 else
@@ -103,12 +103,12 @@ namespace D_Dev.SceneLoader
         private void OnSceneReload()
         {
             var currentScene = GetLastActiveUnloadableScene();
-            if (SceneLoader.Scenes.TryGetValue(currentScene, out var isUnloadable) && isUnloadable)
+            if (SceneLoader.Scenes.TryGetValue(currentScene, out var sceneInfo) && sceneInfo.IsUnloadable)
             {
                 SceneLoader.UnloadUnloadableScenesExcept(string.Empty,
-                    OnStart: () => _onSceneLoadStart?.Invoke()).Forget();
+                    onStart: () => _onSceneLoadStart?.Invoke()).Forget();
                 SceneLoader.LoadSceneAsync(currentScene, LoadSceneMode.Additive,
-                    OnComplete: () => SetActiveScene(currentScene),
+                    onComplete: () => SetActiveScene(currentScene),
                     cancellationToken: _tokenSource.Token).Forget();
             }
             else
