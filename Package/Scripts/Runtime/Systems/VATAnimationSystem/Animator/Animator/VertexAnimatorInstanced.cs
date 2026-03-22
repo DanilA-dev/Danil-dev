@@ -24,6 +24,8 @@ namespace D_Dev.VATAnimationSystem
 
         #region Fields
 
+        [Title("Disabled Components")]
+        [SerializeField] private Renderer _renderer;
         [Title("Base")]
         [SerializeField] private VertexAnimationData _data;
         [SerializeField] private Material _material;
@@ -49,11 +51,18 @@ namespace D_Dev.VATAnimationSystem
 
         #region Monobehaviour
 
+        private void Reset()
+        {
+            TryGetComponent(out _renderer);
+        }
+
         private void Awake()
         {
             if (VertexAnimationsInstancedRenderer.Instance == null)
                 return;
 
+            _renderer.enabled = false;
+            
             _instance = VertexAnimationsInstancedRenderer.Instance.AddUnit(
                 _data, _material, transform.localToWorldMatrix);
         }
