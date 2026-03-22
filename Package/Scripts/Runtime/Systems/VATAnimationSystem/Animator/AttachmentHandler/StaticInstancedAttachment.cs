@@ -22,7 +22,10 @@ namespace D_Dev.VATAnimationSystem
 
         private void Reset()
         {
-            TryGetComponent(out _renderer);
+            if(TryGetComponent(out _renderer))
+                _material = _renderer.material;
+            
+            TryGetComponent(out _meshFilter);
         }
 
         private void Start()
