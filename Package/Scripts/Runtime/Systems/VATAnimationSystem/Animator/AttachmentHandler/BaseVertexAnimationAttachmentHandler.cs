@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace D_Dev.VATAnimationSystem
@@ -13,7 +13,7 @@ namespace D_Dev.VATAnimationSystem
         {
             public string BoneName;
             public Transform AttachRoot;
-            
+
             public int BoneIndex { get; set; }
         }
 
@@ -22,7 +22,12 @@ namespace D_Dev.VATAnimationSystem
         #region Fields
 
         [SerializeField] private VertexAnimationData _data;
+        [SerializeField] private Transform _unitRoot;
+        [SerializeField] private bool _useInstancedAnimator;
+        [HideIf(nameof(_useInstancedAnimator))]
         [SerializeField] private BaseVertexAnimator _animator;
+        [ShowIf(nameof(_useInstancedAnimator))]
+        [SerializeField] private VertexAnimatorInstanced _instancedAnimator;
         [SerializeField] private List<BoneAttachment> _attachments = new();
 
         #endregion
@@ -46,19 +51,45 @@ namespace D_Dev.VATAnimationSystem
         {
             if (_data == null || _data.BoneTexture == null)
                 return;
-            
-            if (_animator == null || _animator.CurrentClip == null)
-                return;
 
-            int frame = GetCurrentFrame();
+            VertexAnimationClipInfo clip;
+            float normalizedTime;
+
+            if (_useInstancedAnimator)
+            {
+                if (_instancedAnimator == null || _instancedAnimator.CurrentClip == null)
+                    return;
+
+                clip = _instancedAnimator.CurrentClip;
+                normalizedTime = _instancedAnimator.NormalizedTime;
+            }
+            else
+            {
+                if (_animator == null || _animator.CurrentClip == null)
+                    return;
+
+                clip = _animator.CurrentClip;
+                normalizedTime = _animator.NormalizedTime;
+            }
+
+            int frame = GetCurrentFrame(clip, normalizedTime);
 
             foreach (var attachment in _attachments)
             {
                 if (attachment.AttachRoot == null || attachment.BoneIndex < 0) continue;
 
-                ReadBoneTexture(attachment.BoneIndex, frame, out Vector3 pos, out Quaternion rot);
-                attachment.AttachRoot.position = pos;
-                attachment.AttachRoot.rotation = rot;
+                ReadBoneTexture(attachment.BoneIndex, frame, out Vector3 localPos, out Quaternion localRot);
+
+                if (_unitRoot != null)
+                {
+                    attachment.AttachRoot.position = _unitRoot.TransformPoint(localPos);
+                    attachment.AttachRoot.rotation = _unitRoot.rotation * localRot;
+                }
+                else
+                {
+                    attachment.AttachRoot.position = localPos;
+                    attachment.AttachRoot.rotation = localRot;
+                }
             }
         }
 
@@ -66,10 +97,9 @@ namespace D_Dev.VATAnimationSystem
 
         #region Private
 
-        private int GetCurrentFrame()
+        private int GetCurrentFrame(VertexAnimationClipInfo clip, float normalizedTime)
         {
-            var clip = _animator.CurrentClip;
-            float t = Mathf.Clamp01(_animator.NormalizedTime);
+            float t = Mathf.Clamp01(normalizedTime);
             return Mathf.RoundToInt(clip.StartFrame + t * (clip.FrameCount - 1));
         }
 

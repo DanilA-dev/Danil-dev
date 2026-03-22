@@ -189,8 +189,8 @@ namespace D_Dev.VATAnimationSystem
                 uv1[v] = new Vector2((v + 0.5f) / vertexCount, 0f);
             bakedMesh.uv2 = uv1;
 
-            var allPositions = new List<Vector3[]>();
             var bounds = new Bounds();
+            int currentFrame = 0;
 
             foreach (var entry in _clips)
             {
@@ -205,27 +205,12 @@ namespace D_Dev.VATAnimationSystem
                     var tempMesh = new Mesh();
                     _skinnedMesh.BakeMesh(tempMesh);
                     var verts = tempMesh.vertices;
-                    allPositions.Add(verts);
                     DestroyImmediate(tempMesh);
 
                     foreach (var v in verts)
                         bounds.Encapsulate(v);
-                }
-            }
 
-            int currentFrame = 0;
-            int posIndex = 0;
-
-            foreach (var entry in _clips)
-            {
-                if (entry.Clip == null) continue;
-                int frameCount = Mathf.RoundToInt(entry.Clip.length * entry.SampleFPS);
-
-                for (int f = 0; f < frameCount; f++)
-                {
-                    var verts = allPositions[posIndex++];
                     var pixels = new Color[vertexCount];
-
                     for (int v = 0; v < vertexCount; v++)
                         pixels[v] = new Color(verts[v].x, verts[v].y, verts[v].z, 1f);
 
@@ -233,7 +218,6 @@ namespace D_Dev.VATAnimationSystem
 
                     if (boneTex != null)
                     {
-                        SampleAnimation(entry.Clip, frameCount <= 1 ? 0f : (float)f / (frameCount - 1));
                         for (int b = 0; b < validBones.Count; b++)
                         {
                             var pos = validBones[b].Bone.position;
