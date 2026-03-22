@@ -23,7 +23,7 @@ namespace D_Dev.VATAnimationSystem
         private void Reset()
         {
             if(TryGetComponent(out _renderer))
-                _material = _renderer.material;
+                _material = _renderer.sharedMaterial;
             
             TryGetComponent(out _meshFilter);
         }
