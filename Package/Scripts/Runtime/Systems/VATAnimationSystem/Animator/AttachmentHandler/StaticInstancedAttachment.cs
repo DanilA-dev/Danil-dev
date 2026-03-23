@@ -30,6 +30,9 @@ namespace D_Dev.VATAnimationSystem
 
         private void Start()
         {
+            UpdateManager.Add(this);
+
+            
             if (VertexAnimationsInstancedRenderer.Instance == null)
                 return;
             
@@ -44,8 +47,6 @@ namespace D_Dev.VATAnimationSystem
 
         private void OnEnable()
         {
-            UpdateManager.Add(this);
-            
             if (_instance == null || VertexAnimationsInstancedRenderer.Instance == null)
                 return;
 
@@ -55,14 +56,14 @@ namespace D_Dev.VATAnimationSystem
 
         private void OnDisable()
         {
-            UpdateManager.Remove(this);
-
             if (VertexAnimationsInstancedRenderer.Instance != null && _instance != null)
                 VertexAnimationsInstancedRenderer.Instance.RemoveStaticInstance(
                     _meshFilter.sharedMesh, _material, _instance);
         }
         private void OnDestroy()
         {
+            UpdateManager.Remove(this);
+            
             if (VertexAnimationsInstancedRenderer.Instance != null && _instance != null)
                 VertexAnimationsInstancedRenderer.Instance.RemoveStaticInstance(
                     _meshFilter.sharedMesh, _material, _instance);
