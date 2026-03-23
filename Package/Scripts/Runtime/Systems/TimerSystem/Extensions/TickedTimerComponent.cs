@@ -20,6 +20,5 @@ namespace D_Dev.TimerSystem
         }
 
         #endregion
-        
     }
 }

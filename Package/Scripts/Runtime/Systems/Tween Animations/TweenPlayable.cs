@@ -96,6 +96,37 @@ namespace D_Dev.TweenAnimations
             }
         }
 
+        public void Rewind()
+        {
+            if (!HasTweensInArray())
+                return;
+
+            if (_currentSequence != null && _currentSequence.IsActive())
+            {
+                _currentSequence.Rewind();
+                return;
+            }
+
+            Kill();
+
+            _currentSequence = DOTween.Sequence();
+            if (_playMode == PlayMode.Parallel)
+            {
+                foreach (var tween in _tweens)
+                    _currentSequence.Join(tween.Play());
+            }
+            else
+            {
+                foreach (var tween in _tweens)
+                    _currentSequence.Append(tween.Play());
+            }
+
+            _currentSequence.SetAutoKill(false)
+                .SetUpdate(_ignoreTimeScale);
+
+            _currentSequence.Rewind();
+        }
+
         #endregion
 
         #region Listeners

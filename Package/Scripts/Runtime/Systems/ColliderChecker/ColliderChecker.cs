@@ -52,6 +52,9 @@ namespace D_Dev.ColliderChecker
 
         private HashSet<Collider> _ignoredCollidersSet;
         private HashSet<Collider2D> _ignoredColliders2DSet;
+        
+        private int _checkLayerMaskValue;
+        private int _ignoreLayerMaskValue;
 
         #endregion
 
@@ -149,6 +152,9 @@ namespace D_Dev.ColliderChecker
 
         public void Init()
         {
+            _checkLayerMaskValue = _checkLayerMask.value;
+            _ignoreLayerMaskValue = _ignoreLayerMask.value;
+            
             RebuildIgnoredCollidersSet();
             RebuildIgnoredColliders2DSet();
         }
@@ -183,11 +189,15 @@ namespace D_Dev.ColliderChecker
 
         private bool IsCheckPassed(GameObject go)
         {
-            if (_checkLayer && ((1 << go.layer) & _checkLayerMask) == 0)
+            if (_checkLayer && ((_checkLayerMaskValue & (1 << go.layer)) == 0))
                 return false;
 
-            if (_checkTag && !go.HasTags(_checkTags))
-                return false;
+            if (_checkTag)
+            {
+                var tagComp = go.GetTagComponent();
+                if (tagComp == null || !tagComp.HasAnyTags(_checkTags))
+                    return false;
+            }
 
             return true;
         }
@@ -197,11 +207,15 @@ namespace D_Dev.ColliderChecker
             if (_ignoreTrigger && isTrigger)
                 return false;
 
-            if (_ignoreLayer && ((1 << go.layer) & _ignoreLayerMask) != 0)
+            if (_ignoreLayer && ((_ignoreLayerMaskValue & (1 << go.layer)) != 0))
                 return false;
 
-            if (_ignoreTag && go.HasTags(_ignoreTags))
-                return false;
+            if (_ignoreTag)
+            {
+                var tagComp = go.GetTagComponent();
+                if (tagComp != null && tagComp.HasAnyTags(_ignoreTags))
+                    return false;
+            }
 
             return true;
         }
@@ -264,7 +278,8 @@ namespace D_Dev.ColliderChecker
 
         private void DebugCollider(Collider collider, bool isPassed)
         {
-            if (!_debugColliders) return;
+            if (!_debugColliders)
+                return;
 
             string color = isPassed ? "green" : "red";
             string result = isPassed ? "passed" : "not passed";
@@ -273,7 +288,8 @@ namespace D_Dev.ColliderChecker
 
         private void DebugCollider(Collider2D collider2D, bool isPassed)
         {
-            if (!_debugColliders) return;
+            if (!_debugColliders)
+                return;
 
             string color = isPassed ? "green" : "red";
             string result = isPassed ? "passed" : "not passed";

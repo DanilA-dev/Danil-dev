@@ -58,7 +58,7 @@ namespace D_Dev.TweenAnimations
 
         private void OnDisable()
         {
-            if (_tweenPlayer!= null)
+            if (_tweenPlayer != null)
             {
                 _tweenPlayer.OnStart -= OnTweenPlayableStart;
                 _tweenPlayer.OnComplete -= OnTweenPlayableComplete;
@@ -81,8 +81,12 @@ namespace D_Dev.TweenAnimations
 
             IsComplete = false;
 
+            _tweenPlayer.OnStart -= OnTweenPlayableStart;
             _tweenPlayer.OnStart += OnTweenPlayableStart;
+            
+            _tweenPlayer.OnComplete -= OnTweenPlayableComplete;
             _tweenPlayer.OnComplete += OnTweenPlayableComplete;
+            
             _tweenPlayer.Play();
         }
 
@@ -108,10 +112,19 @@ namespace D_Dev.TweenAnimations
 
         public void Stop()
         {
-            if(_tweenPlayer == null)
+            if (_tweenPlayer == null)
                 return;
-            
+
             _tweenPlayer.Kill();
+        }
+
+        public void Rewind()
+        {
+            if (_tweenPlayer == null)
+                return;
+
+            IsComplete = false;
+            _tweenPlayer.Rewind();
         }
 
         #endregion

@@ -7,7 +7,7 @@ namespace D_Dev.UpdateManagerSystem
     {
         #region Fields
 
-        private static readonly Queue<ITickable> _tickables = new();
+        private static readonly List<ITickable> _tickables = new();
         private static readonly Queue<ITickable> _pendingAdd = new();
         private static readonly Queue<ITickable> _pendingRemove = new();
         
@@ -76,13 +76,17 @@ namespace D_Dev.UpdateManagerSystem
             while (_pendingAdd.Count > 0)
             {
                 var tickable = _pendingAdd.Dequeue();
-                _tickables.Enqueue(tickable);
-                _isSorted = false;
+                if (!_tickables.Contains(tickable))
+                {
+                    _tickables.Add(tickable);
+                    _isSorted = false;
+                }
             }
             
             while (_pendingRemove.Count > 0)
             {
                 var tickable = _pendingRemove.Dequeue();
+                _tickables.Remove(tickable);
                 _sortedTickables.Remove(tickable);
             }
         }

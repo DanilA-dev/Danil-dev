@@ -71,7 +71,7 @@ namespace D_Dev.TimerSystem
         public void UpdateTimer(float delta)
         {
             if (_timer != null)
-                _timer.Tick(Time.deltaTime);
+                _timer.Tick(delta);
         }
         
         public void ResetTimer(float time)

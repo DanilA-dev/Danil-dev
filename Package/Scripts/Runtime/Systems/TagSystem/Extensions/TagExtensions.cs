@@ -1,31 +1,25 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace D_Dev.TagSystem.Extensions
 {
     public static class TagExtensions
     {
-        public static Tag[] Tags(this GameObject gameObject)
+        public static TagComponent GetTagComponent(this GameObject go)
         {
-            if (gameObject.TryGetComponent(out TagComponent tagComponent))
-            {
-                return tagComponent.Tags.ToArray();
-            }
+            go.TryGetComponent(out TagComponent tagComponent);
+            return tagComponent;
+        }
 
-            Debug.LogError($"Dont have any tags on {gameObject.name}");
-            return Array.Empty<Tag>();
-        }
-        
-        public static bool HasTag(this GameObject gameObject, Tag tag)
+        public static bool HasTag(this GameObject go, Tag tag)
         {
-            return gameObject.TryGetComponent(out TagComponent tagComponent) 
-                   && tagComponent.HasAnyTag(tag);
+            var comp = go.GetTagComponent();
+            return comp != null && comp.HasAnyTag(tag);
         }
-        
-        public static bool HasTags(this GameObject gameObject, Tag[] tags)
+
+        public static bool HasTags(this GameObject go, Tag[] tags)
         {
-            return gameObject.TryGetComponent(out TagComponent tagComponent)
-                   && tagComponent.HasAnyTags(tags);
+            var comp = go.GetTagComponent();
+            return comp != null && comp.HasAnyTags(tags);
         }
     }
 }

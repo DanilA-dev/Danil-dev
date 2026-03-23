@@ -20,6 +20,9 @@ namespace D_Dev.StateMachine
         private CancellationTokenSource _tokenSource;
         
         private bool _isStateSwitching;
+
+        private readonly List<string> _transitionKeys = new();
+        private readonly List<string> _fixedTransitionKeys = new();
         
         public UnityAction<string> OnStateEnter;
         public UnityAction<string> OnStateExit;
@@ -27,6 +30,7 @@ namespace D_Dev.StateMachine
         #endregion
 
         #region Properties
+
         public string CurrentState => _currentState;
 
         #endregion
@@ -36,8 +40,8 @@ namespace D_Dev.StateMachine
         public StateMachine()
         {
             _states = new();
-            _statesConditions = new ();
-            _fixedStatesConditions = new ();
+            _statesConditions = new();
+            _fixedStatesConditions = new();
             _tokenSource = new CancellationTokenSource();
         }
 
@@ -46,30 +50,41 @@ namespace D_Dev.StateMachine
         #region Public
 
         public void AddState(string stateName, IState state) => _states.TryAdd(stateName, state);
+
         public void AddTransition(string fromState, string toState, IStateCondition condition)
         {
-            if(!_statesConditions.TryAdd(fromState, new List<StateTransition> {new(toState, condition) }))
+            if (!_statesConditions.TryAdd(fromState, new List<StateTransition> { new(toState, condition) }))
                 _statesConditions[fromState].Add(new(toState, condition));
+            else
+                _transitionKeys.Add(fromState);
         }
 
         public void AddFixedTransition(string fromState, string toState, IFixedStateCondition condition)
         {
-            if(!_fixedStatesConditions.TryAdd(fromState, new List<FixedStateTransition> {new(toState, condition) }))
+            if (!_fixedStatesConditions.TryAdd(fromState, new List<FixedStateTransition> { new(toState, condition) }))
                 _fixedStatesConditions[fromState].Add(new(toState, condition));
+            else
+                _fixedTransitionKeys.Add(fromState);
         }
 
         public void RemoveTransition(string keyState)
         {
-            if(_statesConditions.ContainsKey(keyState))
+            if (_statesConditions.ContainsKey(keyState))
+            {
                 _statesConditions.Remove(keyState);
+                _transitionKeys.Remove(keyState);
+            }
         }
 
         public void RemoveFixedTransition(string keyState)
         {
-            if(_fixedStatesConditions.ContainsKey(keyState))
+            if (_fixedStatesConditions.ContainsKey(keyState))
+            {
                 _fixedStatesConditions.Remove(keyState);
+                _fixedTransitionKeys.Remove(keyState);
+            }
         }
-        
+
         public void UpdateStates()
         {
             _current?.OnUpdate();
@@ -85,36 +100,43 @@ namespace D_Dev.StateMachine
             _current?.OnFixedUpdate();
         }
 
-   
-        
         public async UniTaskVoid ChangeState(string newState)
         {
-            if(_isStateSwitching)
+            if (_isStateSwitching)
                 return;
-            
+
             _isStateSwitching = true;
-            if (!_states.TryGetValue(newState, out IState state))
+
+            try
             {
-                Debug.Log($"[StateMachine] {GetType().Name}, State {newState} not found");
-                return;
-            }
-            
-            if (_current != null)
-            {
-                if(Equals(_currentState, newState))
+                if (!_states.TryGetValue(newState, out IState state))
+                {
+                    Debug.Log($"[StateMachine] {GetType().Name}, State {newState} not found");
                     return;
-                
-                if(_current.ExitTime > 0)
-                    await UniTask.Delay(TimeSpan.FromSeconds(_current.ExitTime), cancellationToken: _tokenSource.Token);
-                
-                _current.OnExit();
-                OnStateExit?.Invoke(_currentState);
+                }
+
+                if (Equals(_currentState, newState))
+                    return;
+
+                if (_current != null)
+                {
+                    if (_current.ExitTime > 0)
+                        await UniTask.Delay(TimeSpan.FromSeconds(_current.ExitTime),
+                            cancellationToken: _tokenSource.Token);
+
+                    _current.OnExit();
+                    OnStateExit?.Invoke(_currentState);
+                }
+
+                _current = state;
+                _currentState = newState;
+                _current.OnEnter();
+                OnStateEnter?.Invoke(newState);
             }
-            _current = state;
-            _currentState = newState;
-            _current.OnEnter();
-            OnStateEnter?.Invoke(newState);
-            _isStateSwitching = false;
+            finally
+            {
+                _isStateSwitching = false;
+            }
         }
 
         #endregion
@@ -123,36 +145,50 @@ namespace D_Dev.StateMachine
 
         private void UpdateTransitions()
         {
-            if(_statesConditions.Count <= 0)
+            if (_transitionKeys.Count <= 0)
                 return;
 
-            foreach (var (stateName, transition) in _statesConditions)
+            for (int i = 0; i < _transitionKeys.Count; i++)
             {
-                if(!stateName.Equals(_currentState))
+                var stateName = _transitionKeys[i];
+
+                if (!stateName.Equals(_currentState))
                     continue;
-                
-                foreach (var stateTransition in transition)
+
+                var transitions = _statesConditions[stateName];
+
+                for (int j = 0; j < transitions.Count; j++)
                 {
-                    if(stateTransition.Condition.IsMatched() && !_isStateSwitching)
-                        ChangeState(stateTransition.ToState);
+                    if (transitions[j].Condition.IsMatched() && !_isStateSwitching)
+                    {
+                        ChangeState(transitions[j].ToState);
+                        break;
+                    }
                 }
             }
         }
-        
+
         public void UpdateFixedTransitions()
         {
-            if(_fixedStatesConditions.Count <= 0)
+            if (_fixedTransitionKeys.Count <= 0)
                 return;
 
-            foreach (var (stateName, transition) in _fixedStatesConditions)
+            for (int i = 0; i < _fixedTransitionKeys.Count; i++)
             {
-                if(!stateName.Equals(_currentState))
+                var stateName = _fixedTransitionKeys[i];
+
+                if (!stateName.Equals(_currentState))
                     continue;
-                
-                foreach (var fixedTransition in transition)
+
+                var transitions = _fixedStatesConditions[stateName];
+
+                for (int j = 0; j < transitions.Count; j++)
                 {
-                    if(fixedTransition.Condition.IsMatched() && !_isStateSwitching)
-                        ChangeState(fixedTransition.ToState);
+                    if (transitions[j].Condition.IsMatched() && !_isStateSwitching)
+                    {
+                        ChangeState(transitions[j].ToState);
+                        break;
+                    }
                 }
             }
         }

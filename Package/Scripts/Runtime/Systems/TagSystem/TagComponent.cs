@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace D_Dev.TagSystem
@@ -10,29 +9,57 @@ namespace D_Dev.TagSystem
 
         [SerializeField] private List<Tag> _tags;
 
+        private HashSet<Tag> _tagsSet;
 
         #endregion
 
         #region Properties
 
-        public List<Tag> Tags => _tags;
+        public IReadOnlyCollection<Tag> Tags => _tagsSet;
 
         #endregion
 
+        #region Monobehaviour
+
+        private void Awake() => _tagsSet = new HashSet<Tag>(_tags);
+
+        #endregion
+        
         #region Public
 
-        public bool HasAnyTag(Tag checkTag) => _tags.Any(t => t.Equals(checkTag));
-        public bool HasAnyTags(Tag[] checkTags) => _tags.Any(tag => checkTags.Any(checkTag => checkTag == tag));
+        public bool HasAnyTag(Tag checkTag)
+        {
+            return checkTag != null && _tagsSet.Contains(checkTag);
+        }
+
+        public bool HasAnyTags(Tag[] checkTags)
+        {
+            if (checkTags == null || checkTags.Length == 0)
+                return false;
+
+            for (int i = 0; i < checkTags.Length; i++)
+            {
+                if (_tagsSet.Contains(checkTags[i]))
+                    return true;
+            }
+            return false;
+        }
 
         public void AddTag(Tag tag)
         {
-            if(!_tags.Contains(tag))
+            if (tag == null)
+                return;
+
+            if (_tagsSet.Add(tag))
                 _tags.Add(tag);
         }
 
         public void RemoveTag(Tag tag)
         {
-            if(_tags.Contains(tag))
+            if (tag == null)
+                return;
+
+            if (_tagsSet.Remove(tag))
                 _tags.Remove(tag);
         }
 
