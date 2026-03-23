@@ -52,7 +52,7 @@ namespace D_Dev.ColliderChecker
 
         private HashSet<Collider> _ignoredCollidersSet;
         private HashSet<Collider2D> _ignoredColliders2DSet;
-        
+
         private int _checkLayerMaskValue;
         private int _ignoreLayerMaskValue;
 
@@ -154,7 +154,7 @@ namespace D_Dev.ColliderChecker
         {
             _checkLayerMaskValue = _checkLayerMask.value;
             _ignoreLayerMaskValue = _ignoreLayerMask.value;
-            
+
             RebuildIgnoredCollidersSet();
             RebuildIgnoredColliders2DSet();
         }
@@ -164,8 +164,11 @@ namespace D_Dev.ColliderChecker
             if (collider == null || collider.gameObject == null)
                 return false;
 
-            bool passed = IsCheckPassed(collider.gameObject)
-                       && IsIgnorePassed(collider.gameObject, collider.isTrigger, collider);
+            var go = collider.gameObject;
+            var tagComp = (_checkTag || _ignoreTag) ? go.GetTagComponent() : null;
+
+            bool passed = IsCheckPassed(go, tagComp)
+                       && IsIgnorePassed(go, collider.isTrigger, collider, tagComp);
 
             DebugCollider(collider, passed);
             return passed;
@@ -176,8 +179,11 @@ namespace D_Dev.ColliderChecker
             if (collider2D == null || collider2D.gameObject == null)
                 return false;
 
-            bool passed = IsCheckPassed(collider2D.gameObject)
-                       && IsIgnorePassed(collider2D.gameObject, collider2D.isTrigger, collider2D);
+            var go = collider2D.gameObject;
+            var tagComp = (_checkTag || _ignoreTag) ? go.GetTagComponent() : null;
+
+            bool passed = IsCheckPassed(go, tagComp)
+                       && IsIgnorePassed(go, collider2D.isTrigger, collider2D, tagComp);
 
             DebugCollider(collider2D, passed);
             return passed;
@@ -187,22 +193,18 @@ namespace D_Dev.ColliderChecker
 
         #region Private
 
-        private bool IsCheckPassed(GameObject go)
+        private bool IsCheckPassed(GameObject go, TagComponent tagComp)
         {
             if (_checkLayer && ((_checkLayerMaskValue & (1 << go.layer)) == 0))
                 return false;
 
-            if (_checkTag)
-            {
-                var tagComp = go.GetTagComponent();
-                if (tagComp == null || !tagComp.HasAnyTags(_checkTags))
-                    return false;
-            }
+            if (_checkTag && (tagComp == null || !tagComp.HasAnyTags(_checkTags)))
+                return false;
 
             return true;
         }
 
-        private bool IsIgnorePassedCommon(GameObject go, bool isTrigger)
+        private bool IsIgnorePassedCommon(GameObject go, bool isTrigger, TagComponent tagComp)
         {
             if (_ignoreTrigger && isTrigger)
                 return false;
@@ -210,19 +212,15 @@ namespace D_Dev.ColliderChecker
             if (_ignoreLayer && ((_ignoreLayerMaskValue & (1 << go.layer)) != 0))
                 return false;
 
-            if (_ignoreTag)
-            {
-                var tagComp = go.GetTagComponent();
-                if (tagComp != null && tagComp.HasAnyTags(_ignoreTags))
-                    return false;
-            }
+            if (_ignoreTag && tagComp != null && tagComp.HasAnyTags(_ignoreTags))
+                return false;
 
             return true;
         }
 
-        private bool IsIgnorePassed(GameObject go, bool isTrigger, Collider collider)
+        private bool IsIgnorePassed(GameObject go, bool isTrigger, Collider collider, TagComponent tagComp)
         {
-            if (!IsIgnorePassedCommon(go, isTrigger))
+            if (!IsIgnorePassedCommon(go, isTrigger, tagComp))
                 return false;
 
             if (_ignoreColliders && _ignoredCollidersSet != null && _ignoredCollidersSet.Contains(collider))
@@ -231,9 +229,9 @@ namespace D_Dev.ColliderChecker
             return true;
         }
 
-        private bool IsIgnorePassed(GameObject go, bool isTrigger, Collider2D collider2D)
+        private bool IsIgnorePassed(GameObject go, bool isTrigger, Collider2D collider2D, TagComponent tagComp)
         {
-            if (!IsIgnorePassedCommon(go, isTrigger))
+            if (!IsIgnorePassedCommon(go, isTrigger, tagComp))
                 return false;
 
             if (_ignoreColliders && _ignoredColliders2DSet != null && _ignoredColliders2DSet.Contains(collider2D))
@@ -278,8 +276,7 @@ namespace D_Dev.ColliderChecker
 
         private void DebugCollider(Collider collider, bool isPassed)
         {
-            if (!_debugColliders)
-                return;
+            if (!_debugColliders) return;
 
             string color = isPassed ? "green" : "red";
             string result = isPassed ? "passed" : "not passed";
@@ -288,8 +285,7 @@ namespace D_Dev.ColliderChecker
 
         private void DebugCollider(Collider2D collider2D, bool isPassed)
         {
-            if (!_debugColliders)
-                return;
+            if (!_debugColliders) return;
 
             string color = isPassed ? "green" : "red";
             string result = isPassed ? "passed" : "not passed";

@@ -73,6 +73,13 @@ namespace D_Dev.UpdateManagerSystem
 
         private static void ProcessPending()
         {
+            while (_pendingRemove.Count > 0)
+            {
+                var tickable = _pendingRemove.Dequeue();
+                _tickables.Remove(tickable);
+                _sortedTickables.Remove(tickable);
+            }
+
             while (_pendingAdd.Count > 0)
             {
                 var tickable = _pendingAdd.Dequeue();
@@ -81,13 +88,6 @@ namespace D_Dev.UpdateManagerSystem
                     _tickables.Add(tickable);
                     _isSorted = false;
                 }
-            }
-            
-            while (_pendingRemove.Count > 0)
-            {
-                var tickable = _pendingRemove.Dequeue();
-                _tickables.Remove(tickable);
-                _sortedTickables.Remove(tickable);
             }
         }
         
