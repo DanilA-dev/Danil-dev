@@ -77,13 +77,11 @@ namespace D_Dev.TimerSystem
         public void ResetTimer(float time)
         {
             _timer?.Reset(time);
-            OnTimerEnd?.Invoke(time);
         }
 
         public void ResetTimer()
         {
             _timer?.Reset(_timeValue.Value);
-            OnTimerEnd?.Invoke(_timeValue.Value);
         }
 
         public void StartTimer()
