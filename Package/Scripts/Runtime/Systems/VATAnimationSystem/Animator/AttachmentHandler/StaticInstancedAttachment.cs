@@ -39,8 +39,18 @@ namespace D_Dev.VATAnimationSystem
             _renderer.enabled = false;
             _instance = VertexAnimationsInstancedRenderer.Instance.AddStaticInstance(
                 _meshFilter.sharedMesh, _material, transform.localToWorldMatrix);
+        }
 
+
+        private void OnEnable()
+        {
             UpdateManager.Add(this);
+            
+            if (_instance == null || VertexAnimationsInstancedRenderer.Instance == null)
+                return;
+
+            VertexAnimationsInstancedRenderer.Instance.AddExistingStaticInstance(
+                _meshFilter.sharedMesh, _material, _instance);
         }
 
         private void OnDisable()
@@ -51,21 +61,8 @@ namespace D_Dev.VATAnimationSystem
                 VertexAnimationsInstancedRenderer.Instance.RemoveStaticInstance(
                     _meshFilter.sharedMesh, _material, _instance);
         }
-
-        private void OnEnable()
-        {
-            if (_instance == null || VertexAnimationsInstancedRenderer.Instance == null) return;
-
-            VertexAnimationsInstancedRenderer.Instance.AddExistingStaticInstance(
-                _meshFilter.sharedMesh, _material, _instance);
-
-            UpdateManager.Add(this);
-        }
-
         private void OnDestroy()
         {
-            UpdateManager.Remove(this);
-
             if (VertexAnimationsInstancedRenderer.Instance != null && _instance != null)
                 VertexAnimationsInstancedRenderer.Instance.RemoveStaticInstance(
                     _meshFilter.sharedMesh, _material, _instance);
@@ -77,7 +74,9 @@ namespace D_Dev.VATAnimationSystem
 
         public void Tick()
         {
-            if (this == null || _instance == null) return;
+            if (this == null || _instance == null)
+                return;
+            
             _instance.Matrix = transform.localToWorldMatrix;
         }
 
