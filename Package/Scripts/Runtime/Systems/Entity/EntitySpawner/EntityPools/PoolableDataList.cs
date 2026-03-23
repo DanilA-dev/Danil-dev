@@ -4,7 +4,6 @@ using D_Dev.Entity;
 using D_Dev.Entity.Extensions;
 using D_Dev.EntitySpawner;
 using D_Dev.PolymorphicValueSystem;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace D_Dev.EntityPool
@@ -20,9 +19,6 @@ namespace D_Dev.EntityPool
             public int StartEntitiesAmount;
             public int MaxSize;
             public int DefaultCapacity;
-            public bool Prewarm;
-            [ShowIf(nameof(Prewarm))]
-            public int PrewarmAmount;
         }
 
         #endregion
@@ -90,7 +86,7 @@ namespace D_Dev.EntityPool
         }
 
         public bool HasPool(EntityInfo entityInfo) => _pools.ContainsKey(entityInfo);
-
+        
         public void ReleaseAll()
         {
             foreach (var keyValuePair in _pools)
@@ -112,8 +108,6 @@ namespace D_Dev.EntityPool
                 SetActiveOnStart = true,
                 PoolMaxSize = config.MaxSize,
                 PoolDefaultCapacity = config.DefaultCapacity,
-                Prewarm = config.Prewarm,
-                PrewarmAmount = config.PrewarmAmount
             };
 
             await spawnSettings.Init();
