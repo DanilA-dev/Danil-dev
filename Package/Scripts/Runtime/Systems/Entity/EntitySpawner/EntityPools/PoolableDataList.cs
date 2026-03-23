@@ -3,7 +3,6 @@ using Cysharp.Threading.Tasks;
 using D_Dev.Entity;
 using D_Dev.Entity.Extensions;
 using D_Dev.EntitySpawner;
-using D_Dev.PolymorphicValueSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -17,7 +16,6 @@ namespace D_Dev.EntityPool
         public class PoolConfig
         {
             public EntityInfo EntityData;
-            public int StartEntitiesAmount;
             public int MaxSize;
             public int DefaultCapacity;
             public bool Prewarm;
@@ -108,7 +106,6 @@ namespace D_Dev.EntityPool
             {
                 Data = new EntityInfoConstantValue { Value = config.EntityData },
                 UsePool = true,
-                Amount = new IntConstantValue { Value = config.StartEntitiesAmount },
                 SetActiveOnStart = true,
                 PoolMaxSize = config.MaxSize,
                 PoolDefaultCapacity = config.DefaultCapacity,
