@@ -72,13 +72,17 @@ namespace D_Dev.VATAnimationSystem
         {
             foreach (var group in _groups.Values)
             {
-                if (group.Instances.Count == 0) continue;
+                if (group.Instances.Count == 0)
+                    continue;
+                
                 DrawGroup(group);
             }
 
             foreach (var group in _staticGroups.Values)
             {
-                if (group.Instances.Count == 0) continue;
+                if (group.Instances.Count == 0)
+                    continue;
+                
                 DrawStaticGroup(group);
             }
         }
@@ -103,7 +107,9 @@ namespace D_Dev.VATAnimationSystem
 
         public void AddExistingUnit(VertexAnimationData data, VATInstance instance)
         {
-            if (!_groups.TryGetValue(data, out var group)) return;
+            if (!_groups.TryGetValue(data, out var group))
+                return;
+            
             if (!group.Instances.Contains(instance))
                 group.Instances.Add(instance);
         }
@@ -217,7 +223,9 @@ namespace D_Dev.VATAnimationSystem
 
         private float CalculateFrame(VATInstance unit)
         {
-            if (unit.Clip == null) return 0f;
+            if (unit.Clip == null)
+                return 0f;
+            
             float t = unit.Clip.Duration > 0f ? unit.Time / unit.Clip.Duration : 0f;
             return unit.Clip.StartFrame + t * (unit.Clip.FrameCount - 1);
         }

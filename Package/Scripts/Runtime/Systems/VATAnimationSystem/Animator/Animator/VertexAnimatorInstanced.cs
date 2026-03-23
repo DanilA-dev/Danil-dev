@@ -69,8 +69,6 @@ namespace D_Dev.VATAnimationSystem
 
         private void Start()
         {
-            UpdateManager.Add(this);
-
             foreach (var state in _states)
             {
                 if (state.PlayOnStart)
@@ -83,6 +81,7 @@ namespace D_Dev.VATAnimationSystem
             if (_instance == null || VertexAnimationsInstancedRenderer.Instance == null)
                 return;
 
+            UpdateManager.Add(this);
             VertexAnimationsInstancedRenderer.Instance.AddExistingUnit(_data, _instance);
         }
 
