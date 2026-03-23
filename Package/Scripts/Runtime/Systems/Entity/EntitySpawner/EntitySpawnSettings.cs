@@ -31,10 +31,11 @@ namespace D_Dev.EntitySpawner
         [SerializeField] private Transform _parentTransform;
         [FoldoutGroup("Position and Rotation")]
         [SerializeReference] private BasePositionSettings _positionSettings = new();
-        [FoldoutGroup("Position and Rotation")] 
+        [FoldoutGroup("Position and Rotation")]
         [SerializeField] private Vector3 _positionOffset;
         [FoldoutGroup("Position and Rotation")]
         [SerializeReference] private BaseRotationSettings _rotationSettings = new();
+
         [FoldoutGroup("Pool")]
         [SerializeField] private bool _usePool;
         [FoldoutGroup("Pool")]
@@ -43,6 +44,12 @@ namespace D_Dev.EntitySpawner
         [FoldoutGroup("Pool")]
         [ShowIf(nameof(_usePool))]
         [SerializeField] private bool _poolCollectionCheck;
+        [FoldoutGroup("Pool")]
+        [ShowIf(nameof(_usePool))]
+        [SerializeField] private bool _prewarm;
+        [FoldoutGroup("Pool")]
+        [ShowIf(nameof(ShowPrewarmAmount))]
+        [SerializeField] private int _prewarmAmount;
         [FoldoutGroup("Pool")]
         [ShowIf(nameof(_usePool))]
         [SerializeField] private int _poolDefaultCapacity;
@@ -56,6 +63,7 @@ namespace D_Dev.EntitySpawner
 
         private ObjectPool<PoolableObject> _pool;
         private List<PoolableObject> _poolableEntities;
+        private Queue<PoolableObject> _prewarmQueue;
 
         #endregion
 
@@ -84,6 +92,7 @@ namespace D_Dev.EntitySpawner
             get => _setActiveOnStart;
             set => _setActiveOnStart = value;
         }
+
         public bool UsePool
         {
             get => _usePool;
@@ -112,6 +121,18 @@ namespace D_Dev.EntitySpawner
         {
             get => _poolMaxSize;
             set => _poolMaxSize = value;
+        }
+
+        public bool Prewarm
+        {
+            get => _prewarm;
+            set => _prewarm = value;
+        }
+
+        public int PrewarmAmount
+        {
+            get => _prewarmAmount;
+            set => _prewarmAmount = value;
         }
 
         public BasePositionSettings PositionSettings
@@ -153,6 +174,7 @@ namespace D_Dev.EntitySpawner
         }
 
         private bool UseGlobalPool => _globalPool != null;
+        private bool ShowPrewarmAmount => _usePool && _prewarm;
 
         #endregion
 
@@ -161,10 +183,15 @@ namespace D_Dev.EntitySpawner
         public async UniTask Init()
         {
             _data?.Value?.EntityPrefab?.ResetInstance();
-            
+
             if (!UseGlobalPool && _usePool)
             {
-                PrewarmPool();
+                _poolableEntities = new List<PoolableObject>();
+                _prewarmQueue = new Queue<PoolableObject>();
+
+                if (_prewarm && _prewarmAmount > 0)
+                    await PrewarmPoolAsync();
+
                 CreatePool();
             }
 
@@ -177,10 +204,10 @@ namespace D_Dev.EntitySpawner
             if (UseGlobalPool)
                 return;
 
-            if(!_usePool || _pool == null)
+            if (!_usePool || _pool == null)
                 return;
 
-            if(_poolableEntities.Count <= 0)
+            if (_poolableEntities.Count <= 0)
                 return;
 
             foreach (var poolableEntity in _poolableEntities)
@@ -189,7 +216,7 @@ namespace D_Dev.EntitySpawner
                 poolableEntity.OnEntityDestroy.RemoveListener(OnPoolableEntityDestroyed);
                 _pool.Release(poolableEntity);
             }
-            
+
             _pool.Dispose();
             _poolableEntities.Clear();
         }
@@ -219,7 +246,7 @@ namespace D_Dev.EntitySpawner
             }
             else
                 returnObj = await CreateEntityAsync();
-            
+
             return returnObj;
         }
 
@@ -231,7 +258,7 @@ namespace D_Dev.EntitySpawner
                 return;
             }
 
-            if(_usePool)
+            if (_usePool)
                 _pool?.Release(poolableObject);
         }
 
@@ -244,18 +271,32 @@ namespace D_Dev.EntitySpawner
             for (int i = 0; i < _amount.Value; i++)
                 await CreateEntityAsync();
         }
-        
+
+        private async UniTask PrewarmPoolAsync()
+        {
+            for (int i = 0; i < _prewarmAmount; i++)
+            {
+                var go = await CreateEntityAsync(forceInactive: true);
+                if (go != null && go.TryGetComponent(out PoolableObject poolable))
+                    _prewarmQueue.Enqueue(poolable);
+            }
+        }
+
         private void CreatePool()
         {
-            int index = 0;
-
             _pool = new ObjectPool<PoolableObject>(
-                createFunc: () => CreateEntity().GetComponent<PoolableObject>(),
+                createFunc: () =>
+                {
+                    if (_prewarmQueue != null && _prewarmQueue.Count > 0)
+                        return _prewarmQueue.Dequeue();
+
+                    return CreateEntity().GetComponent<PoolableObject>();
+                },
                 actionOnGet: p =>
                 {
                     if (p != null && p.gameObject != null && !p.gameObject.activeInHierarchy)
                         p.gameObject.SetActive(true);
-                    
+
                     p.Get();
                 },
                 actionOnRelease: p => { if (p != null && p.gameObject != null) p.gameObject.SetActive(false); },
@@ -265,68 +306,56 @@ namespace D_Dev.EntitySpawner
                 maxSize: _poolMaxSize
             );
         }
-        
-        private void PrewarmPool()
+
+        private async UniTask<GameObject> CreateEntityAsync(bool forceInactive = false)
         {
-            _poolableEntities = new List<PoolableObject>();
-            for (int i = 0; i < _amount.Value; i++)
-            {
-                var go = CreateEntity();
-                var poolable = go.GetComponent<PoolableObject>();
-                go.SetActive(false);
-                _poolableEntities.Add(poolable);
-            }
-        }
-        
-        private async UniTask<GameObject> CreateEntityAsync()
-        {
-            GameObject obj = null;
             var entityAsset = _data.Value.EntityPrefab;
-            obj = await entityAsset.InstantiateAsync();
+            var obj = await entityAsset.InstantiateAsync();
             var entityTransform = obj.transform;
-            if(_setParent && _parentTransform != null)
+
+            if (_setParent && _parentTransform != null)
                 entityTransform.SetParent(_parentTransform);
 
             obj.transform.position = _positionSettings.GetPosition() + _positionOffset;
             obj.transform.rotation = _rotationSettings.GetRotation();
-            
-            obj.SetActive(_setActiveOnStart);
-            
-            if(obj.TryGetComponent(out RuntimeEntityVariablesContainer runtimeEntityVariablesContainer))
+            obj.SetActive(forceInactive ? false : _setActiveOnStart);
+
+            if (obj.TryGetComponent(out RuntimeEntityVariablesContainer runtimeEntityVariablesContainer))
                 runtimeEntityVariablesContainer.Init(_data.Value.Variables);
-            
+
             if (_usePool && obj.TryGetComponent(out PoolableObject poolableEntity))
             {
                 poolableEntity.OnEntityRelease.AddListener(OnPoolableEntityReleased);
                 poolableEntity.OnEntityDestroy.AddListener(OnPoolableEntityDestroyed);
                 _poolableEntities.Add(poolableEntity);
             }
+
             return obj;
         }
-        
+
         private GameObject CreateEntity()
         {
-            GameObject obj = null;
             var entityAsset = _data.Value.EntityPrefab;
-            obj = entityAsset.Instantiate();
+            var obj = entityAsset.Instantiate();
             var entityTransform = obj.transform;
-            if(_setParent && _parentTransform != null)
+
+            if (_setParent && _parentTransform != null)
                 entityTransform.SetParent(_parentTransform);
 
             obj.transform.position = _positionSettings.GetPosition() + _positionOffset;
             obj.transform.rotation = _rotationSettings.GetRotation();
-            
             obj.SetActive(_setActiveOnStart);
-            
-            if(obj.TryGetComponent(out RuntimeEntityVariablesContainer runtimeEntityVariablesContainer))
+
+            if (obj.TryGetComponent(out RuntimeEntityVariablesContainer runtimeEntityVariablesContainer))
                 runtimeEntityVariablesContainer.Init(_data.Value.Variables);
-            
+
             if (_usePool && obj.TryGetComponent(out PoolableObject poolableEntity))
             {
                 poolableEntity.OnEntityRelease.AddListener(OnPoolableEntityReleased);
                 poolableEntity.OnEntityDestroy.AddListener(OnPoolableEntityDestroyed);
                 _poolableEntities.Add(poolableEntity);
             }
+
             return obj;
         }
 
