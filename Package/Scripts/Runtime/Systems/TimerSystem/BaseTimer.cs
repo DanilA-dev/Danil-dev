@@ -43,7 +43,6 @@ namespace D_Dev.TimerSystem
                IsRunning = true;
                OnTimerStart?.Invoke();
            }
-          
        }
     
        public void Stop()
@@ -62,10 +61,7 @@ namespace D_Dev.TimerSystem
 
        #region Abstract
 
-       public virtual void Tick(float deltaTime)
-       {
-           OnTimerProgressUpdate?.Invoke(Progress);
-       }
+       public abstract void Tick(float deltaTime);
 
        public virtual void Reset()
        {
@@ -73,6 +69,12 @@ namespace D_Dev.TimerSystem
        }
 
        #endregion
-      
+
+       #region Protected
+
+       protected void OnProgressUpdate() => OnTimerProgressUpdate?.Invoke(Progress);
+
+       #endregion
+
     }
 }

@@ -21,10 +21,10 @@ namespace D_Dev.TimerSystem
 
         public override void Tick(float deltaTime)
         {
-            base.Tick(deltaTime);
             if (IsRunning && Time < _targetTime)
             {
                 Time += deltaTime;
+                OnProgressUpdate();
             }
         
             if(IsRunning && Time >= _targetTime)

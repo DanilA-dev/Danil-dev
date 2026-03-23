@@ -16,9 +16,11 @@ namespace D_Dev.TimerSystem
 
         public override void Tick(float deltaTime)
         {
-            base.Tick(deltaTime);
             if (IsRunning && Time > 0)
+            {
                 Time -= deltaTime;
+                OnProgressUpdate();
+            }
       
             if(IsRunning && Time <= 0)
                 Stop();
