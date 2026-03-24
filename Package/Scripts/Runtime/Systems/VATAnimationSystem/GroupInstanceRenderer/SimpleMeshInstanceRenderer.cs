@@ -2,9 +2,9 @@ using D_Dev.UpdateManagerSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace D_Dev.VATAnimationSystem
+namespace D_Dev.VATAnimationSystem.GroupInstanceRenderer
 {
-    public class StaticInstancedAttachment : MonoBehaviour, ITickable
+    public class SimpleMeshInstanceRenderer : MonoBehaviour, ITickable
     {
         #region Fields
 
@@ -14,7 +14,7 @@ namespace D_Dev.VATAnimationSystem
         [SerializeField] private MeshFilter _meshFilter;
         [SerializeField] private Material _material;
 
-        private VertexAnimationsInstancedRenderer.StaticInstance _instance;
+        private GroupInstancesRenderer.SimpleMeshInstance _instance;
 
         #endregion
 
@@ -33,39 +33,39 @@ namespace D_Dev.VATAnimationSystem
             UpdateManager.Add(this);
 
             
-            if (VertexAnimationsInstancedRenderer.Instance == null)
+            if (GroupInstancesRenderer.Instance == null)
                 return;
             
             if (_meshFilter == null || _material == null)
                 return;
 
             _renderer.enabled = false;
-            _instance = VertexAnimationsInstancedRenderer.Instance.AddStaticInstance(
+            _instance = GroupInstancesRenderer.Instance.AddStaticInstance(
                 _meshFilter.sharedMesh, _material, transform.localToWorldMatrix);
         }
 
 
         private void OnEnable()
         {
-            if (_instance == null || VertexAnimationsInstancedRenderer.Instance == null)
+            if (_instance == null || GroupInstancesRenderer.Instance == null)
                 return;
 
-            VertexAnimationsInstancedRenderer.Instance.AddExistingStaticInstance(
+            GroupInstancesRenderer.Instance.AddExistingStaticInstance(
                 _meshFilter.sharedMesh, _material, _instance);
         }
 
         private void OnDisable()
         {
-            if (VertexAnimationsInstancedRenderer.Instance != null && _instance != null)
-                VertexAnimationsInstancedRenderer.Instance.RemoveStaticInstance(
+            if (GroupInstancesRenderer.Instance != null && _instance != null)
+                GroupInstancesRenderer.Instance.RemoveStaticInstance(
                     _meshFilter.sharedMesh, _material, _instance);
         }
         private void OnDestroy()
         {
             UpdateManager.Remove(this);
             
-            if (VertexAnimationsInstancedRenderer.Instance != null && _instance != null)
-                VertexAnimationsInstancedRenderer.Instance.RemoveStaticInstance(
+            if (GroupInstancesRenderer.Instance != null && _instance != null)
+                GroupInstancesRenderer.Instance.RemoveStaticInstance(
                     _meshFilter.sharedMesh, _material, _instance);
         }
 

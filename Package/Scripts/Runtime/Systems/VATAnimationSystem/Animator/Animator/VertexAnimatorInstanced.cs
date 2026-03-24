@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using D_Dev.PolymorphicValueSystem;
 using D_Dev.UpdateManagerSystem;
+using D_Dev.VATAnimationSystem.GroupInstanceRenderer;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -32,7 +33,7 @@ namespace D_Dev.VATAnimationSystem
         [Title("Animation States")]
         [SerializeField] private List<VATAnimationState> _states = new();
 
-        private VertexAnimationsInstancedRenderer.VATInstance _instance;
+        private GroupInstancesRenderer.VATInstance _instance;
         private VertexAnimationClipInfo _currentClip;
         private float _time;
         private bool _playing;
@@ -58,12 +59,12 @@ namespace D_Dev.VATAnimationSystem
 
         private void Awake()
         {
-            if (VertexAnimationsInstancedRenderer.Instance == null)
+            if (GroupInstancesRenderer.Instance == null)
                 return;
 
             _renderer.enabled = false;
             
-            _instance = VertexAnimationsInstancedRenderer.Instance.AddUnit(
+            _instance = GroupInstancesRenderer.Instance.AddUnit(
                 _data, _material, transform.localToWorldMatrix);
         }
 
@@ -78,27 +79,27 @@ namespace D_Dev.VATAnimationSystem
 
         private void OnEnable()
         {
-            if (_instance == null || VertexAnimationsInstancedRenderer.Instance == null)
+            if (_instance == null || GroupInstancesRenderer.Instance == null)
                 return;
 
             UpdateManager.Add(this);
-            VertexAnimationsInstancedRenderer.Instance.AddExistingUnit(_data, _instance);
+            GroupInstancesRenderer.Instance.AddExistingUnit(_data, _instance);
         }
 
         private void OnDisable()
         {
             UpdateManager.Remove(this);
 
-            if (VertexAnimationsInstancedRenderer.Instance != null && _instance != null)
-                VertexAnimationsInstancedRenderer.Instance.RemoveUnit(_data, _instance);
+            if (GroupInstancesRenderer.Instance != null && _instance != null)
+                GroupInstancesRenderer.Instance.RemoveUnit(_data, _instance);
         }
 
         private void OnDestroy()
         {
             UpdateManager.Remove(this);
 
-            if (VertexAnimationsInstancedRenderer.Instance != null && _instance != null)
-                VertexAnimationsInstancedRenderer.Instance.RemoveUnit(_data, _instance);
+            if (GroupInstancesRenderer.Instance != null && _instance != null)
+                GroupInstancesRenderer.Instance.RemoveUnit(_data, _instance);
         }
 
         #endregion
