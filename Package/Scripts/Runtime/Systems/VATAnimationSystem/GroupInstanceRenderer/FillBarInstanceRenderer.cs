@@ -1,4 +1,5 @@
-﻿using D_Dev.UpdateManagerSystem;
+﻿using D_Dev.PolymorphicValueSystem;
+using D_Dev.UpdateManagerSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -14,6 +15,9 @@ namespace D_Dev.VATAnimationSystem.GroupInstanceRenderer
         [Title("Base")]
         [SerializeField] private MeshFilter _meshFilter;
         [SerializeField] private Material _material;
+        [SerializeField] private bool _hasMaxValue;
+        [ShowIf(nameof(_hasMaxValue))]
+        [SerializeReference] private PolymorphicValue<float> _maxValue = new FloatConstantValue();
         
         [Title("Settings")]
         [SerializeField] private Vector3 _offset = new Vector3(0, 2f, 0);
@@ -79,9 +83,19 @@ namespace D_Dev.VATAnimationSystem.GroupInstanceRenderer
 
         #region Public
 
-        public void SetFill(float fill)
+        public void UpdateFill(float value)
         {
-            _targetFill = Mathf.Clamp01(fill);
+            _targetFill = Mathf.Clamp01(value);
+            if (_instance != null)
+                _instance.Fill = _targetFill;
+        }
+
+        public void UpdateFillByMax(float value)
+        {
+            _targetFill = _hasMaxValue
+                ? value / _maxValue.Value 
+                : Mathf.Clamp01(value);
+            
             if (_instance != null)
                 _instance.Fill = _targetFill;
         }
