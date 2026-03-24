@@ -12,9 +12,10 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _BORDER_ON
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -24,10 +25,23 @@ Material:
     serializedVersion: 3
     m_TexEnvs: []
     m_Ints: []
-    m_Floats: []
+    m_Floats:
+    - _BorderOn: 1
+    - _BorderRadius: 0
+    - _BorderSize: 0.131
+    - _CornerRadius: 0.5
+    - _GlowStrength: 1
+    - _GlowWidth: 0.38
+    - _ShineAngle: 1
+    - _ShineHeight: 0.585
+    - _ShineStrength: 0.429
     m_Colors:
     - _BackColor: {r: 0.09999997, g: 0.09999997, b: 0.09999997, a: 1}
+    - _BorderColor: {r: 0.04579032, g: 0.46226418, b: 0.23047157, a: 1}
     - _DamageColor: {r: 1, g: 0.9, b: 0, a: 1}
+    - _GlowColor: {r: 0.17999998, g: 1, b: 0.53999996, a: 1}
     - _MainColor: {r: 0.09999997, g: 0.8, b: 0.09999997, a: 1}
+    - _MainColorBot: {r: 0.19949596, g: 0.6320754, b: 0.02683338, a: 1}
+    - _MainColorTop: {r: 0.23999995, g: 0.85, b: 0.47999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
