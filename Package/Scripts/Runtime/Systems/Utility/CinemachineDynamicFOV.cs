@@ -5,6 +5,21 @@ using UnityEngine;
 
 namespace D_Dev.Utility
 {
+    [System.Serializable]
+    public class FOVPreset
+    {
+        public int Index;
+        public float MinFov;
+        public float MaxFov;
+
+        public FOVPreset(int index, float minFov, float maxFov)
+        {
+            Index = index;
+            MinFov = minFov;
+            MaxFov = maxFov;
+        }
+    }
+
     public class CinemachineDynamicFOV : MonoBehaviour
     {
         #region Fields
@@ -13,6 +28,7 @@ namespace D_Dev.Utility
         [SerializeField] private float _maxFovValue;
         [SerializeReference] private PolymorphicValue<float> _fovTransitionDuration = new FloatConstantValue();
         [SerializeField] private CinemachineVirtualCamera _cm;
+        [SerializeField] private FOVPreset[] _presets;
 
         private Coroutine _fovCoroutine;
 
@@ -83,6 +99,59 @@ namespace D_Dev.Utility
                 SetMinFOV();
             else
                 SetMaxFOV();
+        }
+
+        public void SetPresetByIndex(int presetIndex)
+        {
+            if (presetIndex < 0 || presetIndex >= _presets.Length)
+            {
+                Debug.LogWarning($"[CinemachineDynamicFOV] Invalid preset index: {presetIndex}");
+                return;
+            }
+
+            var preset = _presets[presetIndex];
+            SetFOVByPreset(preset);
+        }
+
+        public void SetPresetByIndex(int presetIndex, float duration)
+        {
+            if (presetIndex < 0 || presetIndex >= _presets.Length)
+            {
+                Debug.LogWarning($"[CinemachineDynamicFOV] Invalid preset index: {presetIndex}");
+                return;
+            }
+
+            var preset = _presets[presetIndex];
+            SetFOVByPreset(preset, duration);
+        }
+
+        public FOVPreset GetPreset(int index)
+        {
+            if (index < 0 || index >= _presets.Length)
+                return null;
+
+            return _presets[index];
+        }
+
+        public FOVPreset[] GetAllPresets() => _presets;
+
+        public int GetPresetsCount() => _presets.Length;
+
+        private void SetFOVByPreset(FOVPreset preset, float duration = 0f)
+        {
+            if (preset == null)
+                return;
+
+            if (duration > 0f)
+            {
+                var middleFov = (preset.MinFov + preset.MaxFov) * 0.5f;
+                SetFOV(middleFov, duration);
+            }
+            else
+            {
+                var middleFov = (preset.MinFov + preset.MaxFov) * 0.5f;
+                SetFOV(middleFov);
+            }
         }
 
         #endregion
