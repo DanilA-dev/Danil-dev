@@ -142,16 +142,15 @@ namespace D_Dev.Utility
             if (preset == null)
                 return;
 
+            _minFovValue = preset.MinFov;
+            _maxFovValue = preset.MaxFov;
+
+            var middleFov = (preset.MinFov + preset.MaxFov) * 0.5f;
+
             if (duration > 0f)
-            {
-                var middleFov = (preset.MinFov + preset.MaxFov) * 0.5f;
                 SetFOV(middleFov, duration);
-            }
             else
-            {
-                var middleFov = (preset.MinFov + preset.MaxFov) * 0.5f;
                 SetFOV(middleFov);
-            }
         }
 
         #endregion
@@ -160,6 +159,13 @@ namespace D_Dev.Utility
 
         private IEnumerator FOVTransitionCoroutine(float targetFOV, float duration)
         {
+            if (duration <= 0f)
+            {
+                _cm.m_Lens.FieldOfView = targetFOV;
+                _fovCoroutine = null;
+                yield break;
+            }
+
             var startFOV = _cm.m_Lens.FieldOfView;
             var time = 0f;
 
