@@ -69,6 +69,30 @@ namespace D_Dev.Utility
             [LabelWidth(80)] public bool ApplyPivot;
             [HorizontalGroup("Pivot/Value"), EnableIf(nameof(ApplyPivot))]
             [HideLabel] public Vector2 Pivot;
+
+            [FoldoutGroup("Offsets")]
+            [HorizontalGroup("Offsets/Left")]
+            [LabelWidth(80)] public bool ApplyLeft;
+            [HorizontalGroup("Offsets/Left"), EnableIf(nameof(ApplyLeft))]
+            [HideLabel] public float Left;
+
+            [FoldoutGroup("Offsets")]
+            [HorizontalGroup("Offsets/Right")]
+            [LabelWidth(80)] public bool ApplyRight;
+            [HorizontalGroup("Offsets/Right"), EnableIf(nameof(ApplyRight))]
+            [HideLabel] public float Right;
+
+            [FoldoutGroup("Offsets")]
+            [HorizontalGroup("Offsets/Top")]
+            [LabelWidth(80)] public bool ApplyTop;
+            [HorizontalGroup("Offsets/Top"), EnableIf(nameof(ApplyTop))]
+            [HideLabel] public float Top;
+
+            [FoldoutGroup("Offsets")]
+            [HorizontalGroup("Offsets/Bottom")]
+            [LabelWidth(80)] public bool ApplyBottom;
+            [HorizontalGroup("Offsets/Bottom"), EnableIf(nameof(ApplyBottom))]
+            [HideLabel] public float Bottom;
         }
 
         #endregion
@@ -106,7 +130,7 @@ namespace D_Dev.Utility
                 }
             }
 
-            Debug.Log($"[RectTransformUpdater] Preset with index {index} not found.", this);
+            Debug.LogWarning($"[RectTransformUpdater] Preset with index {index} not found.", this);
         }
 
         #endregion
@@ -117,10 +141,11 @@ namespace D_Dev.Utility
         {
             if (preset.Target == null)
             {
-                Debug.Log($"[RectTransformUpdater] Preset '{preset.Name}' has no Target assigned.", this);
+                Debug.LogWarning($"[RectTransformUpdater] Preset '{preset.Name}' has no Target assigned.", this);
                 return;
             }
 
+            // Anchors и pivot применяем до размера — иначе размер посчитается неверно
             if (preset.ApplyAnchorMin)
                 preset.Target.anchorMin = preset.AnchorMin;
 
@@ -145,6 +170,22 @@ namespace D_Dev.Utility
                 if (preset.ApplyPositionZ) pos.z = preset.PositionZ;
 
                 preset.Target.anchoredPosition3D = pos;
+            }
+
+            if (preset.ApplyLeft || preset.ApplyBottom)
+            {
+                var offsetMin = preset.Target.offsetMin;
+                if (preset.ApplyLeft)   offsetMin.x = preset.Left;
+                if (preset.ApplyBottom) offsetMin.y = preset.Bottom;
+                preset.Target.offsetMin = offsetMin;
+            }
+
+            if (preset.ApplyRight || preset.ApplyTop)
+            {
+                var offsetMax = preset.Target.offsetMax;
+                if (preset.ApplyRight) offsetMax.x = -preset.Right;
+                if (preset.ApplyTop)   offsetMax.y = -preset.Top;
+                preset.Target.offsetMax = offsetMax;
             }
         }
 
