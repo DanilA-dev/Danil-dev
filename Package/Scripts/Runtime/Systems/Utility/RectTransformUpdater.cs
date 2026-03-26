@@ -130,7 +130,7 @@ namespace D_Dev.Utility
                 }
             }
 
-            Debug.LogWarning($"[RectTransformUpdater] Preset with index {index} not found.", this);
+            Debug.Log($"[RectTransformUpdater] Preset with index {index} not found.", this);
         }
 
         #endregion
@@ -141,11 +141,10 @@ namespace D_Dev.Utility
         {
             if (preset.Target == null)
             {
-                Debug.LogWarning($"[RectTransformUpdater] Preset '{preset.Name}' has no Target assigned.", this);
+                Debug.Log($"[RectTransformUpdater] Preset '{preset.Name}' has no Target assigned.", this);
                 return;
             }
 
-            // Anchors и pivot применяем до размера — иначе размер посчитается неверно
             if (preset.ApplyAnchorMin)
                 preset.Target.anchorMin = preset.AnchorMin;
 
@@ -164,10 +163,14 @@ namespace D_Dev.Utility
             if (preset.ApplyPositionX || preset.ApplyPositionY || preset.ApplyPositionZ)
             {
                 var pos = preset.Target.anchoredPosition3D;
-
-                if (preset.ApplyPositionX) pos.x = preset.PositionX;
-                if (preset.ApplyPositionY) pos.y = preset.PositionY;
-                if (preset.ApplyPositionZ) pos.z = preset.PositionZ;
+                if (preset.ApplyPositionX)
+                    pos.x = preset.PositionX;
+                
+                if (preset.ApplyPositionY)
+                    pos.y = preset.PositionY;
+                
+                if (preset.ApplyPositionZ) 
+                    pos.z = preset.PositionZ;
 
                 preset.Target.anchoredPosition3D = pos;
             }
@@ -175,16 +178,24 @@ namespace D_Dev.Utility
             if (preset.ApplyLeft || preset.ApplyBottom)
             {
                 var offsetMin = preset.Target.offsetMin;
-                if (preset.ApplyLeft)   offsetMin.x = preset.Left;
-                if (preset.ApplyBottom) offsetMin.y = preset.Bottom;
+                if (preset.ApplyLeft)
+                    offsetMin.x = preset.Left;
+                
+                if (preset.ApplyBottom)
+                    offsetMin.y = preset.Bottom;
+                
                 preset.Target.offsetMin = offsetMin;
             }
 
             if (preset.ApplyRight || preset.ApplyTop)
             {
                 var offsetMax = preset.Target.offsetMax;
-                if (preset.ApplyRight) offsetMax.x = -preset.Right;
-                if (preset.ApplyTop)   offsetMax.y = -preset.Top;
+                if (preset.ApplyRight)
+                    offsetMax.x = -preset.Right;
+                
+                if (preset.ApplyTop)
+                    offsetMax.y = -preset.Top;
+                
                 preset.Target.offsetMax = offsetMax;
             }
         }
