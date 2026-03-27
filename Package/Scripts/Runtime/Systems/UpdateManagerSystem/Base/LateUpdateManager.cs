@@ -7,10 +7,10 @@ namespace D_Dev.UpdateManagerSystem
     {
         #region Fields
 
-        private static readonly List<ILateTickable> _lateTickables = new();
-        private static readonly Queue<ILateTickable> _pendingAdd = new();
-        private static readonly Queue<ILateTickable> _pendingRemove = new();
-        
+        private static readonly HashSet<ILateTickable> _lateTickables = new();
+        private static readonly HashSet<ILateTickable> _pendingAdd = new();
+        private static readonly HashSet<ILateTickable> _pendingRemove = new();
+
         private static readonly List<ILateTickable> _sortedTickables = new();
         private static bool _isSorted = true;
 
@@ -28,7 +28,7 @@ namespace D_Dev.UpdateManagerSystem
         {
             ProcessPending();
             EnsureSorted();
-            
+
             foreach (var tickable in _sortedTickables)
             {
                 tickable?.LateTick();
@@ -42,9 +42,9 @@ namespace D_Dev.UpdateManagerSystem
         public static void Add(ILateTickable tickable)
         {
             if (tickable != null)
-                _pendingAdd.Enqueue(tickable);
+                _pendingAdd.Add(tickable);
         }
-        
+
         public static void AddWithPriority(ILateTickable tickable, int priority)
         {
             if (tickable != null)
@@ -53,13 +53,13 @@ namespace D_Dev.UpdateManagerSystem
                 Add(tickable);
             }
         }
-        
+
         public static void Remove(ILateTickable tickable)
         {
             if (tickable != null)
-                _pendingRemove.Enqueue(tickable);
+                _pendingRemove.Add(tickable);
         }
-        
+
         public static void Clear()
         {
             _lateTickables.Clear();
@@ -75,28 +75,32 @@ namespace D_Dev.UpdateManagerSystem
 
         private static void ProcessPending()
         {
-            while (_pendingAdd.Count > 0)
+            if (_pendingAdd.Count > 0)
             {
-                var tickable = _pendingAdd.Dequeue();
-                if (!_lateTickables.Contains(tickable))
+                foreach (var tickable in _pendingAdd)
                 {
-                    _lateTickables.Add(tickable);
-                    _isSorted = false;
+                    if (_lateTickables.Add(tickable))
+                        _isSorted = false;
                 }
+                _pendingAdd.Clear();
             }
-            
-            while (_pendingRemove.Count > 0)
+
+            if (_pendingRemove.Count > 0)
             {
-                var tickable = _pendingRemove.Dequeue();
-                _lateTickables.Remove(tickable);
-                _sortedTickables.Remove(tickable);
+                foreach (var tickable in _pendingRemove)
+                {
+                    _lateTickables.Remove(tickable);
+                    _sortedTickables.Remove(tickable);
+                }
+                _pendingRemove.Clear();
             }
         }
-        
+
         private static void EnsureSorted()
         {
-            if (_isSorted) return;
-            
+            if (_isSorted)
+                return;
+
             _sortedTickables.Clear();
             _sortedTickables.AddRange(_lateTickables);
             _sortedTickables.Sort((a, b) => b.GetPriority().CompareTo(a.GetPriority()));
