@@ -26,6 +26,18 @@ namespace D_Dev.AudioSystem
             TryStartAwakeAudio();
         }
 
+        private void Start()
+        {
+            AudioManager.OnMuteStateChanged += OnMuteChanged;
+            if (AudioManager.Instance != null)
+                _audioSource.mute = AudioManager.Instance.IsMuted;
+        }
+
+        private void OnDestroy()
+        {
+            AudioManager.OnMuteStateChanged -= OnMuteChanged;
+        }
+
         #endregion
 
         #region Public
@@ -208,6 +220,12 @@ namespace D_Dev.AudioSystem
         #endregion
 
         #region Private
+
+        private void OnMuteChanged(bool muted)
+        {
+            if (_audioSource != null)
+                _audioSource.mute = muted;
+        }
 
         private void TryStartAwakeAudio()
         {

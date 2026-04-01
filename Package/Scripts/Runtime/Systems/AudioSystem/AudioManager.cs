@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +36,7 @@ namespace D_Dev.AudioSystem
         [SerializeField] private float throttleTime = 0.05f;
 
         [FoldoutGroup("Events")]
-        [SerializeField] private UnityEvent<float> _onAudioListenerVolumeChange;
+        [SerializeField] private UnityEvent<bool> _onMuteAll;
 
         private List<SoundRequest> _requests = new(64);
         private Dictionary<AudioClip, float> _lastPlayed = new();
@@ -46,6 +47,9 @@ namespace D_Dev.AudioSystem
         private Camera _mainCamera;
         private int _sfxPoolIdx;
         private int _musicPoolIdx;
+        private bool _isMuted;
+
+        public static event Action<bool> OnMuteStateChanged;
 
         #endregion
 
@@ -120,14 +124,15 @@ namespace D_Dev.AudioSystem
             config?.SetVolume(value);
         }
 
-        public void SetAudioListenerVolume(float volume01)
+        public void MuteAllAudioSources(bool isMute)
         {
-            volume01 = Mathf.Clamp01(volume01);
-            AudioListener.pause = volume01 < 0.5f;
-            _onAudioListenerVolumeChange?.Invoke(volume01);
+            _isMuted = isMute;
+            SetMuteAllSources(_isMuted);
+            OnMuteStateChanged?.Invoke(_isMuted);
+            _onMuteAll?.Invoke(_isMuted);
         }
 
-        public float GetAudioListenerVolume() => AudioListener.volume;
+        public bool IsMuted => _isMuted;
 
         public void RequestSound(AudioConfig config, Vector3 worldPos)
         {
@@ -198,6 +203,7 @@ namespace D_Dev.AudioSystem
             _musicPoolIdx = (_musicPoolIdx + 1) % _musicPool.Length;
 
             config.SetAudioSource(ref src);
+            src.mute = _isMuted;
             src.transform.position = worldPos;
             _activeSources[config] = src;
             src.Play();
@@ -220,9 +226,21 @@ namespace D_Dev.AudioSystem
             _sfxPoolIdx = (_sfxPoolIdx + 1) % _sfxPool.Length;
 
             config.SetAudioSource(ref src);
+            src.mute = _isMuted;
             src.transform.position = worldPos;
             _activeSources[config] = src;
             src.Play();
+        }
+
+        private void SetMuteAllSources(bool mute)
+        {
+            if (_sfxPool != null)
+                foreach (var src in _sfxPool)
+                    src.mute = mute;
+
+            if (_musicPool != null)
+                foreach (var src in _musicPool)
+                    src.mute = mute;
         }
 
         private void InitPool()
