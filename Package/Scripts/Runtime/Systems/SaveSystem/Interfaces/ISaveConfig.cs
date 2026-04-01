@@ -9,5 +9,6 @@ namespace D_Dev.SaveSystem
         public UniTask<T> LoadAsync<T>(string key, T defaultValue = default);
         public UniTask<bool> HasKeyAsync(string key);
         public UniTask DeleteKeyAsync(string key);
+        public UniTask DeleteAllAsync();
     }
 }

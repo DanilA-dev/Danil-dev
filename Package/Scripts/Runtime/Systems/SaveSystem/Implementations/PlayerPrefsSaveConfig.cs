@@ -34,6 +34,13 @@ namespace D_Dev.SaveSystem
             return UniTask.CompletedTask;
         }
 
+        public UniTask DeleteAllAsync()
+        {
+            PlayerPrefs.DeleteAll();
+            PlayerPrefs.Save();
+            return UniTask.CompletedTask;
+        }
+
         #endregion
         
     }

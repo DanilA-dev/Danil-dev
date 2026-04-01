@@ -43,6 +43,7 @@ namespace D_Dev.SaveSystem.Services
         public UniTask<T> LoadAsync<T>(string key, T defaultValue = default) => _saveConfig.LoadAsync(key, defaultValue);
         public UniTask<bool> HasKeyAsync(string key) => _saveConfig.HasKeyAsync(key);
         public UniTask DeleteKeyAsync(string key) => _saveConfig.DeleteKeyAsync(key);
+        public UniTask DeleteAllAsync() => _saveConfig.DeleteAllAsync();
 
         #endregion
     }
