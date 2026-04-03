@@ -65,11 +65,18 @@ namespace D_Dev
             if (File.Exists(pluginsPath))
                 AssetDatabase.ImportPackage(pluginsPath, true);
 
+            AssetDatabase.importPackageCompleted += OnPluginsImported;
+        }
+
+        private static void OnPluginsImported(string packageName)
+        {
+            AssetDatabase.Refresh();
+            AssetDatabase.importPackageCompleted -= OnPluginsImported;
+
             var mainPath = PackagePath + "Danil-Dev.unitypackage";
             if (File.Exists(mainPath))
                 AssetDatabase.ImportPackage(mainPath, true);
 
-            AssetDatabase.Refresh();
             Debug.Log("[D-Dev] Setup complete");
         }
 
