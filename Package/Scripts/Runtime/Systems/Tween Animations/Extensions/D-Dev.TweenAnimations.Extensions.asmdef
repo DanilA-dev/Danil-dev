@@ -18,7 +18,8 @@
     "autoReferenced": true,
     "defineConstraints": [
         "UNITASK",
-        "DOTWEEN"
+        "DOTWEEN",
+        "ODIN_INSPECTOR"
     ],
     "versionDefines": [
         {

@@ -1,3 +1,6 @@
 {
-	"name": "D-Dev.ScriptableVariables"
+	"name": "D-Dev.ScriptableVariables",
+	"defineConstraints": [
+		"ODIN_INSPECTOR"
+	]
 }

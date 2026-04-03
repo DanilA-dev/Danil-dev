@@ -1,3 +1,6 @@
 {
-	"name": "D-Dev.Singleton"
+	"name": "D-Dev.Singleton",
+	"defineConstraints": [
+		"ODIN_INSPECTOR"
+	]
 }

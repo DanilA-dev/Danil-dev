@@ -1,3 +1,6 @@
 {
-	"name": "D-Dev.MovementHandler"
+	"name": "D-Dev.MovementHandler",
+	"defineConstraints": [
+		"ODIN_INSPECTOR"
+	]
 }

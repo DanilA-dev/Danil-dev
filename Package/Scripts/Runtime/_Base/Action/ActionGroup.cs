@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+#if ODIN_INSPECTOR
 using Sirenix.OdinInspector;
+#endif
 using UnityEngine;
 
 namespace D_Dev.Base
@@ -12,7 +14,9 @@ namespace D_Dev.Base
 
         [SerializeField] private bool _executeInParallel = true;
         [Space]
-        [ListDrawerSettings(ListElementLabelName = "_actionName")]     
+#if ODIN_INSPECTOR
+        [ListDrawerSettings(ListElementLabelName = "_actionName")]
+#endif
         [SerializeReference] private List<BaseAction> _actions = new();
         
         #endregion
