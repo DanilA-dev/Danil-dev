@@ -1,8 +1,9 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 using Application = UnityEngine.Device.Application;
 
@@ -18,6 +19,8 @@ namespace D_Dev
         };
 
         #endregion
+
+#if UNITY_EDITOR
         
         #region Editor
 
