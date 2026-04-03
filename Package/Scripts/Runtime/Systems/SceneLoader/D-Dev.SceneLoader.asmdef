@@ -20,8 +20,7 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [
-        "UNITASK",
-        "ODIN_INSPECTOR"
+        "UNITASK"
     ],
     "versionDefines": [
         {

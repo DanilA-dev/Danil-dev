@@ -1,6 +1,4 @@
-﻿#if ODIN_INSPECTOR
-using Sirenix.OdinInspector;
-#endif
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -11,24 +9,16 @@ namespace D_Dev.Base
     {
         #region Fields
 
-        [SerializeField]
-#if ODIN_INSPECTOR
-        [PropertyOrder(-1)]
-#endif
-        private string _actionName;
-
-#if ODIN_INSPECTOR
-        [FoldoutGroup("Events"), PropertyOrder(100)]
-#endif
+        [SerializeField, PropertyOrder(-1)] private string _actionName;
+        
+        [FoldoutGroup("Events"), PropertyOrder(100)] 
         public UnityEvent OnUndo;
 
         #endregion
 
         #region Properties
 
-#if ODIN_INSPECTOR
         [ShowInInspector, ReadOnly]
-#endif
         public bool IsFinished { get; set; }
 
         #endregion

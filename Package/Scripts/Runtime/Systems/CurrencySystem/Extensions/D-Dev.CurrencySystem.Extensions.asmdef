@@ -18,8 +18,7 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [
-        "DOTWEEN",
-        "ODIN_INSPECTOR"
+        "DOTWEEN"
     ],
     "versionDefines": [],
     "noEngineReferences": false
