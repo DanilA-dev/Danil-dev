@@ -15,6 +15,7 @@ namespace D_Dev
 
         private const string PackagePath = "Packages/com.d-dev.utils/";
         private const string VersionPrefsKey = "D_Dev_InstalledVersion_";
+        private const string InstallStateKey = "D_Dev_InstallState_";
 
         private static readonly Dictionary<string, string> GitPackages = new()
         {
@@ -27,9 +28,27 @@ namespace D_Dev
 
         static EditorTools()
         {
+            var projectHash = Application.dataPath.GetHashCode().ToString();
+            var stateKey = InstallStateKey + projectHash;
+            var state = EditorPrefs.GetString(stateKey, "");
+
+            if (state == "plugins_done")
+            {
+                EditorApplication.delayCall += () =>
+                {
+                    if (EditorApplication.isCompiling)
+                    {
+                        EditorApplication.update += WaitForCompilationThenImport;
+                        return;
+                    }
+                    ImportMainPackage();
+                };
+                return;
+            }
+
             var packageVersion = GetPackageVersion();
-            var prefsKey = VersionPrefsKey + Application.dataPath.GetHashCode();
-            var installedVersion = EditorPrefs.GetString(prefsKey, "");
+            var versionKey = VersionPrefsKey + projectHash;
+            var installedVersion = EditorPrefs.GetString(versionKey, "");
 
             if (installedVersion == packageVersion)
                 return;
@@ -46,12 +65,14 @@ namespace D_Dev
                     return;
 
                 InstallAll();
-                EditorPrefs.SetString(prefsKey, packageVersion);
             };
         }
 
         public static void InstallAll()
         {
+            var projectHash = Application.dataPath.GetHashCode().ToString();
+            var stateKey = InstallStateKey + projectHash;
+
             DeleteAssetFolder("Assets/Danil-dev/Scripts");
             DeleteAssetFolder("Assets/Danil-dev/Assets");
 
@@ -60,15 +81,13 @@ namespace D_Dev
 
             var pluginsPath = PackagePath + "Danil-Dev.plugins.unitypackage";
             if (File.Exists(pluginsPath))
+            {
+                EditorPrefs.SetString(stateKey, "plugins_done");
                 AssetDatabase.ImportPackage(pluginsPath, true);
+                return;
+            }
 
-            AssetDatabase.importPackageCompleted += OnPluginsImported;
-        }
-
-        private static void OnPluginsImported(string packageName)
-        {
-            AssetDatabase.importPackageCompleted -= OnPluginsImported;
-            EditorApplication.update += WaitForCompilationThenImport;
+            ImportMainPackage();
         }
 
         private static void WaitForCompilationThenImport()
@@ -77,6 +96,16 @@ namespace D_Dev
                 return;
 
             EditorApplication.update -= WaitForCompilationThenImport;
+            ImportMainPackage();
+        }
+
+        private static void ImportMainPackage()
+        {
+            var projectHash = Application.dataPath.GetHashCode().ToString();
+
+            EditorPrefs.DeleteKey(InstallStateKey + projectHash);
+
+            EditorPrefs.SetString(VersionPrefsKey + projectHash, GetPackageVersion());
 
             var mainPath = PackagePath + "Danil-Dev.unitypackage";
             if (File.Exists(mainPath))
