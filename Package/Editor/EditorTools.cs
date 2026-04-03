@@ -38,10 +38,7 @@ namespace D_Dev
             var title = isUpdate ? "D-Dev Utils — Update" : "D-Dev Utils";
             var message = isUpdate
                 ? $"Update available: {installedVersion} → {packageVersion}\n\nReimport Scripts & Assets?"
-                : "Install D-Dev Utils package?\n\n" +
-                  "• Scripts & Assets\n" +
-                  "• Git dependencies (UniTask)\n" +
-                  "• Plugins (DOTween, UniRx, etc.)";
+                : "Install D-Dev Utils package?\n\n";
 
             EditorApplication.delayCall += () =>
             {
@@ -70,8 +67,16 @@ namespace D_Dev
 
         private static void OnPluginsImported(string packageName)
         {
-            AssetDatabase.Refresh();
             AssetDatabase.importPackageCompleted -= OnPluginsImported;
+            EditorApplication.update += WaitForCompilationThenImport;
+        }
+
+        private static void WaitForCompilationThenImport()
+        {
+            if (EditorApplication.isCompiling)
+                return;
+
+            EditorApplication.update -= WaitForCompilationThenImport;
 
             var mainPath = PackagePath + "Danil-Dev.unitypackage";
             if (File.Exists(mainPath))
