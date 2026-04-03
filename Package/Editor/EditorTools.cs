@@ -104,7 +104,6 @@ namespace D_Dev
             var projectHash = Application.dataPath.GetHashCode().ToString();
 
             EditorPrefs.DeleteKey(InstallStateKey + projectHash);
-
             EditorPrefs.SetString(VersionPrefsKey + projectHash, GetPackageVersion());
 
             var mainPath = PackagePath + "Danil-Dev.unitypackage";
@@ -120,6 +119,15 @@ namespace D_Dev
 
         [MenuItem("Tools/D_Dev/Setup/Install All")]
         public static void MenuInstallAll() => InstallAll();
+
+        [MenuItem("Tools/D_Dev/Setup/Reset Install State")]
+        public static void ResetInstallState()
+        {
+            var projectHash = Application.dataPath.GetHashCode().ToString();
+            EditorPrefs.DeleteKey(VersionPrefsKey + projectHash);
+            EditorPrefs.DeleteKey(InstallStateKey + projectHash);
+            Debug.Log("[D-Dev] Install state reset — dialog will appear on next domain reload");
+        }
 
         [MenuItem("Tools/D_Dev/Setup/Create Folders")]
         public static void InitProjectFolders()
@@ -201,21 +209,36 @@ namespace D_Dev
             Debug.Log($"[D-Dev] Deleted {assetPath}");
         }
 
+        private static string GetPackageJsonPath()
+        {
+            // When developing: Assets/Danil-dev/Package/package.json
+            var localPath = Path.Combine(Application.dataPath, "Danil-dev/Package/package.json");
+            if (File.Exists(localPath))
+                return localPath;
+
+            // When installed as UPM package: resolve via Packages folder
+            var upmPath = Path.Combine(Path.GetDirectoryName(Application.dataPath)!, PackagePath, "package.json");
+            return File.Exists(upmPath) ? upmPath : null;
+        }
+
         private static string GetPackageVersion()
         {
-            var packageJsonPath = PackagePath + "package.json";
-            if (!File.Exists(packageJsonPath))
+            var path = GetPackageJsonPath();
+            if (path == null)
                 return "0.0.0";
 
-            var json = File.ReadAllText(packageJsonPath);
+            var json = File.ReadAllText(path);
             var match = Regex.Match(json, "\"version\"\\s*:\\s*\"([^\"]+)\"");
             return match.Success ? match.Groups[1].Value : "0.0.0";
         }
 
         private static void BumpPatchVersion()
         {
-            var packageJsonPath = PackagePath + "package.json";
-            var json = File.ReadAllText(packageJsonPath, Encoding.Default);
+            var path = GetPackageJsonPath();
+            if (path == null)
+                return;
+
+            var json = File.ReadAllText(path, Encoding.Default);
             var match = Regex.Match(json, "\"version\"\\s*:\\s*\"(\\d+)\\.(\\d+)\\.(\\d+)\"");
             if (!match.Success)
                 return;
@@ -226,7 +249,7 @@ namespace D_Dev
             var newVersion = $"{major}.{minor}.{patch}";
 
             json = json.Replace(match.Value, $"\"version\": \"{newVersion}\"");
-            File.WriteAllText(packageJsonPath, json, Encoding.Default);
+            File.WriteAllText(path, json, Encoding.Default);
             Debug.Log($"[D-Dev] Version bumped to {newVersion}");
         }
 
