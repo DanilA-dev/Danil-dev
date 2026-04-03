@@ -1,29 +1,89 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using Application = UnityEngine.Device.Application;
 
 namespace D_Dev
 {
+    [InitializeOnLoad]
     public static class EditorTools
     {
         #region Const
 
-        private static readonly Dictionary<string, string> CustomPackages = new()
+        private const string PackagePath = "Packages/com.d-dev.utils/";
+        private const string VersionPrefsKey = "D_Dev_InstalledVersion_";
+
+        private static readonly Dictionary<string, string> GitPackages = new()
         {
             {"com.cysharp.unitask", "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"},
         };
 
         #endregion
-        
+
+        #region Auto Setup
+
+        static EditorTools()
+        {
+            var packageVersion = GetPackageVersion();
+            var prefsKey = VersionPrefsKey + Application.dataPath.GetHashCode();
+            var installedVersion = EditorPrefs.GetString(prefsKey, "");
+
+            if (installedVersion == packageVersion)
+                return;
+
+            var isUpdate = !string.IsNullOrEmpty(installedVersion);
+            var title = isUpdate ? "D-Dev Utils — Update" : "D-Dev Utils";
+            var message = isUpdate
+                ? $"Update available: {installedVersion} → {packageVersion}\n\nReimport Scripts & Assets?"
+                : "Install D-Dev Utils package?\n\n" +
+                  "• Scripts & Assets\n" +
+                  "• Git dependencies (UniTask)\n" +
+                  "• Plugins (DOTween, UniRx, etc.)";
+
+            EditorApplication.delayCall += () =>
+            {
+                if (!EditorUtility.DisplayDialog(title, message, "Install All", "Later"))
+                    return;
+
+                InstallAll();
+                EditorPrefs.SetString(prefsKey, packageVersion);
+            };
+        }
+
+        public static void InstallAll()
+        {
+            DeleteAssetFolder("Assets/Danil-dev/Scripts");
+            DeleteAssetFolder("Assets/Danil-dev/Assets");
+
+            foreach (var (packageName, packageURL) in GitPackages)
+                AddPackageToManifest(packageName, packageURL);
+
+            var pluginsPath = PackagePath + "Danil-Dev.plugins.unitypackage";
+            if (File.Exists(pluginsPath))
+                AssetDatabase.ImportPackage(pluginsPath, true);
+
+            var mainPath = PackagePath + "Danil-Dev.unitypackage";
+            if (File.Exists(mainPath))
+                AssetDatabase.ImportPackage(mainPath, true);
+
+            AssetDatabase.Refresh();
+            Debug.Log("[D-Dev] Setup complete");
+        }
+
+        #endregion
+
         #region Editor
+
+        [MenuItem("Tools/D_Dev/Setup/Install All")]
+        public static void MenuInstallAll() => InstallAll();
 
         [MenuItem("Tools/D_Dev/Setup/Create Folders")]
         public static void InitProjectFolders()
         {
-            CreateFolders("_Project" ,new []
+            CreateFolders("_Project", new[]
             {
                 "Art",
                 "Animations",
@@ -40,32 +100,16 @@ namespace D_Dev
         [MenuItem("Tools/D_Dev/Setup/Export Package")]
         public static void ExportPackage()
         {
-            string[] paths = new []
+            BumpPatchVersion();
+
+            string[] paths = new[]
             {
                 "Assets/Danil-dev/Assets",
                 "Assets/Danil-dev/Scripts"
-            } ;
-            var exportDirectory =  "Assets/Danil-dev/Package/Danil-Dev.unitypackage";
+            };
+            var exportDirectory = "Assets/Danil-dev/Package/Danil-Dev.unitypackage";
             AssetDatabase.ExportPackage(paths, exportDirectory, ExportPackageOptions.Recurse);
-            Debug.Log($"Exported package to {exportDirectory}");
-        }
-
-        [MenuItem("Tools/D_Dev/Setup/Import Package")]
-        public static void ImportUtilsPackage()
-        {
-            var path = "Packages/com.d-dev.utils/Danil-Dev.unitypackage";
-            AssetDatabase.ImportPackage(path,true);
-        }
-        
-        [MenuItem("Tools/D_Dev/Setup/Import Dependencies")]
-        public static void ImportDependencies()
-        {
-            foreach (var (packageName, packageURL) in CustomPackages)
-                AddPackageToManifest(packageName, packageURL);
-            
-            var path = "Packages/com.d-dev.utils/Danil-Dev.plugins.unitypackage";
-            AssetDatabase.ImportPackage(path,true);
-            AssetDatabase.Refresh();
+            Debug.Log($"[D-Dev] Exported package v{GetPackageVersion()} to {exportDirectory}");
         }
 
         [MenuItem("Tools/D_Dev/Data/Open PersistentDataPath")]
@@ -73,7 +117,7 @@ namespace D_Dev
         {
             EditorUtility.RevealInFinder(Application.persistentDataPath);
         }
-        
+
         [MenuItem("Tools/D_Dev/Data/Clear All Data")]
         public static void ClearData()
         {
@@ -84,26 +128,72 @@ namespace D_Dev
                 file.Delete();
             foreach (DirectoryInfo subDir in dir.GetDirectories())
                 subDir.Delete(true);
-            
+
             Debug.Log("All data cleared");
         }
+
         #endregion
 
         #region Helpers
+
         private static void CreateFolders(string rootDir, string[] directions)
         {
             var path = Application.dataPath;
             var combinedPath = Path.Combine(path, rootDir);
-            
+
             foreach (var dir in directions)
                 Directory.CreateDirectory(Path.Combine(combinedPath, dir));
         }
-        
+
+        private static void DeleteAssetFolder(string assetPath)
+        {
+            var fullPath = Path.Combine(Path.GetDirectoryName(Application.dataPath)!, assetPath);
+            if (!Directory.Exists(fullPath))
+                return;
+
+            Directory.Delete(fullPath, true);
+
+            var metaPath = fullPath + ".meta";
+            if (File.Exists(metaPath))
+                File.Delete(metaPath);
+
+            Debug.Log($"[D-Dev] Deleted {assetPath}");
+        }
+
+        private static string GetPackageVersion()
+        {
+            var packageJsonPath = PackagePath + "package.json";
+            if (!File.Exists(packageJsonPath))
+                return "0.0.0";
+
+            var json = File.ReadAllText(packageJsonPath);
+            var match = Regex.Match(json, "\"version\"\\s*:\\s*\"([^\"]+)\"");
+            return match.Success ? match.Groups[1].Value : "0.0.0";
+        }
+
+        private static void BumpPatchVersion()
+        {
+            var packageJsonPath = PackagePath + "package.json";
+            var json = File.ReadAllText(packageJsonPath, Encoding.Default);
+            var match = Regex.Match(json, "\"version\"\\s*:\\s*\"(\\d+)\\.(\\d+)\\.(\\d+)\"");
+            if (!match.Success)
+                return;
+
+            var major = match.Groups[1].Value;
+            var minor = match.Groups[2].Value;
+            var patch = int.Parse(match.Groups[3].Value) + 1;
+            var newVersion = $"{major}.{minor}.{patch}";
+
+            json = json.Replace(match.Value, $"\"version\": \"{newVersion}\"");
+            File.WriteAllText(packageJsonPath, json, Encoding.Default);
+            Debug.Log($"[D-Dev] Version bumped to {newVersion}");
+        }
+
         private static void AddPackageToManifest(string package, string url)
         {
             var manifest = "Packages/manifest.json";
             var text = File.ReadAllText(manifest, Encoding.Default);
-            if(text.Contains(package) || text.Contains(url))
+            if (text.Contains(package) || text.Contains(url))
                 return;
 
             var newPackageLine = ",\n    \"" + package + "\": \"" + url + "\"";
