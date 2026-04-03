@@ -211,12 +211,10 @@ namespace D_Dev
 
         private static string GetPackageJsonPath()
         {
-            // When developing: Assets/Danil-dev/Package/package.json
             var localPath = Path.Combine(Application.dataPath, "Danil-dev/Package/package.json");
             if (File.Exists(localPath))
                 return localPath;
 
-            // When installed as UPM package: resolve via Packages folder
             var upmPath = Path.Combine(Path.GetDirectoryName(Application.dataPath)!, PackagePath, "package.json");
             return File.Exists(upmPath) ? upmPath : null;
         }
