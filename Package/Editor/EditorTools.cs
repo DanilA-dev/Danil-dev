@@ -70,22 +70,36 @@ namespace D_Dev
 
         public static void InstallAll()
         {
+            InstallDependencies();
+
             var projectHash = Application.dataPath.GetHashCode().ToString();
             var stateKey = InstallStateKey + projectHash;
 
-            DeleteAssetFolder("Assets/Danil-dev/Scripts");
-            DeleteAssetFolder("Assets/Danil-dev/Assets");
-
-            foreach (var (packageName, packageURL) in GitPackages)
-                AddPackageToManifest(packageName, packageURL);
-
-            var pluginsPath = PackagePath + "Danil-Dev.plugins.unitypackage";
-            if (File.Exists(pluginsPath))
+            var pluginsPath = ResolvePackagePath("Danil-Dev.plugins.unitypackage");
+            if (pluginsPath != null)
             {
                 EditorPrefs.SetString(stateKey, "plugins_done");
                 AssetDatabase.ImportPackage(pluginsPath, true);
                 return;
             }
+
+            InstallPackage();
+        }
+
+        [MenuItem("Tools/D_Dev/Setup/Install Dependencies")]
+        public static void InstallDependencies()
+        {
+            foreach (var (packageName, packageURL) in GitPackages)
+                AddPackageToManifest(packageName, packageURL);
+
+            Debug.Log("[D-Dev] Dependencies installed");
+        }
+
+        [MenuItem("Tools/D_Dev/Setup/Install Package")]
+        public static void InstallPackage()
+        {
+            DeleteAssetFolder("Assets/Danil-dev/Scripts");
+            DeleteAssetFolder("Assets/Danil-dev/Assets");
 
             ImportMainPackage();
         }
@@ -106,8 +120,8 @@ namespace D_Dev
             EditorPrefs.DeleteKey(InstallStateKey + projectHash);
             EditorPrefs.SetString(VersionPrefsKey + projectHash, GetPackageVersion());
 
-            var mainPath = PackagePath + "Danil-Dev.unitypackage";
-            if (File.Exists(mainPath))
+            var mainPath = ResolvePackagePath("Danil-Dev.unitypackage");
+            if (mainPath != null)
                 AssetDatabase.ImportPackage(mainPath, true);
 
             Debug.Log("[D-Dev] Setup complete");
@@ -209,19 +223,19 @@ namespace D_Dev
             Debug.Log($"[D-Dev] Deleted {assetPath}");
         }
 
-        private static string GetPackageJsonPath()
+        private static string ResolvePackagePath(string relativePath)
         {
-            var localPath = Path.Combine(Application.dataPath, "Danil-dev/Package/package.json");
+            var localPath = Path.Combine(Application.dataPath, "Danil-dev/Package", relativePath);
             if (File.Exists(localPath))
                 return localPath;
 
-            var upmPath = Path.Combine(Path.GetDirectoryName(Application.dataPath)!, PackagePath, "package.json");
+            var upmPath = Path.GetFullPath(Path.Combine(PackagePath, relativePath));
             return File.Exists(upmPath) ? upmPath : null;
         }
 
         private static string GetPackageVersion()
         {
-            var path = GetPackageJsonPath();
+            var path = ResolvePackagePath("package.json");
             if (path == null)
                 return "0.0.0";
 
@@ -232,7 +246,7 @@ namespace D_Dev
 
         private static void BumpPatchVersion()
         {
-            var path = GetPackageJsonPath();
+            var path = ResolvePackagePath("package.json");
             if (path == null)
                 return;
 
