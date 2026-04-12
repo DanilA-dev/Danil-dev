@@ -119,4 +119,8 @@ namespace D_Dev.EntityPool
 
         #endregion
     }
+    
+    [CreateAssetMenu(menuName = "D-Dev/Global Pools/GameObjcetPool")]
+    public class GameObjectGlobalPoolList : PoolableDataList {}
+    
 }
