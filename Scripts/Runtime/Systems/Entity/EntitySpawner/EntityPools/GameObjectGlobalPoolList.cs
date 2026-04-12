@@ -2,6 +2,8 @@
 
 namespace D_Dev.EntityPool
 {
-    [CreateAssetMenu(menuName = "D-Dev/Global Pools/GameObjcetPool")]
-    public class GameObjectGlobalPoolList : PoolableDataList {}
+    [CreateAssetMenu(menuName = "D-Dev/Pools/GameObjectPool")]
+    public class GameObjectGlobalPoolList : PoolableDataList
+    {
+    }
 }

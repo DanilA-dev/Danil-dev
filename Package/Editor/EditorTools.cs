@@ -46,6 +46,9 @@ namespace D_Dev
                 return;
             }
 
+            if (IsDevProject())
+                return;
+
             var packageVersion = GetPackageVersion();
             var versionKey = VersionPrefsKey + projectHash;
             var installedVersion = EditorPrefs.GetString(versionKey, "");
@@ -57,15 +60,15 @@ namespace D_Dev
             var title = isUpdate ? "D-Dev Utils — Update" : "D-Dev Utils";
             var message = isUpdate
                 ? $"Update available: {installedVersion} → {packageVersion}\n\nReimport Scripts & Assets?"
-                : "Install D-Dev Utils package?\n\n";
+                : "Install D-Dev Utils package?";
 
-            EditorApplication.delayCall += () =>
-            {
-                if (!EditorUtility.DisplayDialog(title, message, "Install All", "Later"))
-                    return;
+            EditorApplication.delayCall += () => InstallDialog.Show(title, message);
+        }
 
-                InstallAll();
-            };
+        private static bool IsDevProject()
+        {
+            var localPackage = Path.Combine(Application.dataPath, "Danil-dev/Package/package.json");
+            return File.Exists(localPackage);
         }
 
         public static void InstallAll()
@@ -279,5 +282,56 @@ namespace D_Dev
         }
 
         #endregion
+    }
+
+    public class InstallDialog : EditorWindow
+    {
+        private string _message;
+
+        public static void Show(string title, string message)
+        {
+            var window = CreateInstance<InstallDialog>();
+            window.titleContent = new GUIContent(title);
+            window._message = message;
+            window.minSize = new Vector2(380, 180);
+            window.maxSize = new Vector2(380, 180);
+            window.ShowUtility();
+        }
+
+        private void OnGUI()
+        {
+            GUILayout.Space(12);
+            EditorGUILayout.LabelField(_message, EditorStyles.wordWrappedLabel);
+            GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button("Install All", GUILayout.Height(26)))
+            {
+                Close();
+                EditorTools.InstallAll();
+                return;
+            }
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (GUILayout.Button("Install Dependencies", GUILayout.Height(22)))
+                {
+                    Close();
+                    EditorTools.InstallDependencies();
+                    return;
+                }
+
+                if (GUILayout.Button("Install Package", GUILayout.Height(22)))
+                {
+                    Close();
+                    EditorTools.InstallPackage();
+                    return;
+                }
+            }
+
+            if (GUILayout.Button("Cancel", GUILayout.Height(22)))
+                Close();
+
+            GUILayout.Space(6);
+        }
     }
 }
