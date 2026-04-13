@@ -31,13 +31,12 @@ namespace D_Dev.EntityPuller
         [Button]
         public void PullAll()
         {
-            Vector3 target = _targetPoint.GetPosition();
             foreach (var p in _subscribers)
             {
                 if (p == null)
                     continue;
-                
-                StartCoroutine(PullRoutine(p, target));
+
+                StartCoroutine(PullRoutine(p));
             }
         }
 
@@ -45,7 +44,7 @@ namespace D_Dev.EntityPuller
 
         #region Coroutine
 
-        private IEnumerator PullRoutine(PullableEntity p, Vector3 target)
+        private IEnumerator PullRoutine(PullableEntity p)
         {
             Transform tr = p.transform;
             Vector3 start = tr.position;
@@ -54,12 +53,12 @@ namespace D_Dev.EntityPuller
             {
                 t += Time.deltaTime;
                 float k = _curve.Evaluate(Mathf.Clamp01(t / _pullDuration.Value));
-                tr.position = Vector3.LerpUnclamped(start, target, k);
+                tr.position = Vector3.LerpUnclamped(start, _targetPoint.GetPosition(), k);
                 yield return null;
             }
             if (p != null)
             {
-                tr.position = target;
+                tr.position = _targetPoint.GetPosition();
                 p?.OnPulledCallback();
             }
         }
