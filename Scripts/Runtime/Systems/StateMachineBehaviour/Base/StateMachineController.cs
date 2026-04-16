@@ -66,9 +66,10 @@ namespace D_Dev.StateMachineBehaviour
 
         protected virtual void Start()
         {
-            if(_initStatesOnStart)
-                InitStates();
-            
+            if (!_initStatesOnStart)
+                return;
+
+            InitStates();
             ChangeState(_startState.Value);
         }
 
@@ -100,13 +101,18 @@ namespace D_Dev.StateMachineBehaviour
             _stateMachine?.UpdateStatesFixed();
         }
 
+        public void ManualInit()
+        {
+            InitStates();
+            ChangeState(_startState.Value);
+        }
         public void ReloadStartState() => ChangeState(_startState.Value);
         
         #endregion
 
         #region Virtual/Abstract
 
-        public virtual void InitStates() {}
+        protected abstract void InitStates();
         protected virtual void OnFixedUpdate() {}
 
         #endregion
