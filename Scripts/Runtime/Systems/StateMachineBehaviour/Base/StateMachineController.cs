@@ -18,6 +18,8 @@ namespace D_Dev.StateMachineBehaviour
         [Space]
         [FoldoutGroup("Base Settings", order:100)]
         [SerializeReference] protected PolymorphicValue<string> _startState;
+        [FoldoutGroup("Base Settings", order:100)]
+        [SerializeField] protected bool _initStatesOnStart;
         [Title("Events")]
         [FoldoutGroup("Base Settings", order:100)]
         [SerializeField] protected StateEvent[] _stateEvents;
@@ -56,14 +58,19 @@ namespace D_Dev.StateMachineBehaviour
                 StateChangedDebug(state);
             };
             _stateMachine.OnStateExit += InvokeStateExitEvent;
-            InitStates();
 
             float startupOffset = Time.time;
             _nextUpdateTick = startupOffset + Random.Range(_minStateTickInterval, _maxStateTickInterval);
             _nextTransitionTick = startupOffset + Random.Range(_minTransitionTickInterval, _maxTransitionTickInterval);
         }
 
-        protected virtual void Start() => ChangeState(_startState.Value);
+        protected virtual void Start()
+        {
+            if(_initStatesOnStart)
+                InitStates();
+            
+            ChangeState(_startState.Value);
+        }
 
         #endregion
 
@@ -99,7 +106,7 @@ namespace D_Dev.StateMachineBehaviour
 
         #region Virtual/Abstract
 
-        protected abstract void InitStates();
+        public virtual void InitStates() {}
         protected virtual void OnFixedUpdate() {}
 
         #endregion

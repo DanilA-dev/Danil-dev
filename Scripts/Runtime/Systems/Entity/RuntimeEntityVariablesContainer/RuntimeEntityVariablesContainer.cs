@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using D_Dev.EntityVariable;
 using D_Dev.ScriptableVaiables;
+using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace D_Dev.RuntimeEntityVariables
 {
@@ -15,7 +16,8 @@ namespace D_Dev.RuntimeEntityVariables
 
         private Dictionary<StringScriptableVariable, BaseEntityVariable> _variableMap = new();
         
-        public event Action OnInitialized;
+        [FoldoutGroup("Events")]
+        public UnityEvent OnInitialized;
             
         #endregion
 
@@ -34,8 +36,8 @@ namespace D_Dev.RuntimeEntityVariables
                 foreach (var runtimeVariables in _variables)
                     _variableMap.TryAdd(runtimeVariables.VariableID, runtimeVariables);
                 
-                OnInitialized?.Invoke();
                 IsInitialized = true;
+                OnInitialized?.Invoke();
             }
         }
 
@@ -60,8 +62,8 @@ namespace D_Dev.RuntimeEntityVariables
                 _variables.Add(clonedVar);
                 _variableMap.TryAdd(variable.VariableID, clonedVar);
             }
-            OnInitialized?.Invoke();
             IsInitialized = true;
+            OnInitialized?.Invoke();
         }
 
         public T GetVariable<T>(StringScriptableVariable variableID) where T : BaseEntityVariable

@@ -19,7 +19,7 @@ namespace  D_Dev.StateMachineBehaviour
 
         #region Virtual/Abstract
 
-        protected override void InitStates()
+        public override void InitStates()
         {
             if (_findOnObject)
                 _states = GetComponents<BaseComponentState>();
