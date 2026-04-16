@@ -18,8 +18,8 @@ namespace D_Dev.StateMachineBehaviour
         [Space]
         [FoldoutGroup("Base Settings", order:100)]
         [SerializeReference] protected PolymorphicValue<string> _startState;
-        [FoldoutGroup("Base Settings", order:100)]
-        [SerializeField] protected bool _initStatesOnStart;
+        [FoldoutGroup("Base Settings", order: 100)] 
+        [SerializeField] protected bool _initStatesOnStart = true;
         [Title("Events")]
         [FoldoutGroup("Base Settings", order:100)]
         [SerializeField] protected StateEvent[] _stateEvents;
