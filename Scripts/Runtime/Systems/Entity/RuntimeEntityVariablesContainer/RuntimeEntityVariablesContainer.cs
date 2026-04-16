@@ -10,7 +10,7 @@ namespace D_Dev.RuntimeEntityVariables
     {
         #region Fields
 
-        [SerializeField] private bool _initLocalVariablesOnStart;
+        [SerializeField] private bool _initLocalVariablesOnAwake;
         [SerializeReference] private List<BaseEntityVariable> _variables = new();
 
         private Dictionary<StringScriptableVariable, BaseEntityVariable> _variableMap = new();
@@ -19,16 +19,23 @@ namespace D_Dev.RuntimeEntityVariables
             
         #endregion
 
+        #region Properties
+
+        public bool IsInitialized { get; private set; }
+
+        #endregion
+
         #region Monobehaviour
 
-        private void Start()
+        private void Awake()
         {
-            if (_initLocalVariablesOnStart)
+            if (_initLocalVariablesOnAwake)
             {
                 foreach (var runtimeVariables in _variables)
                     _variableMap.TryAdd(runtimeVariables.VariableID, runtimeVariables);
                 
                 OnInitialized?.Invoke();
+                IsInitialized = true;
             }
         }
 
@@ -54,6 +61,7 @@ namespace D_Dev.RuntimeEntityVariables
                 _variableMap.TryAdd(variable.VariableID, clonedVar);
             }
             OnInitialized?.Invoke();
+            IsInitialized = true;
         }
 
         public T GetVariable<T>(StringScriptableVariable variableID) where T : BaseEntityVariable
