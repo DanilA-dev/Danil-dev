@@ -47,21 +47,22 @@ namespace D_Dev.RuntimeEntityVariables
 
         public void Init(List<BaseEntityVariable> variablesFromInfo)
         {
-            if(variablesFromInfo == null || variablesFromInfo.Count == 0)
-                return;
-
             foreach (var runtimeVariables in _variables)
                 _variableMap.TryAdd(runtimeVariables.VariableID, runtimeVariables);
-            
-            foreach (var variable in variablesFromInfo)
+
+            if (variablesFromInfo != null && variablesFromInfo.Count > 0)
             {
-                if(variable == null)
-                    continue;
-                
-                var clonedVar = variable.Clone();
-                _variables.Add(clonedVar);
-                _variableMap.TryAdd(variable.VariableID, clonedVar);
+                foreach (var variable in variablesFromInfo)
+                {
+                    if (variable == null)
+                        continue;
+
+                    var clonedVar = variable.Clone();
+                    _variables.Add(clonedVar);
+                    _variableMap.TryAdd(variable.VariableID, clonedVar);
+                }
             }
+
             IsInitialized = true;
             OnInitialized?.Invoke();
         }
