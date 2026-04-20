@@ -23,7 +23,7 @@ namespace D_Dev.CurrencySystem
 
         #region Monobehaviour
 
-        private void OnEnable() => AssignIcon();
+        private void Start() => AssignIcon();
 
         #endregion
 
