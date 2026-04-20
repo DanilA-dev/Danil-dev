@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using D_Dev.Entity;
+using D_Dev.Entity.Extensions;
 using D_Dev.Extensions;
 using D_Dev.PolymorphicValueSystem;
 using D_Dev.PositionRotationConfig;
@@ -19,7 +20,7 @@ namespace D_Dev.EntitySpawner
         #region Fields
 
         [Title("Data")]
-        [SerializeReference] private PolymorphicValue<EntityInfo> _data;
+        [SerializeReference] private PolymorphicValue<EntityInfo> _data = new EntityInfoConstantValue();
         [SerializeField] private bool _createOnStart;
         [SerializeReference] private PolymorphicValue<int> _amount = new IntConstantValue();
         [SerializeField] private bool _setActiveOnStart;

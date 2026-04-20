@@ -25,6 +25,12 @@ namespace D_Dev.RuntimeEntityVariables
 
         public bool IsInitialized { get; private set; }
 
+        public bool InitLocalVariablesOnAwake
+        {
+            get => _initLocalVariablesOnAwake;
+            set => _initLocalVariablesOnAwake = value;
+        }
+
         #endregion
 
         #region Monobehaviour
