@@ -11,11 +11,16 @@ namespace D_Dev.CurrencySystem
         [Title("Currency Settings")]
         [SerializeField] private Currency _currency;
 
+        [PreviewField(75, ObjectFieldAlignment.Right)]
+        [SerializeField] private Sprite _currencyIcon;
+
         #endregion
 
         #region Properties
 
         public Currency Currency => _currency;
+
+        public Sprite CurrencyIcon => _currencyIcon;
 
         #endregion
         
