@@ -102,7 +102,6 @@ namespace D_Dev.CurrencySystem.Extensions
                 Transform currencyTransform = currencyInfoSetter.transform;
                 currencyTransform.rotation = Quaternion.Euler(GetCurrencyRotation());
                 currencyTransform.position = _currencySpawnSettings.PositionSettings.GetPosition();
-                currencyTransform.localScale = Vector3.one;
 
                 int entityAmount = baseAmount + (i < extraAmount ? 1 : 0);
                 currencyInfoSetter.SetAmount(entityAmount);
