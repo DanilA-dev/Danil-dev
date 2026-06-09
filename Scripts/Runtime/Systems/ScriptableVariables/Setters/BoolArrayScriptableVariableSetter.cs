@@ -1,4 +1,4 @@
-namespace D_Dev.ScriptableVaiables.Setters
+namespace D_Dev.ScriptableVariables.Setters
 {
     public class BoolArrayScriptableVariableSetter : BaseScriptableVariableSetter<bool[], BoolArrayScriptableVariable> {}
 }

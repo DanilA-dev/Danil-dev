@@ -22,6 +22,13 @@ namespace D_Dev.UpdateManagerSystem
 
         #endregion
 
+        #region Domain Reload
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics() => Clear();
+
+        #endregion
+
         #region Monobehavior
 
         private void Update()

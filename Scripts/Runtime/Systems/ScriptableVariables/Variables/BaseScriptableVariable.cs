@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace D_Dev.ScriptableVaiables
+namespace D_Dev.ScriptableVariables
 {
     public class BaseScriptableVariable<T> : ScriptableObject
     {

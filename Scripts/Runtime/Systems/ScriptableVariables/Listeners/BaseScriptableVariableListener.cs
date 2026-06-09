@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace D_Dev.ScriptableVaiables.Listeners
+namespace D_Dev.ScriptableVariables.Listeners
 {
     public abstract class BaseScriptableVariableListener<T,TVariable> : MonoBehaviour
     where TVariable : BaseScriptableVariable<T>

@@ -1,5 +1,5 @@
 using System.Linq;
-using D_Dev.ScriptableVaiables;
+using D_Dev.ScriptableVariables;
 using UnityEngine;
 
 namespace D_Dev.PolymorphicValueSystem

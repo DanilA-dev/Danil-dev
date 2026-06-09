@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace D_Dev.ScriptableVaiables
+namespace D_Dev.ScriptableVariables
 {
     [CreateAssetMenu(menuName = "D-Dev/Variables/TransformArrayVariable")]
     public class TransformArrayScriptableVariable : BaseScriptableVariable<Transform[]>

@@ -1,6 +1,6 @@
 ﻿using System;
 using D_Dev.Base;
-using D_Dev.ScriptableVaiables;
+using D_Dev.ScriptableVariables;
 using Sirenix.OdinInspector;
 using UnityEngine;
 

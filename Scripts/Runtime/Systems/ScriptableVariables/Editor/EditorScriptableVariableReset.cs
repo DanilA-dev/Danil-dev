@@ -1,7 +1,7 @@
 ﻿#if UNITY_EDITOR
 using System;
 using System.Linq;
-using D_Dev.ScriptableVaiables;
+using D_Dev.ScriptableVariables;
 using UnityEditor;
 using UnityEngine;
 

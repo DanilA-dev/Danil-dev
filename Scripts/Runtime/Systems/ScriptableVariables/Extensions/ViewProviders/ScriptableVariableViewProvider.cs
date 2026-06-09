@@ -1,4 +1,4 @@
-using D_Dev.ScriptableVaiables;
+using D_Dev.ScriptableVariables;
 using D_Dev.TweenAnimations;
 using D_Dev.ValueViewProvider;
 using UnityEngine;

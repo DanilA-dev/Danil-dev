@@ -1,7 +1,7 @@
-﻿using D_Dev.ScriptableVaiables.Setters;
+﻿using D_Dev.ScriptableVariables.Setters;
 using UnityEngine;
 
-namespace D_Dev.ScriptableVaiables.Listeners
+namespace D_Dev.ScriptableVariables.Listeners
 {
     public class CanvasScriptableVariableListener : BaseScriptableVariableSetter<Canvas, CanvasScriptableVariable> {}
 }

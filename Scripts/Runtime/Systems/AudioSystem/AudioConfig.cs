@@ -1,4 +1,4 @@
-using D_Dev.ScriptableVaiables;
+using D_Dev.ScriptableVariables;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Audio;

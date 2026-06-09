@@ -8,10 +8,15 @@ namespace D_Dev.SaveSystem
     {
         #region Public
 
+        public void Save<T>(string key, T value)
+        {
+            PlayerPrefs.SetString(key, JsonConvert.SerializeObject(value, SaveSerializer.Settings));
+            PlayerPrefs.Save();
+        }
+
         public UniTask SaveAsync<T>(string key, T value)
         {
-            PlayerPrefs.SetString(key, JsonConvert.SerializeObject(value));
-            PlayerPrefs.Save();
+            Save(key, value);
             return UniTask.CompletedTask;
         }
 
@@ -20,7 +25,7 @@ namespace D_Dev.SaveSystem
             if (!PlayerPrefs.HasKey(key))
                 return UniTask.FromResult(defaultValue);
 
-            var result = JsonConvert.DeserializeObject<T>(PlayerPrefs.GetString(key));
+            var result = JsonConvert.DeserializeObject<T>(PlayerPrefs.GetString(key), SaveSerializer.Settings);
             return UniTask.FromResult(result);
         }
 
@@ -42,6 +47,5 @@ namespace D_Dev.SaveSystem
         }
 
         #endregion
-        
     }
 }

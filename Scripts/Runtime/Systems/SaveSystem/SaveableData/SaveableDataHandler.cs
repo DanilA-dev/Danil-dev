@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Cysharp.Threading.Tasks;
 using D_Dev.PolymorphicValueSystem;
 using D_Dev.SaveSystem.Services;
 using Sirenix.OdinInspector;
@@ -15,7 +16,6 @@ namespace D_Dev.SaveSystem.SaveableData
         [PropertySpace(15)]
         [SerializeField] private bool _debug;
         
-
         #endregion
 
         #region Monobehaviour
@@ -89,15 +89,19 @@ namespace D_Dev.SaveSystem.SaveableData
         {
             foreach (var saveableData in _saveableDatas)
                 if (saveableData.SaveOnExit)
-                    Save(saveableData);
+                    Save(saveableData, true);
         }
-        
-        private void Save(BaseSaveableData data)
+
+        private void Save(BaseSaveableData data, bool immediate = false)
         {
             if (GlobalSaveService.Instance == null)
                 return;
-            
-            GlobalSaveService.Instance.SaveAsync(data.Key.Value, data.SaveData());
+
+            if (immediate)
+                GlobalSaveService.Instance.Save(data.Key.Value, data.SaveData());
+            else
+                GlobalSaveService.Instance.SaveAsync(data.Key.Value, data.SaveData()).Forget();
+
             if (_debug)
                 Debug.Log($"[SaveableDataHandler] Save {data.Key.Value}");
         }

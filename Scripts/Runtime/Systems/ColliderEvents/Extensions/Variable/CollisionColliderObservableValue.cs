@@ -2,7 +2,7 @@ using D_Dev.ColliderEvents.Extensions.ScriptableVariables;
 using D_Dev.EntityVariable;
 using D_Dev.PolymorphicValueSystem;
 using D_Dev.RuntimeEntityVariables;
-using D_Dev.ScriptableVaiables;
+using D_Dev.ScriptableVariables;
 using UnityEngine;
 
 namespace D_Dev.ColliderEvents.Extensions

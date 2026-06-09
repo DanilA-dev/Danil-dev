@@ -12,7 +12,7 @@ namespace D_Dev.SaveSystem.Services
         [SerializeReference] private ISaveConfig _saveConfig;
         [SerializeField] private bool _useSeparateConfigForEditor;
         [ShowIf(nameof(_useSeparateConfigForEditor))]
-        [SerializeReference] private ISaveConfig _editorsaveConfig;
+        [SerializeReference] private ISaveConfig _editorSaveConfig;
 
         #endregion
 
@@ -28,9 +28,9 @@ namespace D_Dev.SaveSystem.Services
                 Debug.Log("[SaveService] Using default PlayerPrefsSaveConfig");
             }
 
-            if (_useSeparateConfigForEditor && _editorsaveConfig != null)
+            if (_useSeparateConfigForEditor && _editorSaveConfig != null)
             {
-                _saveConfig = _editorsaveConfig;
+                _saveConfig = _editorSaveConfig;
                 Debug.Log("[SaveService] Using editor save config");
             }
         }
@@ -39,6 +39,7 @@ namespace D_Dev.SaveSystem.Services
 
         #region Public
 
+        public void Save<T>(string key, T value) => _saveConfig.Save(key, value);
         public UniTask SaveAsync<T>(string key, T value) => _saveConfig.SaveAsync(key, value);
         public UniTask<T> LoadAsync<T>(string key, T defaultValue = default) => _saveConfig.LoadAsync(key, defaultValue);
         public UniTask<bool> HasKeyAsync(string key) => _saveConfig.HasKeyAsync(key);

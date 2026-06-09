@@ -30,6 +30,17 @@ namespace D_Dev.CoroutineManagerSystem
 
         #endregion
 
+        #region Domain Reload
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics()
+        {
+            _timeIntervals.Clear();
+            _realTimeIntervals.Clear();
+        }
+
+        #endregion
+
         #region Public
 
         public static WaitForSeconds Wait(float seconds)

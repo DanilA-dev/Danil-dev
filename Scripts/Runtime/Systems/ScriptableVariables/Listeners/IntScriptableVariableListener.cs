@@ -1,4 +1,4 @@
-namespace D_Dev.ScriptableVaiables.Listeners
+namespace D_Dev.ScriptableVariables.Listeners
 {
     public class IntScriptableVariableListener : BaseScriptableVariableListener<int, IntScriptableVariable> { }
 }

@@ -1,4 +1,4 @@
-﻿using D_Dev.ScriptableVaiables;
+﻿using D_Dev.ScriptableVariables;
 using D_Dev.TweenAnimations;
 
 namespace D_Dev.ScriptableVariables.Extensions.ViewProviders

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace D_Dev.ScriptableVaiables.Setters
+namespace D_Dev.ScriptableVariables.Setters
 {
     public class CanvasScriptableVariableSetter : BaseScriptableVariableSetter<Canvas, CanvasScriptableVariable>{}
 }

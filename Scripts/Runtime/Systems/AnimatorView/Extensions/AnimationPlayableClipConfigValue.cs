@@ -1,7 +1,7 @@
 using D_Dev.AnimatorView.AnimationPlayableHandler;
 using D_Dev.PolymorphicValueSystem;
 using D_Dev.RuntimeEntityVariables;
-using D_Dev.ScriptableVaiables;
+using D_Dev.ScriptableVariables;
 using UnityEngine;
 
 namespace D_Dev.AnimatorView.Extensions

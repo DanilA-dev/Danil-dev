@@ -1,7 +1,6 @@
-using System.Collections.Generic;
+using System;
 using System.IO;
 using Cysharp.Threading.Tasks;
-using D_Dev.SaveSystem.Converters;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -9,39 +8,39 @@ namespace D_Dev.SaveSystem
 {
     public class JsonFileSaveConfig : ISaveConfig
     {
-        #region Fields
-        
-        private readonly JsonSerializerSettings _settings = new()
-        {
-            Formatting = Formatting.Indented,
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            Converters = new List<JsonConverter>
-            {
-                new Vector2Converter(),
-                new Vector3Converter(),
-                new QuaternionConverter(),
-                new ColorConverter()
-            }
-        };
-
-        #endregion
-
         #region Public
 
-        public UniTask SaveAsync<T>(string key, T value)
+        public void Save<T>(string key, T value)
         {
-            File.WriteAllText(GetPath(key), JsonConvert.SerializeObject(value, _settings));
-            return UniTask.CompletedTask;
+            string path = GetPath(key);
+            string json = JsonConvert.SerializeObject(value, SaveSerializer.Settings);
+            WriteAtomic(key, path, json);
         }
 
-        public UniTask<T> LoadAsync<T>(string key, T defaultValue = default)
+        public async UniTask SaveAsync<T>(string key, T value)
+        {
+            string path = GetPath(key);
+            string json = JsonConvert.SerializeObject(value, SaveSerializer.Settings);
+
+            await UniTask.RunOnThreadPool(() => WriteAtomic(key, path, json));
+        }
+
+        public async UniTask<T> LoadAsync<T>(string key, T defaultValue = default)
         {
             string path = GetPath(key);
             if (!File.Exists(path))
-                return UniTask.FromResult(defaultValue);
+                return defaultValue;
 
-            var result = JsonConvert.DeserializeObject<T>(File.ReadAllText(path), _settings);
-            return UniTask.FromResult(result);
+            try
+            {
+                string json = await UniTask.RunOnThreadPool(() => File.ReadAllText(path));
+                return JsonConvert.DeserializeObject<T>(json, SaveSerializer.Settings);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[JsonFileSaveConfig] Load failed for key '{key}' - {e}");
+                return defaultValue;
+            }
         }
 
         public UniTask<bool> HasKeyAsync(string key)
@@ -49,23 +48,57 @@ namespace D_Dev.SaveSystem
 
         public UniTask DeleteKeyAsync(string key)
         {
-            string path = GetPath(key);
-            if (File.Exists(path))
-                File.Delete(path);
+            try
+            {
+                string path = GetPath(key);
+                if (File.Exists(path))
+                    File.Delete(path);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[JsonFileSaveConfig] Delete failed for key '{key}' - {e}");
+            }
+
             return UniTask.CompletedTask;
         }
 
         public UniTask DeleteAllAsync()
         {
-            var files = Directory.GetFiles(Application.persistentDataPath, "*.json");
-            foreach (var file in files)
-                File.Delete(file);
+            try
+            {
+                var files = Directory.GetFiles(Application.persistentDataPath, "*.json");
+                foreach (var file in files)
+                    File.Delete(file);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[JsonFileSaveConfig] Delete all failed - {e}");
+            }
+
             return UniTask.CompletedTask;
         }
 
         #endregion
-        
+
         #region Private
+
+        private void WriteAtomic(string key, string path, string json)
+        {
+            try
+            {
+                string tempPath = path + ".tmp";
+                File.WriteAllText(tempPath, json);
+
+                if (File.Exists(path))
+                    File.Delete(path);
+
+                File.Move(tempPath, path);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[JsonFileSaveConfig] Save failed for key '{key}' - {e}");
+            }
+        }
 
         private string GetPath(string key)
             => Path.Combine(Application.persistentDataPath, $"{key}.json");

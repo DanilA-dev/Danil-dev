@@ -1,5 +1,5 @@
 using Cinemachine;
-using D_Dev.ScriptableVaiables;
+using D_Dev.ScriptableVariables;
 using UnityEngine;
 
 namespace D_Dev.Utility

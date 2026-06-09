@@ -1,6 +1,6 @@
 using D_Dev.AnimatorView.AnimationPlayableHandler;
 using D_Dev.EntityVariable;
-using D_Dev.ScriptableVaiables;
+using D_Dev.ScriptableVariables;
 
 namespace D_Dev.AnimatorView.Extensions
 {

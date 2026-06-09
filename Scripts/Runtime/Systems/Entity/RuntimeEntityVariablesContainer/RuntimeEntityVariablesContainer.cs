@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using D_Dev.EntityVariable;
-using D_Dev.ScriptableVaiables;
+using D_Dev.ScriptableVariables;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;

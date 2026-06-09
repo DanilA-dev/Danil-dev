@@ -1,5 +1,6 @@
 ﻿using System;
 using D_Dev.PolymorphicValueSystem;
+using Newtonsoft.Json.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -78,16 +79,19 @@ namespace D_Dev.SaveSystem.SaveableData
         {
             if (data is TData typedData)
             {
-                SetTypedSaveData(typedData);
-                OnLoadData?.Invoke(typedData);
+                ApplyLoaded(typedData);
                 return;
             }
 
             try
             {
-                var converted = (TData)Convert.ChangeType(data, typeof(TData));
-                SetTypedSaveData(converted);
-                OnLoadData?.Invoke(converted);
+                if (data is JToken token)
+                {
+                    ApplyLoaded(token.ToObject<TData>(SaveSerializer.Serializer));
+                    return;
+                }
+
+                ApplyLoaded((TData)Convert.ChangeType(data, typeof(TData)));
             }
             catch (Exception e)
             {
@@ -98,12 +102,22 @@ namespace D_Dev.SaveSystem.SaveableData
         }
 
         #endregion
-        
+
         #region Protected
 
         protected abstract TData GetTypedSaveData();
         protected abstract void SetTypedSaveData(TData data);
         protected abstract TData GetTypedDefaultValue();
+
+        #endregion
+
+        #region Private
+
+        private void ApplyLoaded(TData data)
+        {
+            SetTypedSaveData(data);
+            OnLoadData?.Invoke(data);
+        }
 
         #endregion
     }

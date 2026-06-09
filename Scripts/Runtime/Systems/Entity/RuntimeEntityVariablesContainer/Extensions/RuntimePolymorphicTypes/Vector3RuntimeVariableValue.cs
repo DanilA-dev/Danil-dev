@@ -1,7 +1,7 @@
 using System;
 using D_Dev.EntityVariable.Types;
 using D_Dev.PolymorphicValueSystem;
-using D_Dev.ScriptableVaiables;
+using D_Dev.ScriptableVariables;
 using UnityEngine;
 
 namespace D_Dev.RuntimeEntityVariables.Extensions

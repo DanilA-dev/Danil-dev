@@ -1,4 +1,4 @@
-using D_Dev.ScriptableVaiables.Listeners;
+using D_Dev.ScriptableVariables.Listeners;
 
 namespace D_Dev.ColliderEvents.Extensions.ScriptableVariables
 {

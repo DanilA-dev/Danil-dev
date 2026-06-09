@@ -1,5 +1,5 @@
 ﻿using D_Dev.PolymorphicValueSystem;
-using D_Dev.ScriptableVaiables;
+using D_Dev.ScriptableVariables;
 
 namespace D_Dev.EntityVariable.Types
 {

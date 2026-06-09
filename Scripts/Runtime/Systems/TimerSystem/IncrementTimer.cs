@@ -21,21 +21,23 @@ namespace D_Dev.TimerSystem
 
         public override void Tick(float deltaTime)
         {
-            if (IsRunning && Time < _targetTime)
+            if (!IsRunning)
+                return;
+
+            if (Time < _targetTime)
             {
                 Time += deltaTime;
+                if (Time > _targetTime)
+                    Time = _targetTime;
+
                 OnProgressUpdate();
             }
-        
-            if(IsRunning && Time >= _targetTime)
-                Stop();
+
+            if (Time >= _targetTime)
+                Complete();
         }
 
-        public override void Reset()
-        {
-            base.Reset();
-            Time = 0;
-        }
+        public override void Reset() => Time = 0;
 
         #endregion
     }
