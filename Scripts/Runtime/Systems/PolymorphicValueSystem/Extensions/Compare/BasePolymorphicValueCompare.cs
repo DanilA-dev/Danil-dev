@@ -42,6 +42,9 @@ namespace D_Dev.PolymorphicValueSystem.Compare
         {
             foreach (CompareValuePair pair in _comparePairs)
             {
+                if (pair?.CompareValue == null || pair.CompareValueTo == null)
+                    continue;
+
                 T value = pair.CompareValue.Value;
                 T valueTo = pair.CompareValueTo.Value;
 

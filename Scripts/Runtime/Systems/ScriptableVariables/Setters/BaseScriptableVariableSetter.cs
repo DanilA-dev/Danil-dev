@@ -34,9 +34,12 @@ namespace D_Dev.ScriptableVariables.Setters
 
         public void SetValue(T value)
         {
+            if(_variable == null)
+                return;
+
             if(value == null)
                 return;
-            
+
             _variable.Value = value;
         }
 
