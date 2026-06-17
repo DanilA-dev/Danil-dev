@@ -26,17 +26,19 @@ namespace D_Dev.PolymorphicValueSystem.Setters
 
         public void SetValue()
         {
-            if(_valueToSet == null)
-                return;
-            
-            if(_resultValue == null)
-                return;
-            
             if(_valueToSet.Value == null ||
                _resultValue.Value == null)
                 return;
             
             _valueToSet.Value = _resultValue.Value;
+        }
+
+        public void SetValue(T newValue)
+        {
+            if(_valueToSet == null)
+                return;
+
+            _valueToSet.Value = newValue;
         }
 
         #endregion
