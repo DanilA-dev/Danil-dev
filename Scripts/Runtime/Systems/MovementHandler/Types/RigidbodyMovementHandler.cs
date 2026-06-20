@@ -25,8 +25,14 @@ namespace D_Dev.MovementHandler
                 _rigidbody.AddForce(force, _forceMode);
             }
 
-            if (_rigidbody.linearVelocity.magnitude > MaxVelocity)
-                _rigidbody.linearVelocity = Vector3.ClampMagnitude(_rigidbody.linearVelocity, MaxVelocity);
+            Vector3 velocity = _rigidbody.linearVelocity;
+            Vector3 horizontalVelocity = new Vector3(velocity.x, 0f, velocity.z);
+
+            if (horizontalVelocity.magnitude > MaxVelocity)
+            {
+                horizontalVelocity = Vector3.ClampMagnitude(horizontalVelocity, MaxVelocity);
+                _rigidbody.linearVelocity = new Vector3(horizontalVelocity.x, velocity.y, horizontalVelocity.z);
+            }
         }
 
         public override void StopMovement()
