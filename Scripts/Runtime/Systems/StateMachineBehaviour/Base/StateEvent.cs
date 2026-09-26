@@ -9,7 +9,8 @@ namespace D_Dev.StateMachineBehaviour
     [System.Serializable]
     public class StateEvent
     {
-        [field : SerializeReference] public PolymorphicValue<string> State { get; private set; }
+        [field: SerializeReference]
+        public PolymorphicValue<string> State { get; private set; } = new StringConstantValue();
         [FoldoutGroup("Events")]
         public UnityEvent<string> OnStateEnter;
         [FoldoutGroup("Events")]

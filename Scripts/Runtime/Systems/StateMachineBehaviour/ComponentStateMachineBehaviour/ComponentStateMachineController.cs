@@ -1,5 +1,3 @@
-using System.Linq;
-using D_Dev.StateMachine;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -41,24 +39,27 @@ namespace  D_Dev.StateMachineBehaviour
             
             foreach (var state in _states)
             {
-                if (state.Transitions == null || state.Transitions.Length == 0)
+                if (state == null || state.Transitions == null || state.Transitions.Length == 0)
                     continue;
                 
                 foreach (var transition in state.Transitions)
                 {
-                    if (transition.Conditions != null && transition.Conditions.Length > 0)
-                    {
-                        AddTransition(transition.FromStates, state.StateName, new FuncCondition(() => 
-                            state.CanBeTransitioned.Value &&
-                            transition.Conditions.All(c => c.IsConditionMet())));
-                    }
-                    
-                    if (transition.FixedConditions != null && transition.FixedConditions.Length > 0)
-                    {
-                        AddFixedTransition(transition.FromStates, state.StateName, new FuncFixedCondition(() => 
-                            state.CanBeTransitioned.Value &&
-                            transition.FixedConditions.All(c => c.IsConditionMet())));
-                    }
+                    if (transition == null)
+                        continue;
+
+                    var condition = new CompositeTransitionCondition(
+                        transition.Conditions,
+                        transition.FixedConditions,
+                        transition.MatchMode,
+                        () => state.CanBeTransitioned.Value);
+
+                    if (condition.IsEmpty)
+                        continue;
+
+                    if (condition.HasFixedConditions)
+                        AddFixedTransition(transition.FromStates, state.StateName, condition);
+                    else
+                        AddTransition(transition.FromStates, state.StateName, condition);
                 }
             }
         }

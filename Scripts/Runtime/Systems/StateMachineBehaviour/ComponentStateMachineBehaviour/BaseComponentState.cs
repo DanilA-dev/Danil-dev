@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using D_Dev.Base;
+using D_Dev.Conditions;
 using D_Dev.PolymorphicValueSystem;
 using D_Dev.StateMachine;
 using UnityEngine;
@@ -16,15 +17,19 @@ namespace D_Dev.StateMachineBehaviour
         {
             #region Fields
 
-            [SerializeReference] private PolymorphicValue<string>[] _fromStates;
-            [SerializeReference] private ICondition[] _conditions;
-            [SerializeReference] private IFixedCondition[] _fixedConditions;
+            [SerializeField] private string _transitionName;
+            [SerializeField] private ConditionMatchMode _matchMode = ConditionMatchMode.All;
+            [Space]
+            [SerializeReference] private PolymorphicValue<string>[] _fromStates = Array.Empty<PolymorphicValue<string>>();
+            [SerializeReference] private ICondition[] _conditions = Array.Empty<ICondition>();
+            [SerializeReference] private IFixedCondition[] _fixedConditions = Array.Empty<IFixedCondition>();
 
             #endregion
 
             #region Properties
 
             public string[] FromStates => _fromStates.Select(x => x.Value).ToArray();
+            public ConditionMatchMode MatchMode => _matchMode;
             public ICondition[] Conditions => _conditions;
             public IFixedCondition[] FixedConditions => _fixedConditions;
 
