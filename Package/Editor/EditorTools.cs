@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -16,6 +17,15 @@ namespace D_Dev
         private const string PackagePath = "Packages/com.d-dev.utils/";
         private const string VersionPrefsKey = "D_Dev_InstalledVersion_";
         private const string InstallStateKey = "D_Dev_InstallState_";
+        private const string MainPackageName = "Danil-Dev";
+        private const string MainPackageFile = MainPackageName + ".unitypackage";
+        private const string PackageGuidsFile = MainPackageName + ".guids.txt";
+
+        private static readonly string[] PackageFolders =
+        {
+            "Assets/Danil-dev/Assets",
+            "Assets/Danil-dev/Scripts"
+        };
 
         private static readonly Dictionary<string, string> GitPackages = new()
         {
@@ -99,13 +109,7 @@ namespace D_Dev
         }
 
         [MenuItem("Tools/D_Dev/Setup/Install Package")]
-        public static void InstallPackage()
-        {
-            DeleteAssetFolder("Assets/Danil-dev/Scripts");
-            DeleteAssetFolder("Assets/Danil-dev/Assets");
-
-            ImportMainPackage();
-        }
+        public static void InstallPackage() => ImportMainPackage();
 
         private static void WaitForCompilationThenImport()
         {
@@ -121,13 +125,95 @@ namespace D_Dev
             var projectHash = Application.dataPath.GetHashCode().ToString();
 
             EditorPrefs.DeleteKey(InstallStateKey + projectHash);
+
+            var mainPath = ResolvePackagePath(MainPackageFile);
+            if (mainPath == null)
+            {
+                Debug.LogError($"[D-Dev] {MainPackageFile} not found");
+                return;
+            }
+
+            UnsubscribeFromImport();
+            AssetDatabase.importPackageCompleted += OnMainPackageImported;
+            AssetDatabase.importPackageCancelled += OnMainPackageCancelled;
+            AssetDatabase.importPackageFailed += OnMainPackageFailed;
+            AssetDatabase.ImportPackage(mainPath, true);
+        }
+
+        private static void OnMainPackageImported(string packageName)
+        {
+            if (packageName != MainPackageName)
+                return;
+
+            UnsubscribeFromImport();
+            RemoveObsoleteAssets();
+
+            var projectHash = Application.dataPath.GetHashCode().ToString();
             EditorPrefs.SetString(VersionPrefsKey + projectHash, GetPackageVersion());
-
-            var mainPath = ResolvePackagePath("Danil-Dev.unitypackage");
-            if (mainPath != null)
-                AssetDatabase.ImportPackage(mainPath, true);
-
             Debug.Log("[D-Dev] Setup complete");
+        }
+
+        private static void OnMainPackageCancelled(string packageName)
+        {
+            if (packageName != MainPackageName)
+                return;
+
+            UnsubscribeFromImport();
+            Debug.Log("[D-Dev] Import cancelled, nothing was changed");
+        }
+
+        private static void OnMainPackageFailed(string packageName, string errorMessage)
+        {
+            if (packageName != MainPackageName)
+                return;
+
+            UnsubscribeFromImport();
+            Debug.LogError($"[D-Dev] Import failed: {errorMessage}");
+        }
+
+        private static void UnsubscribeFromImport()
+        {
+            AssetDatabase.importPackageCompleted -= OnMainPackageImported;
+            AssetDatabase.importPackageCancelled -= OnMainPackageCancelled;
+            AssetDatabase.importPackageFailed -= OnMainPackageFailed;
+        }
+
+        private static void RemoveObsoleteAssets()
+        {
+            var guidsPath = ResolvePackagePath(PackageGuidsFile);
+            if (guidsPath == null)
+            {
+                Debug.LogWarning($"[D-Dev] {PackageGuidsFile} not found, obsolete assets were not removed");
+                return;
+            }
+
+            var packageGuids = new HashSet<string>(File.ReadAllLines(guidsPath)
+                .Select(line => line.Trim())
+                .Where(line => line.Length > 0));
+
+            var folders = PackageFolders.Where(AssetDatabase.IsValidFolder).ToArray();
+            if (folders.Length == 0)
+                return;
+
+            var obsoletePaths = AssetDatabase.FindAssets("", folders)
+                .Where(guid => !packageGuids.Contains(guid))
+                .Select(AssetDatabase.GUIDToAssetPath)
+                .Where(path => !string.IsNullOrEmpty(path))
+                .Distinct()
+                .OrderByDescending(path => path.Length)
+                .ToArray();
+
+            if (obsoletePaths.Length == 0)
+                return;
+
+            var failedPaths = new List<string>();
+            AssetDatabase.DeleteAssets(obsoletePaths, failedPaths);
+
+            foreach (var path in obsoletePaths.Except(failedPaths))
+                Debug.Log($"[D-Dev] Removed obsolete {path}");
+
+            foreach (var path in failedPaths)
+                Debug.LogWarning($"[D-Dev] Failed to remove obsolete {path}");
         }
 
         #endregion
@@ -168,14 +254,14 @@ namespace D_Dev
         {
             BumpPatchVersion();
 
-            string[] paths = new[]
-            {
-                "Assets/Danil-dev/Assets",
-                "Assets/Danil-dev/Scripts"
-            };
-            var exportDirectory = "Assets/Danil-dev/Package/Danil-Dev.unitypackage";
-            AssetDatabase.ExportPackage(paths, exportDirectory, ExportPackageOptions.Recurse);
-            Debug.Log($"[D-Dev] Exported package v{GetPackageVersion()} to {exportDirectory}");
+            var exportDirectory = "Assets/Danil-dev/Package/" + MainPackageFile;
+            AssetDatabase.ExportPackage(PackageFolders, exportDirectory, ExportPackageOptions.Recurse);
+
+            var guids = AssetDatabase.FindAssets("", PackageFolders);
+            File.WriteAllLines("Assets/Danil-dev/Package/" + PackageGuidsFile, guids);
+            AssetDatabase.Refresh();
+
+            Debug.Log($"[D-Dev] Exported package v{GetPackageVersion()} to {exportDirectory} ({guids.Length} assets)");
         }
 
         [MenuItem("Tools/D_Dev/Data/Open PersistentDataPath")]
@@ -209,21 +295,6 @@ namespace D_Dev
 
             foreach (var dir in directions)
                 Directory.CreateDirectory(Path.Combine(combinedPath, dir));
-        }
-
-        private static void DeleteAssetFolder(string assetPath)
-        {
-            var fullPath = Path.Combine(Path.GetDirectoryName(Application.dataPath)!, assetPath);
-            if (!Directory.Exists(fullPath))
-                return;
-
-            Directory.Delete(fullPath, true);
-
-            var metaPath = fullPath + ".meta";
-            if (File.Exists(metaPath))
-                File.Delete(metaPath);
-
-            Debug.Log($"[D-Dev] Deleted {assetPath}");
         }
 
         private static string ResolvePackagePath(string relativePath)
