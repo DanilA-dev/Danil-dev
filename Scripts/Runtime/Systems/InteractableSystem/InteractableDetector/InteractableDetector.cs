@@ -137,10 +137,10 @@ namespace D_Dev.InteractableSystem.InteractableDetector
             if (IsAlive(previous))
                 previous.Unfocus(gameObject);
 
-            _currentInteractable?.Focus(gameObject);
-
             if (_focusedOutput != null)
                 _focusedOutput.Value = _currentInteractable?.GameObject;
+
+            _currentInteractable?.Focus(gameObject);
         }
 
         private static bool IsAlive(IInteractable interactable)
