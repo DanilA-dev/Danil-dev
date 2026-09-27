@@ -3,7 +3,6 @@ using D_Dev.EntityVariable;
 using D_Dev.PolymorphicValueSystem;
 using D_Dev.RuntimeEntityVariables;
 using D_Dev.ScriptableVariables;
-using UnityEngine;
 
 namespace D_Dev.ColliderEvents.Extensions
 {
@@ -11,24 +10,8 @@ namespace D_Dev.ColliderEvents.Extensions
     public abstract class TriggerColliderObservableValue : PolymorphicValue<TriggerColliderObservable> {}
 
     [System.Serializable]
-    public sealed class TriggerColliderObservableConstantValue : TriggerColliderObservableValue
+    public sealed class TriggerColliderObservableConstantValue : ConstantValue<TriggerColliderObservable>
     {
-        #region Fields
-
-        [SerializeField] private TriggerColliderObservable _value;
-
-        #endregion
-
-        #region Properties
-
-        public override TriggerColliderObservable Value
-        {
-            get => _value;
-            set => _value = value;
-        }
-
-        #endregion
-
         #region Cloning
 
         public override PolymorphicValue<TriggerColliderObservable> Clone()
@@ -40,28 +23,8 @@ namespace D_Dev.ColliderEvents.Extensions
     }
 
     [System.Serializable]
-    public sealed class TriggerColliderObservableScriptableVariableValue : TriggerColliderObservableValue
+    public sealed class TriggerColliderObservableScriptableVariableValue : ScriptableVariableValue<TriggerColliderObservableScriptableVariable, TriggerColliderObservable>
     {
-        #region Fields
-
-        [SerializeField] private TriggerColliderObservableScriptableVariable _variable;
-
-        #endregion
-
-        #region Properties
-
-        public override TriggerColliderObservable Value
-        {
-            get => _variable?.Value;
-            set
-            {
-                if (_variable != null)
-                    _variable.Value = value;
-            }
-        }
-
-        #endregion
-
         #region Cloning
 
         public override PolymorphicValue<TriggerColliderObservable> Clone()
@@ -73,43 +36,8 @@ namespace D_Dev.ColliderEvents.Extensions
     }
 
     [System.Serializable]
-    public sealed class TriggerColliderObservableRuntimeVariableValue : TriggerColliderObservableValue
+    public sealed class TriggerColliderObservableRuntimeVariableValue : EntityRuntimeVariableValue<TriggerColliderObservableEntityVariable, TriggerColliderObservable>
     {
-        #region Fields
-
-        [SerializeField] private StringScriptableVariable _variableID;
-        [SerializeField] private RuntimeEntityVariablesContainer _runtimeEntityVariablesContainer;
-        
-        private TriggerColliderObservableEntityVariable _cachedVariable;
-
-        #endregion
-
-        #region Properties
-
-        public override TriggerColliderObservable Value
-        {
-            get
-            {
-                if (_cachedVariable == null)
-                    _cachedVariable = _runtimeEntityVariablesContainer?.GetVariable<TriggerColliderObservableEntityVariable>(_variableID);
-                
-                if (_cachedVariable == null)
-                    return null;
-                
-                return _cachedVariable.Value;
-            }
-            set
-            {
-                if (_cachedVariable == null)
-                    _cachedVariable = _runtimeEntityVariablesContainer?.GetVariable<TriggerColliderObservableEntityVariable>(_variableID);
-                
-                if (_cachedVariable != null)
-                    _cachedVariable.Value = value;
-            }
-        }
-
-        #endregion
-
         #region Cloning
 
         public override PolymorphicValue<TriggerColliderObservable> Clone()

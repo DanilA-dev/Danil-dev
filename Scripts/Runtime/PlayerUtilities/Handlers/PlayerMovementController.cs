@@ -8,9 +8,9 @@ namespace D_Dev.PlayerStateController
     {
         #region Fields
 
-        [SerializeReference] private PolymorphicValue<Transform> _directionRoot;
-        [SerializeReference] private PolymorphicValue<Vector3> _rawInputDirection;
-        [SerializeReference] private PolymorphicValue<Vector3> _moveInputDirection;
+        [SerializeReference] private PolymorphicValue<Transform> _directionRoot = new TransformConstantValue();
+        [SerializeReference] private PolymorphicValue<Vector3> _rawInputDirection = new Vector3ConstantValue();
+        [SerializeReference] private PolymorphicValue<Vector3> _moveInputDirection = new Vector3ConstantValue();
         
         #endregion
 

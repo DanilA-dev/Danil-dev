@@ -15,14 +15,15 @@ namespace D_Dev.StateMachineBehaviour
         [SerializeField, ReadOnly] protected string _currentState;
         [FoldoutGroup("Base Settings", order:100)]
         [SerializeField] protected bool _debugStateChange;
-        [Space]
-        [FoldoutGroup("Base Settings", order:100)]
-        [SerializeReference] protected PolymorphicValue<string> _startState;
+
+        [Space] [FoldoutGroup("Base Settings", order: 100)] 
+        [SerializeReference] protected PolymorphicValue<string> _startState = new StringConstantValue();
         [FoldoutGroup("Base Settings", order: 100)] 
         [SerializeField] protected bool _initStatesOnStart = true;
         [Title("Events")]
         [FoldoutGroup("Base Settings", order:100)]
         [SerializeField] protected StateEvent[] _stateEvents;
+        [Space]
         [FoldoutGroup("Base Settings", order:100)]
         public UnityEvent<string> OnAnyStateEnter;
         [FoldoutGroup("Base Settings", order:100)]

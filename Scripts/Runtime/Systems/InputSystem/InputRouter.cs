@@ -24,6 +24,12 @@ namespace D_Dev.InputSystem
 
         #endregion
 
+        #region Properties
+
+        public bool IsLookFromPointer { get; private set; }
+
+        #endregion
+
         #region IInputRouter
 
         public void Enable()
@@ -42,7 +48,11 @@ namespace D_Dev.InputSystem
 
         #region IPlayerActions
 
-        public void OnLook(InputAction.CallbackContext context) => Look?.Invoke(context.ReadValue<Vector2>());
+        public void OnLook(InputAction.CallbackContext context)
+        {
+            IsLookFromPointer = context.control?.device is Pointer;
+            Look?.Invoke(context.ReadValue<Vector2>());
+        }
 
         public void OnMove(InputAction.CallbackContext context) => Move?.Invoke(context.ReadValue<Vector2>());
 

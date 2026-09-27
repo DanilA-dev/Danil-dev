@@ -53,7 +53,6 @@ namespace D_Dev.MovementHandler
         public override void StopMovement()
         {
             _currentVelocity = Vector3.zero;
-            _verticalVelocity = 0f;
             Direction = Vector3.zero;
         }
 

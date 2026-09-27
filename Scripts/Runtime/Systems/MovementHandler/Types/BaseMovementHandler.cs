@@ -32,6 +32,8 @@ namespace D_Dev.MovementHandler
             set => _maxVelocity = value;
         }
 
+        public virtual Rigidbody Rigidbody => null;
+
         #endregion
                 
         #region Abstract
@@ -41,6 +43,7 @@ namespace D_Dev.MovementHandler
         public virtual void OnUpdate() {}
         public virtual void OnFixedUpdate() {}
         public abstract void StopMovement();
+        public virtual void ResumeMovement() {}
         public abstract float GetVelocity();
         public abstract bool IsMoving();
 

@@ -1,4 +1,5 @@
-﻿using D_Dev.ScriptableVariables;
+using System;
+using D_Dev.ScriptableVariables;
 using UnityEngine;
 
 namespace D_Dev.PolymorphicValueSystem
@@ -11,6 +12,8 @@ namespace D_Dev.PolymorphicValueSystem
 
         [SerializeField] protected TVariable _variable;
 
+        [NonSerialized] private TVariable _subscribedVariable;
+
         #endregion
 
         #region Properties
@@ -21,17 +24,36 @@ namespace D_Dev.PolymorphicValueSystem
             {
                 if (_variable == null)
                     return default;
-                
+
                 return _variable.Value;
             }
             set
             {
                 if(_variable == null)
                     return;
-                
+
                 _variable.Value = value;
-                OnValueChanged?.Invoke(_variable.Value);
             }
+        }
+
+        #endregion
+
+        #region Overrides
+
+        protected override void SubscribeToSource()
+        {
+            _subscribedVariable = _variable;
+
+            if (_subscribedVariable != null)
+                _subscribedVariable.OnValueUpdate += RaiseValueChanged;
+        }
+
+        protected override void UnsubscribeFromSource()
+        {
+            if (_subscribedVariable != null)
+                _subscribedVariable.OnValueUpdate -= RaiseValueChanged;
+
+            _subscribedVariable = null;
         }
 
         #endregion

@@ -12,6 +12,12 @@ namespace D_Dev.MovementHandler
 
         #endregion
 
+        #region Properties
+
+        public override Rigidbody Rigidbody => _rigidbody;
+
+        #endregion
+
         #region Overrides
 
         public override void OnFixedUpdate()
@@ -40,7 +46,7 @@ namespace D_Dev.MovementHandler
             if (_rigidbody == null)
                 return;
  
-            _rigidbody.linearVelocity = Vector3.zero;
+            _rigidbody.linearVelocity = new Vector3(0f, _rigidbody.linearVelocity.y, 0f);
             Direction = Vector3.zero;
         }
 

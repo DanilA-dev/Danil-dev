@@ -14,6 +14,12 @@ namespace D_Dev.MovementHandler
 
         #endregion
 
+        #region Properties
+
+        public override Rigidbody Rigidbody => _rigidbody;
+
+        #endregion
+
         #region Overrides
 
         public override void OnFixedUpdate()

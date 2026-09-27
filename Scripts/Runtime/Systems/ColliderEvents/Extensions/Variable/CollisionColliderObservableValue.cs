@@ -3,7 +3,6 @@ using D_Dev.EntityVariable;
 using D_Dev.PolymorphicValueSystem;
 using D_Dev.RuntimeEntityVariables;
 using D_Dev.ScriptableVariables;
-using UnityEngine;
 
 namespace D_Dev.ColliderEvents.Extensions
 {
@@ -11,24 +10,8 @@ namespace D_Dev.ColliderEvents.Extensions
     public abstract class CollisionColliderObservableValue : PolymorphicValue<CollisionColliderObservable> {}
 
     [System.Serializable]
-    public sealed class CollisionColliderObservableConstantValue : CollisionColliderObservableValue
+    public sealed class CollisionColliderObservableConstantValue : ConstantValue<CollisionColliderObservable>
     {
-        #region Fields
-
-        [SerializeField] private CollisionColliderObservable _value;
-
-        #endregion
-
-        #region Properties
-
-        public override CollisionColliderObservable Value
-        {
-            get => _value;
-            set => _value = value;
-        }
-
-        #endregion
-
         #region Cloning
 
         public override PolymorphicValue<CollisionColliderObservable> Clone()
@@ -40,28 +23,8 @@ namespace D_Dev.ColliderEvents.Extensions
     }
 
     [System.Serializable]
-    public sealed class CollisionColliderObservableScriptableVariableValue : CollisionColliderObservableValue
+    public sealed class CollisionColliderObservableScriptableVariableValue : ScriptableVariableValue<CollisionColliderObservableScriptableVariable, CollisionColliderObservable>
     {
-        #region Fields
-
-        [SerializeField] private CollisionColliderObservableScriptableVariable _variable;
-
-        #endregion
-
-        #region Properties
-
-        public override CollisionColliderObservable Value
-        {
-            get => _variable?.Value;
-            set
-            {
-                if (_variable != null)
-                    _variable.Value = value;
-            }
-        }
-
-        #endregion
-
         #region Cloning
 
         public override PolymorphicValue<CollisionColliderObservable> Clone()
@@ -73,43 +36,8 @@ namespace D_Dev.ColliderEvents.Extensions
     }
 
     [System.Serializable]
-    public sealed class CollisionColliderObservableRuntimeVariableValue : CollisionColliderObservableValue
+    public sealed class CollisionColliderObservableRuntimeVariableValue : EntityRuntimeVariableValue<CollisionColliderObservableEntityVariable, CollisionColliderObservable>
     {
-        #region Fields
-
-        [SerializeField] private StringScriptableVariable _variableID;
-        [SerializeField] private RuntimeEntityVariablesContainer _runtimeEntityVariablesContainer;
-        
-        private CollisionColliderObservableEntityVariable _cachedVariable;
-
-        #endregion
-
-        #region Properties
-
-        public override CollisionColliderObservable Value
-        {
-            get
-            {
-                if (_cachedVariable == null)
-                    _cachedVariable = _runtimeEntityVariablesContainer?.GetVariable<CollisionColliderObservableEntityVariable>(_variableID);
-                
-                if (_cachedVariable == null)
-                    return null;
-                
-                return _cachedVariable.Value;
-            }
-            set
-            {
-                if (_cachedVariable == null)
-                    _cachedVariable = _runtimeEntityVariablesContainer?.GetVariable<CollisionColliderObservableEntityVariable>(_variableID);
-                
-                if (_cachedVariable != null)
-                    _cachedVariable.Value = value;
-            }
-        }
-
-        #endregion
-
         #region Cloning
 
         public override PolymorphicValue<CollisionColliderObservable> Clone()

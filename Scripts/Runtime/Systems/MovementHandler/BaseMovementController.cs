@@ -19,6 +19,8 @@ namespace D_Dev.MovementHandler
 
         protected bool IsStopped => _isStopped;
 
+        public Rigidbody Rigidbody => _movementHandler?.Rigidbody;
+
         public float UpdateInterval
         {
             get => _updateInterval;
@@ -82,13 +84,19 @@ namespace D_Dev.MovementHandler
                 _movementHandler.Acceleration = acceleration;
         }
 
-        public void StopMovement()
+        public void StopMovement() => _movementHandler?.StopMovement();
+
+        public void PauseMovement()
         {
             _movementHandler?.StopMovement();
             _isStopped = true;
         }
 
-        public void ResumeMovement() => _isStopped = false;
+        public void ResumeMovement()
+        {
+            _isStopped = false;
+            _movementHandler?.ResumeMovement();
+        }
         public float GetVelocity() => _movementHandler?.GetVelocity() ?? 0f;
         public bool IsMoving() => _movementHandler?.IsMoving() ?? false;
 

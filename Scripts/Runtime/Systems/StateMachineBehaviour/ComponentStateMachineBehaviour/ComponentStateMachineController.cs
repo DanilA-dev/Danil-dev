@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -20,7 +21,26 @@ namespace  D_Dev.StateMachineBehaviour
         protected override void InitStates()
         {
             if (_findOnObject)
-                _states = GetComponents<BaseComponentState>();
+            {
+                List<BaseComponentState> allObjectStates = new();
+
+                var componentStates = GetComponents<BaseComponentState>();
+                var childStates = GetComponentsInChildren<BaseComponentState>();
+
+                if (componentStates != null)
+                {
+                    foreach (var state in componentStates)
+                        allObjectStates.Add(state);
+                }
+
+                if (childStates != null)
+                {
+                    foreach (var state in childStates)
+                        allObjectStates.Add(state);
+                }
+
+                _states = allObjectStates.ToArray();
+            }
             
             if (_states == null || _states.Length == 0)
                 return;

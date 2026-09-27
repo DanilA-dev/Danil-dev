@@ -5,25 +5,22 @@ using UnityEngine;
 
 namespace D_Dev.PlayerStateController
 {
+    [DefaultExecutionOrder(-100)]
     public class FreeLookCameraController : MonoBehaviour
     {
         #region Fields
 
         [Title("Camera Settings")]
-        [SerializeField] private InputRouter _inputRouter; 
+        [SerializeField] private InputRouter _inputRouter;
         [SerializeReference] private PolymorphicValue<Transform> _cameraRoot;
         [SerializeField] private float _topAngle = 80f;
         [SerializeField] private float _botAngle = -80f;
-        [SerializeField] private float _rotationSpeed = 100f;
+        [SerializeField] private float _stickRotationSpeed = 100f;
+        [SerializeField] private float _mouseSensitivity = 5f;
         [SerializeField] private bool _isLocked;
-        
-        private const float CAMERA_ROTATION_THRESHOLD = 0.01f;
-        
+
         private Vector2 _currentLookInput;
-        
-        private float _cameraTargetPitch;
-        private float _rotationVelocity;
-        private float _targetRotation;
+
         private float _yaw;
         private float _pitch;
 
@@ -73,15 +70,17 @@ namespace D_Dev.PlayerStateController
 
         private void UpdateCameraRotation()
         {
-            if (_currentLookInput.sqrMagnitude >= CAMERA_ROTATION_THRESHOLD && !_isLocked)
+            if (_currentLookInput != Vector2.zero && !_isLocked)
             {
-                float deltaTimeMultiplier = 1.0f;
+                float multiplier = _inputRouter != null && _inputRouter.IsLookFromPointer
+                    ? _mouseSensitivity
+                    : _stickRotationSpeed * Time.deltaTime;
 
-                _yaw += _currentLookInput.x * _rotationSpeed * deltaTimeMultiplier * Time.deltaTime;
-                _pitch += _currentLookInput.y * _rotationSpeed * deltaTimeMultiplier * Time.deltaTime;
+                _yaw += _currentLookInput.x * multiplier;
+                _pitch += _currentLookInput.y * multiplier;
             }
 
-            _yaw = Mathf.Clamp(_yaw, float.MinValue, float.MaxValue);
+            _yaw = Mathf.Repeat(_yaw, 360f);
             _pitch = Mathf.Clamp(_pitch, _botAngle, _topAngle);
             _cameraRoot.Value.rotation = Quaternion.Euler(_pitch, _yaw, 0.0f);
         }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace D_Dev.PolymorphicValueSystem
 {
@@ -18,8 +19,11 @@ namespace D_Dev.PolymorphicValueSystem
             get => _value;
             set
             {
+                if (EqualityComparer<T>.Default.Equals(_value, value))
+                    return;
+
                 _value = value;
-                OnValueChanged?.Invoke(_value);
+                RaiseValueChanged(_value);
             }
         }
 

@@ -9,6 +9,8 @@ namespace D_Dev.Utility
         private Transform _transform;
         private float _rotationSpeed;
         private bool _isRotating;
+        private Rigidbody _rigidbody;
+        private Quaternion _rigidbodyRotation;
 
         #endregion
 
@@ -21,10 +23,14 @@ namespace D_Dev.Utility
 
         #region Initialization
 
-        public void Initialize(Transform transform, float rotationSpeed = 5f)
+        public void Initialize(Transform transform, float rotationSpeed = 5f, Rigidbody rigidbody = null)
         {
             _transform = transform;
             _rotationSpeed = rotationSpeed;
+            _rigidbody = rigidbody != null && transform != null && rigidbody.transform == transform ? rigidbody : null;
+
+            if (_rigidbody != null)
+                _rigidbodyRotation = _rigidbody.rotation;
         }
 
         #endregion
@@ -45,11 +51,11 @@ namespace D_Dev.Utility
             {
                 Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
 
-                _transform.rotation = Quaternion.Slerp(
-                    _transform.rotation,
+                ApplyRotation(Quaternion.Slerp(
+                    CurrentRotation,
                     targetRotation,
                     speed * Time.deltaTime
-                );
+                ));
 
                 _isRotating = true;
             }
@@ -70,7 +76,7 @@ namespace D_Dev.Utility
             if (_transform == null)
                 return;
 
-            _transform.rotation = targetRotation;
+            ApplyRotation(targetRotation);
             _isRotating = false;
         }
 
@@ -85,7 +91,7 @@ namespace D_Dev.Utility
             if (targetDirection.magnitude > 0.1f)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
-                _transform.rotation = targetRotation;
+                ApplyRotation(targetRotation);
             }
 
             _isRotating = false;
@@ -102,7 +108,7 @@ namespace D_Dev.Utility
                 return true;
 
             Quaternion targetRotation = Quaternion.LookRotation(targetDir, Vector3.up);
-            float angle = Quaternion.Angle(_transform.rotation, targetRotation);
+            float angle = Quaternion.Angle(CurrentRotation, targetRotation);
 
             return angle <= tolerance;
         }
@@ -110,13 +116,31 @@ namespace D_Dev.Utility
         
         public Vector3 GetCurrentForwardDirection()
         {
-            return _transform != null ? _transform.forward : Vector3.forward;
+            return _transform != null ? CurrentRotation * Vector3.forward : Vector3.forward;
         }
 
         
         public void SetRotationSpeed(float rotationSpeed)
         {
             _rotationSpeed = rotationSpeed;
+        }
+
+        #endregion
+
+        #region Private
+
+        private Quaternion CurrentRotation => _rigidbody != null ? _rigidbodyRotation : _transform.rotation;
+
+        private void ApplyRotation(Quaternion rotation)
+        {
+            if (_rigidbody != null)
+            {
+                _rigidbodyRotation = rotation;
+                _rigidbody.MoveRotation(rotation);
+                return;
+            }
+
+            _transform.rotation = rotation;
         }
 
         #endregion

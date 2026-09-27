@@ -1,7 +1,5 @@
-﻿using D_Dev.PolymorphicValueSystem;
+using D_Dev.PolymorphicValueSystem;
 using D_Dev.RuntimeEntityVariables;
-using D_Dev.ScriptableVariables;
-using UnityEngine;
 
 namespace D_Dev.AnimatorView.Extensions
 {
@@ -9,24 +7,8 @@ namespace D_Dev.AnimatorView.Extensions
     public abstract class AnimationClipConfigValue : PolymorphicValue<AnimationClipConfig> {}
 
     [System.Serializable]
-    public sealed class AnimationClipConfigConstantValue : AnimationClipConfigValue
+    public sealed class AnimationClipConfigConstantValue : ConstantValue<AnimationClipConfig>
     {
-        #region Fields
-
-        [SerializeField] private AnimationClipConfig _value;
-
-        #endregion
-
-        #region Properties
-
-        public override AnimationClipConfig Value
-        {
-            get => _value;
-            set => _value = value;
-        }
-
-        #endregion
-
         #region Cloning
 
         public override PolymorphicValue<AnimationClipConfig> Clone()
@@ -38,43 +20,8 @@ namespace D_Dev.AnimatorView.Extensions
     }
 
     [System.Serializable]
-    public class AnimationClipConfigRuntimeVariableValue : AnimationClipConfigValue
+    public class AnimationClipConfigRuntimeVariableValue : EntityRuntimeVariableValue<AnimationClipConfigEntityVariable, AnimationClipConfig>
     {
-        #region Fields
-
-        [SerializeField] private StringScriptableVariable _variableID;
-        [SerializeField] private RuntimeEntityVariablesContainer _runtimeEntityVariablesContainer;
-        
-        private AnimationClipConfigEntityVariable _cachedVariable;
-
-        #endregion
-
-        #region Properties
-
-        public override AnimationClipConfig Value
-        {
-            get
-            {
-                if (_cachedVariable == null)
-                    _cachedVariable = _runtimeEntityVariablesContainer?.GetVariable<AnimationClipConfigEntityVariable>(_variableID);
-                
-                if (_cachedVariable == null)
-                    return null;
-                
-                return _cachedVariable.Value;
-            }
-            set
-            {
-                if (_cachedVariable == null)
-                    _cachedVariable = _runtimeEntityVariablesContainer?.GetVariable<AnimationClipConfigEntityVariable>(_variableID);
-                
-                if (_cachedVariable != null)
-                    _cachedVariable.Value = value;
-            }
-        }
-
-        #endregion
-
         #region Clone
 
         public override PolymorphicValue<AnimationClipConfig> Clone()
@@ -85,6 +32,7 @@ namespace D_Dev.AnimatorView.Extensions
                 _runtimeEntityVariablesContainer = _runtimeEntityVariablesContainer
             };
         }
+
         #endregion
     }
 }

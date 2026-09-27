@@ -9,7 +9,7 @@ namespace D_Dev.PlayerStateController
         #region Fields
 
         [SerializeField] private InputRouter _inputRouter;
-        [SerializeReference] private PolymorphicValue<Vector3> _rawInputDirection;
+        [SerializeReference] private PolymorphicValue<Vector3> _rawInputDirection = new Vector3ConstantValue();
 
         #endregion
 

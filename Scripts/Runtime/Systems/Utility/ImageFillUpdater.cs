@@ -12,7 +12,9 @@ namespace D_Dev.Utility
         [Title("Components")]
         [SerializeField] protected Image _fillImage;
 
-        [FoldoutGroup("Values")]
+        [FoldoutGroup("Values")] 
+        [SerializeReference] protected PolymorphicValue<float> _valueToListen = new FloatConstantValue();
+        [FoldoutGroup("Values")] 
         [SerializeReference] protected PolymorphicValue<float> _maxValue = new FloatConstantValue();
         
         #endregion
@@ -23,6 +25,18 @@ namespace D_Dev.Utility
         {
             if (_fillImage == null)
                 TryGetComponent(out _fillImage);
+        }
+
+        private void OnEnable()
+        {
+            if(_valueToListen != null)
+                _valueToListen.OnValueChanged += UpdateFillAmount;
+        }
+
+        private void OnDisable()
+        {
+            if(_valueToListen != null)
+                _valueToListen.OnValueChanged -= UpdateFillAmount;
         }
 
         #endregion

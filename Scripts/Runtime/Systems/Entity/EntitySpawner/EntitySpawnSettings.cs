@@ -22,7 +22,7 @@ namespace D_Dev.EntitySpawner
         [Title("Data")]
         [SerializeReference] private PolymorphicValue<EntityInfo> _data = new EntityInfoConstantValue();
         [SerializeField] private bool _createOnStart;
-        [SerializeReference] private PolymorphicValue<int> _amount = new IntConstantValue();
+        [SerializeReference] private PolymorphicValue<int> _amount = new IntConstantValue() { Value = 1 };
         [SerializeField] private bool _setActiveOnStart;
 
         [FoldoutGroup("Position and Rotation")]

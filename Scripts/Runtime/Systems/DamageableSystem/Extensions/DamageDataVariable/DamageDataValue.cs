@@ -1,9 +1,8 @@
-﻿using D_Dev.DamageableSystem;
+using D_Dev.DamageableSystem;
 using D_Dev.EntityVariable;
 using D_Dev.PolymorphicValueSystem;
 using D_Dev.RuntimeEntityVariables;
 using D_Dev.ScriptableVariables;
-using UnityEngine;
 
 namespace D_Dev.Extensions
 {
@@ -24,40 +23,11 @@ namespace D_Dev.Extensions
     }
     
     [System.Serializable]
-    public class DamageDataRuntimeVariableValue : DamageDataValue
+    public class DamageDataRuntimeVariableValue : EntityRuntimeVariableValue<DamageDataEntityVariable, DamageData>
     {
-        #region Fields
-
-        [SerializeField] private StringScriptableVariable _variableID;
-        [SerializeField] private RuntimeEntityVariablesContainer _runtimeEntityVariablesContainer;
-        
-        private DamageDataEntityVariable _cachedVariable;
-
-        #endregion
-
         #region Properties
 
-        public override DamageData Value
-        {
-            get
-            {
-                if (_cachedVariable == null)
-                    _cachedVariable = _runtimeEntityVariablesContainer?.GetVariable<DamageDataEntityVariable>(_variableID);
-                
-                if (_cachedVariable == null)
-                    return new DamageData();
-                
-                return _cachedVariable.Value;
-            }
-            set
-            {
-                if (_cachedVariable == null)
-                    _cachedVariable = _runtimeEntityVariablesContainer?.GetVariable<DamageDataEntityVariable>(_variableID);
-                
-                if (_cachedVariable != null)
-                    _cachedVariable.Value = value;
-            }
-        }
+        protected override DamageData DefaultValue => new DamageData();
 
         #endregion
 
@@ -95,6 +65,4 @@ namespace D_Dev.Extensions
         
         #endregion
     }
-
-   
 }

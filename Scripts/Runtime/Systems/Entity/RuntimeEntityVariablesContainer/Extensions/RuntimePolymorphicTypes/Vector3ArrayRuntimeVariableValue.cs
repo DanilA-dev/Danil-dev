@@ -1,45 +1,16 @@
 using System;
 using D_Dev.EntityVariable.Types;
 using D_Dev.PolymorphicValueSystem;
-using D_Dev.ScriptableVariables;
 using UnityEngine;
 
 namespace D_Dev.RuntimeEntityVariables.Extensions
 {
     [System.Serializable]
-    public class Vector3ArrayRuntimeVariableValue : Vector3ArrayValue
+    public class Vector3ArrayRuntimeVariableValue : PolymorphicRuntimeVariableValue<Vector3ArrayEntityVariable, Vector3[]>
     {
-        #region Fields
-
-        [SerializeField] private StringScriptableVariable _variableID;
-        [SerializeField] private RuntimeEntityVariablesContainer _runtimeEntityVariablesContainer;
-        
-        private Vector3ArrayEntityVariable _cachedVariable;
-
-        #endregion
-
         #region Properties
 
-        public override Vector3[] Value
-        {
-            get
-            {
-                if (_cachedVariable == null)
-                    _cachedVariable = _runtimeEntityVariablesContainer?.GetVariable<Vector3ArrayEntityVariable>(_variableID);
-                
-                return _cachedVariable != null ? _cachedVariable.Value.Value : Array.Empty<Vector3>();
-            }
-            set
-            {
-                if (_cachedVariable == null)
-                    _cachedVariable = _runtimeEntityVariablesContainer?.GetVariable<Vector3ArrayEntityVariable>(_variableID);
-                
-                if (_cachedVariable != null)
-                {
-                    _cachedVariable.Value.Value = value;
-                }
-            }
-        }
+        protected override Vector3[] DefaultValue => Array.Empty<Vector3>();
 
         #endregion
 

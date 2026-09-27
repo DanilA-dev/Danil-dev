@@ -71,7 +71,7 @@ namespace D_Dev.Character.States
             }
 
             if (_canRotate)
-                _rotationHandler.Initialize(_rotateRoot.Value, _rotateSpeed.Value);
+                _rotationHandler.Initialize(_rotateRoot.Value, _rotateSpeed.Value, _movementController.Rigidbody);
         }
 
         public override void OnUpdate()
