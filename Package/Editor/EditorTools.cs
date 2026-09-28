@@ -17,6 +17,8 @@ namespace D_Dev
         private const string PackagePath = "Packages/com.d-dev.utils/";
         private const string VersionPrefsKey = "D_Dev_InstalledVersion_";
         private const string InstallStateKey = "D_Dev_InstallState_";
+        private const string DismissedVersionKey = "D_Dev_DismissedVersion_";
+        private const string DialogShownSessionKey = "D_Dev_InstallDialogShown";
         private const string MainPackageName = "Danil-Dev";
         private const string MainPackageFile = MainPackageName + ".unitypackage";
         private const string PackageGuidsFile = MainPackageName + ".guids.txt";
@@ -65,6 +67,14 @@ namespace D_Dev
 
             if (installedVersion == packageVersion)
                 return;
+
+            if (EditorPrefs.GetString(DismissedVersionKey + projectHash, "") == packageVersion)
+                return;
+
+            if (SessionState.GetBool(DialogShownSessionKey, false))
+                return;
+
+            SessionState.SetBool(DialogShownSessionKey, true);
 
             var isUpdate = !string.IsNullOrEmpty(installedVersion);
             var title = isUpdate ? "D-Dev Utils — Update" : "D-Dev Utils";
@@ -229,7 +239,15 @@ namespace D_Dev
             var projectHash = Application.dataPath.GetHashCode().ToString();
             EditorPrefs.DeleteKey(VersionPrefsKey + projectHash);
             EditorPrefs.DeleteKey(InstallStateKey + projectHash);
+            EditorPrefs.DeleteKey(DismissedVersionKey + projectHash);
+            SessionState.EraseBool(DialogShownSessionKey);
             Debug.Log("[D-Dev] Install state reset — dialog will appear on next domain reload");
+        }
+
+        public static void DismissCurrentVersion()
+        {
+            var projectHash = Application.dataPath.GetHashCode().ToString();
+            EditorPrefs.SetString(DismissedVersionKey + projectHash, GetPackageVersion());
         }
 
         [MenuItem("Tools/D_Dev/Setup/Create Folders")]
@@ -399,8 +417,11 @@ namespace D_Dev
                 }
             }
 
-            if (GUILayout.Button("Cancel", GUILayout.Height(22)))
+            if (GUILayout.Button("Skip This Version", GUILayout.Height(22)))
+            {
                 Close();
+                EditorTools.DismissCurrentVersion();
+            }
 
             GUILayout.Space(6);
         }

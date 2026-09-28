@@ -144,6 +144,9 @@ namespace D_Dev.InteractableSystem.Interactor
             if (_activeInteractable == null || !_isActiveFromFocus)
                 return;
 
+            if (IsAlive(_activeInteractable) && !_activeInteractable.StopOnFocusLost)
+                return;
+
             if (!ReferenceEquals(_activeInteractable, focused))
                 StopInteract();
         }

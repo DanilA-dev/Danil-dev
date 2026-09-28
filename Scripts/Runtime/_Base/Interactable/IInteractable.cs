@@ -6,6 +6,7 @@ namespace D_Dev.Base
     {
         public GameObject GameObject { get; }
         public bool CanBeStopped { get; }
+        public bool StopOnFocusLost { get; }
         public bool IsDistanceBased { get; }
         public void StartInteract(GameObject interactor);
         public void StopInteract(GameObject interactor);

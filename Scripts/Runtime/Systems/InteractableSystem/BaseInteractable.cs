@@ -15,6 +15,8 @@ namespace D_Dev.InteractableSystem
         [ShowIf(nameof(_isDistanceBased))]
         [SerializeField] protected float _interactionDistance = 2f;
         [SerializeField] protected bool _canBeStopped;
+        [ShowIf(nameof(_canBeStopped))]
+        [SerializeField] protected bool _stopOnFocusLost = true;
         [FoldoutGroup("Events")]
         public UnityEvent<GameObject> OnInteractStart;
         [FoldoutGroup("Events")]
@@ -35,6 +37,7 @@ namespace D_Dev.InteractableSystem
         public bool IsInteracting { get; protected set; }
         public bool IsFocused { get; protected set; }
         public bool CanBeStopped => _canBeStopped;
+        public bool StopOnFocusLost => _stopOnFocusLost;
         public bool IsDistanceBased => _isDistanceBased;
 
         #endregion
