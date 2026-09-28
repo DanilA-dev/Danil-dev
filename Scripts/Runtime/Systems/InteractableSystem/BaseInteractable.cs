@@ -36,9 +36,23 @@ namespace D_Dev.InteractableSystem
         public GameObject GameObject => gameObject;
         public bool IsInteracting { get; protected set; }
         public bool IsFocused { get; protected set; }
-        public bool CanBeStopped => _canBeStopped;
-        public bool StopOnFocusLost => _stopOnFocusLost;
-        public bool IsDistanceBased => _isDistanceBased;
+        public bool CanBeStopped
+        {
+            get => _canBeStopped;
+            set => _canBeStopped = value;
+        }
+
+        public bool StopOnFocusLost
+        {
+            get => _stopOnFocusLost;
+            set => _stopOnFocusLost = value;
+        }
+
+        public bool IsDistanceBased
+        {
+            get => _isDistanceBased;
+            set => _isDistanceBased = value;
+        }
 
         #endregion
         
