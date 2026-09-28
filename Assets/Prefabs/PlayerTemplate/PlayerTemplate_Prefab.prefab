@@ -696,12 +696,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _inputRouter: {fileID: 11400000, guid: b299fe18b864a6a448ae3ab79bd7d358, type: 2}
-  _rawInputDirection:
-    rid: 1932282345740042341
+  _bindings:
+  - rid: 1932282361843810414
   references:
     version: 2
     RefIds:
-    - rid: 1932282345740042341
+    - rid: 1932282361843810414
+      type: {class: MoveInputBinding, ns: D_Dev.PlayerStateController.InputBindings,
+        asm: D-Dev.PlayerUtilities}
+      data:
+        _output:
+          rid: 1932282361843810416
+    - rid: 1932282361843810416
       type: {class: Vector3ScriptableVariableValue, ns: D_Dev.PolymorphicValueSystem,
         asm: D-Dev.PolymorphicValueSystem}
       data:
