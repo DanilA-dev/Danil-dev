@@ -246,8 +246,14 @@ namespace D_Dev.InteractableSystem.Interactor
                 _holdProgress.Value = progress;
         }
 
-        private bool IsAlive(IInteractable interactable)
+        private static bool IsAlive(IInteractable interactable)
         {
+            if (interactable == null)
+                return false;
+
+            if (interactable is Object unityObject)
+                return unityObject != null;
+
             return interactable.GameObject != null;
         }
 
