@@ -25,16 +25,9 @@ namespace D_Dev.Raycaster
 
         [Title("Cast settings")]
         [SerializeField] private CastType _castType;
-
-        [ValidateInput("@this._distance > 0", "Distance must be greater than 0")] 
         [SerializeReference] private PolymorphicValue<float> _distance = new FloatConstantValue() { Value = 1 };
-        [ValidateInput("@this._collidersBuffer > 0", "Colliders buffer must be greater than 0")]
         [SerializeField] private int _collidersBuffer = 10;
-
         [ShowIf("@this._castType == CastType.Sphere", Animate = false)]
-        [ValidateInput("@this._castType != CastType.Sphere || this._radius > 0",
-            "Radius must be greater than 0 for Sphere cast")]
-        
         [SerializeReference] private PolymorphicValue<float> _radius = new FloatConstantValue() { Value = 0.5f };
         [ShowIf("@this._castType == CastType.Box", Animate = false)]
         [SerializeField] private Vector3 _halfExtents = Vector3.one * 0.5f;
@@ -42,7 +35,6 @@ namespace D_Dev.Raycaster
         [SerializeReference] private BasePositionSettings _direction = new();
         [SerializeField] private QueryTriggerInteraction _queryTriggerInteraction;
         [Title("Collider checker")]
-        [ValidateInput("@this._colliderChecker != null", "ColliderChecker cannot be null")]
         [SerializeField] private ColliderChecker.ColliderChecker _colliderChecker;
         [Space]
         [Title("Gizmos")]
