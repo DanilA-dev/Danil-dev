@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96a64f9f54434d4eb2246d095764d856, type: 3}
   m_Name: Input Router
   m_EditorClassIdentifier: 
+  _asset: {fileID: -944628639613478452, guid: 5874c51c9acab224ab9f2bff4257f317, type: 3}

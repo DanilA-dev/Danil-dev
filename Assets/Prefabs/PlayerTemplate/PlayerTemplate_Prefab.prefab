@@ -705,6 +705,8 @@ MonoBehaviour:
       type: {class: MoveInputBinding, ns: D_Dev.PlayerStateController.InputBindings,
         asm: D-Dev.PlayerUtilities}
       data:
+        _action: {fileID: 2169888456485677360, guid: 5874c51c9acab224ab9f2bff4257f317,
+          type: 3}
         _output:
           rid: 1932282361843810416
     - rid: 1932282361843810416

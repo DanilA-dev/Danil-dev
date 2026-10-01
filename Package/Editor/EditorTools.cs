@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,18 +16,23 @@ namespace D_Dev
         #region Const
 
         private const string PackagePath = "Packages/com.d-dev.utils/";
+        private const string LocalPackageDirectory = "Assets/Danil-dev/Package/";
         private const string VersionPrefsKey = "D_Dev_InstalledVersion_";
-        private const string InstallStateKey = "D_Dev_InstallState_";
+        private const string ImportQueueKey = "D_Dev_ImportQueue_";
         private const string DismissedVersionKey = "D_Dev_DismissedVersion_";
         private const string DialogShownSessionKey = "D_Dev_InstallDialogShown";
         private const string MainPackageName = "Danil-Dev";
-        private const string MainPackageFile = MainPackageName + ".unitypackage";
-        private const string PackageGuidsFile = MainPackageName + ".guids.txt";
+        private const string BasePackageName = MainPackageName + ".Base";
+        private const string AssetsPackageName = MainPackageName + ".Assets";
+        private const string PluginsPackageFile = MainPackageName + ".plugins.unitypackage";
+        private const string PackageExtension = ".unitypackage";
+        private const string GuidsExtension = ".guids.txt";
+        private const char QueueSeparator = ';';
 
-        private static readonly string[] PackageFolders =
+        private static readonly (string Name, string Folder)[] PackageParts =
         {
-            "Assets/Danil-dev/Assets",
-            "Assets/Danil-dev/Scripts"
+            (BasePackageName, "Assets/Danil-dev/Scripts"),
+            (AssetsPackageName, "Assets/Danil-dev/Assets")
         };
 
         private static readonly Dictionary<string, string> GitPackages = new()
@@ -40,27 +46,16 @@ namespace D_Dev
 
         static EditorTools()
         {
-            var projectHash = Application.dataPath.GetHashCode().ToString();
-            var stateKey = InstallStateKey + projectHash;
-            var state = EditorPrefs.GetString(stateKey, "");
-
-            if (state == "plugins_done")
+            if (GetImportQueue().Length > 0)
             {
-                EditorApplication.delayCall += () =>
-                {
-                    if (EditorApplication.isCompiling)
-                    {
-                        EditorApplication.update += WaitForCompilationThenImport;
-                        return;
-                    }
-                    ImportMainPackage();
-                };
+                EditorApplication.delayCall += ContinueImportQueue;
                 return;
             }
 
             if (IsDevProject())
                 return;
 
+            var projectHash = GetProjectHash();
             var packageVersion = GetPackageVersion();
             var versionKey = VersionPrefsKey + projectHash;
             var installedVersion = EditorPrefs.GetString(versionKey, "");
@@ -94,22 +89,19 @@ namespace D_Dev
         public static void InstallAll()
         {
             InstallDependencies();
+            SetImportQueue(PackageParts.Select(part => part.Name));
 
-            var projectHash = Application.dataPath.GetHashCode().ToString();
-            var stateKey = InstallStateKey + projectHash;
-
-            var pluginsPath = ResolvePackagePath("Danil-Dev.plugins.unitypackage");
+            var pluginsPath = ResolvePackagePath(PluginsPackageFile);
             if (pluginsPath != null)
             {
-                EditorPrefs.SetString(stateKey, "plugins_done");
                 AssetDatabase.ImportPackage(pluginsPath, true);
                 return;
             }
 
-            InstallPackage();
+            ImportNextInQueue();
         }
 
-        [MenuItem("Tools/D_Dev/Setup/Install Dependencies")]
+        [MenuItem("Tools/D_Dev/Setup/Import/Import Dependencies")]
         public static void InstallDependencies()
         {
             foreach (var (packageName, packageURL) in GitPackages)
@@ -118,8 +110,29 @@ namespace D_Dev
             Debug.Log("[D-Dev] Dependencies installed");
         }
 
-        [MenuItem("Tools/D_Dev/Setup/Install Package")]
-        public static void InstallPackage() => ImportMainPackage();
+        [MenuItem("Tools/D_Dev/Setup/Import/Import Base")]
+        public static void ImportBase() => StartImport(BasePackageName);
+
+        [MenuItem("Tools/D_Dev/Setup/Import/Import Assets")]
+        public static void ImportAssets() => StartImport(AssetsPackageName);
+
+        private static void StartImport(string packageName)
+        {
+            SetImportQueue(new[] { packageName });
+            ImportNextInQueue();
+        }
+
+        private static void ContinueImportQueue()
+        {
+            if (EditorApplication.isCompiling)
+            {
+                EditorApplication.update -= WaitForCompilationThenImport;
+                EditorApplication.update += WaitForCompilationThenImport;
+                return;
+            }
+
+            ImportNextInQueue();
+        }
 
         private static void WaitForCompilationThenImport()
         {
@@ -127,73 +140,89 @@ namespace D_Dev
                 return;
 
             EditorApplication.update -= WaitForCompilationThenImport;
-            ImportMainPackage();
+            ImportNextInQueue();
         }
 
-        private static void ImportMainPackage()
+        private static void ImportNextInQueue()
         {
-            var projectHash = Application.dataPath.GetHashCode().ToString();
+            var queue = GetImportQueue();
+            if (queue.Length == 0)
+                return;
 
-            EditorPrefs.DeleteKey(InstallStateKey + projectHash);
+            var packageName = queue[0];
+            SetImportQueue(queue.Skip(1));
 
-            var mainPath = ResolvePackagePath(MainPackageFile);
-            if (mainPath == null)
+            var packagePath = ResolvePackagePath(packageName + PackageExtension);
+            if (packagePath == null)
             {
-                Debug.LogError($"[D-Dev] {MainPackageFile} not found");
+                ClearImportQueue();
+                Debug.LogError($"[D-Dev] {packageName}{PackageExtension} not found");
                 return;
             }
 
             UnsubscribeFromImport();
-            AssetDatabase.importPackageCompleted += OnMainPackageImported;
-            AssetDatabase.importPackageCancelled += OnMainPackageCancelled;
-            AssetDatabase.importPackageFailed += OnMainPackageFailed;
-            AssetDatabase.ImportPackage(mainPath, true);
+            AssetDatabase.importPackageCompleted += OnPackageImported;
+            AssetDatabase.importPackageCancelled += OnPackageCancelled;
+            AssetDatabase.importPackageFailed += OnPackageFailed;
+            AssetDatabase.ImportPackage(packagePath, true);
         }
 
-        private static void OnMainPackageImported(string packageName)
+        private static void OnPackageImported(string packageName)
         {
-            if (packageName != MainPackageName)
+            if (!IsPackagePart(packageName))
                 return;
 
             UnsubscribeFromImport();
-            RemoveObsoleteAssets();
+            RemoveObsoleteAssets(packageName);
 
-            var projectHash = Application.dataPath.GetHashCode().ToString();
-            EditorPrefs.SetString(VersionPrefsKey + projectHash, GetPackageVersion());
+            if (GetImportQueue().Length > 0)
+            {
+                EditorApplication.delayCall += ContinueImportQueue;
+                return;
+            }
+
+            EditorPrefs.SetString(VersionPrefsKey + GetProjectHash(), GetPackageVersion());
             Debug.Log("[D-Dev] Setup complete");
         }
 
-        private static void OnMainPackageCancelled(string packageName)
+        private static void OnPackageCancelled(string packageName)
         {
-            if (packageName != MainPackageName)
+            if (!IsPackagePart(packageName))
                 return;
 
             UnsubscribeFromImport();
-            Debug.Log("[D-Dev] Import cancelled, nothing was changed");
+            ClearImportQueue();
+            Debug.Log($"[D-Dev] Import of {packageName} cancelled, nothing was changed");
         }
 
-        private static void OnMainPackageFailed(string packageName, string errorMessage)
+        private static void OnPackageFailed(string packageName, string errorMessage)
         {
-            if (packageName != MainPackageName)
+            if (!IsPackagePart(packageName))
                 return;
 
             UnsubscribeFromImport();
-            Debug.LogError($"[D-Dev] Import failed: {errorMessage}");
+            ClearImportQueue();
+            Debug.LogError($"[D-Dev] Import of {packageName} failed: {errorMessage}");
         }
 
         private static void UnsubscribeFromImport()
         {
-            AssetDatabase.importPackageCompleted -= OnMainPackageImported;
-            AssetDatabase.importPackageCancelled -= OnMainPackageCancelled;
-            AssetDatabase.importPackageFailed -= OnMainPackageFailed;
+            AssetDatabase.importPackageCompleted -= OnPackageImported;
+            AssetDatabase.importPackageCancelled -= OnPackageCancelled;
+            AssetDatabase.importPackageFailed -= OnPackageFailed;
         }
 
-        private static void RemoveObsoleteAssets()
+        private static void RemoveObsoleteAssets(string packageName)
         {
-            var guidsPath = ResolvePackagePath(PackageGuidsFile);
+            var folder = GetPackageFolder(packageName);
+            if (folder == null || !AssetDatabase.IsValidFolder(folder))
+                return;
+
+            var guidsFile = packageName + GuidsExtension;
+            var guidsPath = ResolvePackagePath(guidsFile);
             if (guidsPath == null)
             {
-                Debug.LogWarning($"[D-Dev] {PackageGuidsFile} not found, obsolete assets were not removed");
+                Debug.LogWarning($"[D-Dev] {guidsFile} not found, obsolete assets were not removed");
                 return;
             }
 
@@ -201,11 +230,7 @@ namespace D_Dev
                 .Select(line => line.Trim())
                 .Where(line => line.Length > 0));
 
-            var folders = PackageFolders.Where(AssetDatabase.IsValidFolder).ToArray();
-            if (folders.Length == 0)
-                return;
-
-            var obsoletePaths = AssetDatabase.FindAssets("", folders)
+            var obsoletePaths = AssetDatabase.FindAssets("", new[] { folder })
                 .Where(guid => !packageGuids.Contains(guid))
                 .Select(AssetDatabase.GUIDToAssetPath)
                 .Where(path => !string.IsNullOrEmpty(path))
@@ -236,9 +261,9 @@ namespace D_Dev
         [MenuItem("Tools/D_Dev/Setup/Reset Install State")]
         public static void ResetInstallState()
         {
-            var projectHash = Application.dataPath.GetHashCode().ToString();
+            var projectHash = GetProjectHash();
             EditorPrefs.DeleteKey(VersionPrefsKey + projectHash);
-            EditorPrefs.DeleteKey(InstallStateKey + projectHash);
+            EditorPrefs.DeleteKey(ImportQueueKey + projectHash);
             EditorPrefs.DeleteKey(DismissedVersionKey + projectHash);
             SessionState.EraseBool(DialogShownSessionKey);
             Debug.Log("[D-Dev] Install state reset — dialog will appear on next domain reload");
@@ -246,8 +271,7 @@ namespace D_Dev
 
         public static void DismissCurrentVersion()
         {
-            var projectHash = Application.dataPath.GetHashCode().ToString();
-            EditorPrefs.SetString(DismissedVersionKey + projectHash, GetPackageVersion());
+            EditorPrefs.SetString(DismissedVersionKey + GetProjectHash(), GetPackageVersion());
         }
 
         [MenuItem("Tools/D_Dev/Setup/Create Folders")]
@@ -272,14 +296,19 @@ namespace D_Dev
         {
             BumpPatchVersion();
 
-            var exportDirectory = "Assets/Danil-dev/Package/" + MainPackageFile;
-            AssetDatabase.ExportPackage(PackageFolders, exportDirectory, ExportPackageOptions.Recurse);
+            foreach (var (name, folder) in PackageParts)
+            {
+                var exportPath = LocalPackageDirectory + name + PackageExtension;
+                AssetDatabase.ExportPackage(folder, exportPath, ExportPackageOptions.Recurse);
 
-            var guids = AssetDatabase.FindAssets("", PackageFolders);
-            File.WriteAllLines("Assets/Danil-dev/Package/" + PackageGuidsFile, guids);
+                var guids = AssetDatabase.FindAssets("", new[] { folder });
+                File.WriteAllLines(LocalPackageDirectory + name + GuidsExtension, guids);
+
+                Debug.Log($"[D-Dev] Exported {exportPath} ({guids.Length} assets)");
+            }
+
             AssetDatabase.Refresh();
-
-            Debug.Log($"[D-Dev] Exported package v{GetPackageVersion()} to {exportDirectory} ({guids.Length} assets)");
+            Debug.Log($"[D-Dev] Exported package v{GetPackageVersion()}");
         }
 
         [MenuItem("Tools/D_Dev/Data/Open PersistentDataPath")]
@@ -305,6 +334,35 @@ namespace D_Dev
         #endregion
 
         #region Helpers
+
+        private static string GetProjectHash() => Application.dataPath.GetHashCode().ToString();
+
+        private static bool IsPackagePart(string packageName) => GetPackageFolder(packageName) != null;
+
+        private static string GetPackageFolder(string packageName) =>
+            PackageParts.FirstOrDefault(part => part.Name == packageName).Folder;
+
+        private static string[] GetImportQueue()
+        {
+            var value = EditorPrefs.GetString(ImportQueueKey + GetProjectHash(), "");
+            return value.Split(new[] { QueueSeparator }, StringSplitOptions.RemoveEmptyEntries)
+                .Where(IsPackagePart)
+                .ToArray();
+        }
+
+        private static void SetImportQueue(IEnumerable<string> packageNames)
+        {
+            var value = string.Join(QueueSeparator.ToString(), packageNames);
+            if (string.IsNullOrEmpty(value))
+            {
+                ClearImportQueue();
+                return;
+            }
+
+            EditorPrefs.SetString(ImportQueueKey + GetProjectHash(), value);
+        }
+
+        private static void ClearImportQueue() => EditorPrefs.DeleteKey(ImportQueueKey + GetProjectHash());
 
         private static void CreateFolders(string rootDir, string[] directions)
         {
@@ -382,8 +440,8 @@ namespace D_Dev
             var window = CreateInstance<InstallDialog>();
             window.titleContent = new GUIContent(title);
             window._message = message;
-            window.minSize = new Vector2(380, 180);
-            window.maxSize = new Vector2(380, 180);
+            window.minSize = new Vector2(420, 180);
+            window.maxSize = new Vector2(420, 180);
             window.ShowUtility();
         }
 
@@ -402,17 +460,24 @@ namespace D_Dev
 
             using (new EditorGUILayout.HorizontalScope())
             {
-                if (GUILayout.Button("Install Dependencies", GUILayout.Height(22)))
+                if (GUILayout.Button("Import Dependencies", GUILayout.Height(22)))
                 {
                     Close();
                     EditorTools.InstallDependencies();
                     return;
                 }
 
-                if (GUILayout.Button("Install Package", GUILayout.Height(22)))
+                if (GUILayout.Button("Import Base", GUILayout.Height(22)))
                 {
                     Close();
-                    EditorTools.InstallPackage();
+                    EditorTools.ImportBase();
+                    return;
+                }
+
+                if (GUILayout.Button("Import Assets", GUILayout.Height(22)))
+                {
+                    Close();
+                    EditorTools.ImportAssets();
                     return;
                 }
             }
