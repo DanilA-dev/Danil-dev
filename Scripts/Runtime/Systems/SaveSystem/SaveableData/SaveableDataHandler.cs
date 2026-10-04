@@ -117,7 +117,7 @@ namespace D_Dev.SaveSystem.SaveableData
 
         private void Save(BaseSaveableData data, bool immediate = false)
         {
-            if (GlobalSaveService.Instance == null)
+            if (GlobalSaveService.Instance == null || !data.CanSave)
                 return;
 
             if (immediate)
