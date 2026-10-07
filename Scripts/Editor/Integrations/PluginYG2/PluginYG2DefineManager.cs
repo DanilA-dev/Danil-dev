@@ -34,7 +34,7 @@ namespace D_Dev.PluginYG2.Editor
 
         #region Public
 
-        [MenuItem("Tools/D-Dev/PluginYG2/Refresh Define")]
+        [MenuItem("Tools/D_Dev/PluginYG2/Refresh Define")]
         public static void Refresh()
         {
             var isInstalled = IsPluginInstalled();

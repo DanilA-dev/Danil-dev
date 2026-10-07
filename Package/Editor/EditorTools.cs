@@ -24,15 +24,17 @@ namespace D_Dev
         private const string MainPackageName = "Danil-Dev";
         private const string BasePackageName = MainPackageName + ".Base";
         private const string AssetsPackageName = MainPackageName + ".Assets";
-        private const string PluginsPackageFile = MainPackageName + ".plugins.unitypackage";
+        private const string PluginsPackageName = MainPackageName + ".plugins";
         private const string PackageExtension = ".unitypackage";
         private const string GuidsExtension = ".guids.txt";
         private const char QueueSeparator = ';';
 
-        private static readonly (string Name, string Folder)[] PackageParts =
+        // Plugins keep their own generated settings (e.g. Odin config), so obsolete cleanup is disabled for them
+        private static readonly (string Name, string Folder, bool RemoveObsolete)[] PackageParts =
         {
-            (BasePackageName, "Assets/Danil-dev/Scripts"),
-            (AssetsPackageName, "Assets/Danil-dev/Assets")
+            (PluginsPackageName, "Assets/Danil-dev/Plugins", false),
+            (BasePackageName, "Assets/Danil-dev/Scripts", true),
+            (AssetsPackageName, "Assets/Danil-dev/Assets", true)
         };
 
         private static readonly Dictionary<string, string> GitPackages = new()
@@ -88,26 +90,24 @@ namespace D_Dev
 
         public static void InstallAll()
         {
-            InstallDependencies();
+            AddGitPackagesToManifest();
             SetImportQueue(PackageParts.Select(part => part.Name));
-
-            var pluginsPath = ResolvePackagePath(PluginsPackageFile);
-            if (pluginsPath != null)
-            {
-                AssetDatabase.ImportPackage(pluginsPath, true);
-                return;
-            }
-
             ImportNextInQueue();
         }
 
         [MenuItem("Tools/D_Dev/Setup/Import/Import Dependencies")]
         public static void InstallDependencies()
         {
+            AddGitPackagesToManifest();
+            StartImport(PluginsPackageName);
+        }
+
+        private static void AddGitPackagesToManifest()
+        {
             foreach (var (packageName, packageURL) in GitPackages)
                 AddPackageToManifest(packageName, packageURL);
 
-            Debug.Log("[D-Dev] Dependencies installed");
+            Debug.Log("[D-Dev] Manifest dependencies added");
         }
 
         [MenuItem("Tools/D_Dev/Setup/Import/Import Base")]
@@ -155,8 +155,8 @@ namespace D_Dev
             var packagePath = ResolvePackagePath(packageName + PackageExtension);
             if (packagePath == null)
             {
-                ClearImportQueue();
                 Debug.LogError($"[D-Dev] {packageName}{PackageExtension} not found");
+                ImportNextInQueue();
                 return;
             }
 
@@ -178,6 +178,12 @@ namespace D_Dev
             if (GetImportQueue().Length > 0)
             {
                 EditorApplication.delayCall += ContinueImportQueue;
+                return;
+            }
+
+            if (packageName == PluginsPackageName)
+            {
+                Debug.Log("[D-Dev] Dependencies installed");
                 return;
             }
 
@@ -214,7 +220,11 @@ namespace D_Dev
 
         private static void RemoveObsoleteAssets(string packageName)
         {
-            var folder = GetPackageFolder(packageName);
+            var part = PackageParts.FirstOrDefault(p => p.Name == packageName);
+            if (!part.RemoveObsolete)
+                return;
+
+            var folder = part.Folder;
             if (folder == null || !AssetDatabase.IsValidFolder(folder))
                 return;
 
@@ -296,19 +306,39 @@ namespace D_Dev
         {
             BumpPatchVersion();
 
-            foreach (var (name, folder) in PackageParts)
-            {
-                var exportPath = LocalPackageDirectory + name + PackageExtension;
-                AssetDatabase.ExportPackage(folder, exportPath, ExportPackageOptions.Recurse);
-
-                var guids = AssetDatabase.FindAssets("", new[] { folder });
-                File.WriteAllLines(LocalPackageDirectory + name + GuidsExtension, guids);
-
-                Debug.Log($"[D-Dev] Exported {exportPath} ({guids.Length} assets)");
-            }
+            foreach (var part in PackageParts.Where(part => part.Name != PluginsPackageName))
+                ExportPart(part);
 
             AssetDatabase.Refresh();
             Debug.Log($"[D-Dev] Exported package v{GetPackageVersion()}");
+        }
+
+        [MenuItem("Tools/D_Dev/Setup/Export Plugins")]
+        public static void ExportPlugins()
+        {
+            BumpPatchVersion();
+            ExportPart(PackageParts.First(part => part.Name == PluginsPackageName));
+
+            AssetDatabase.Refresh();
+            Debug.Log($"[D-Dev] Exported plugins v{GetPackageVersion()}");
+        }
+
+        private static void ExportPart((string Name, string Folder, bool RemoveObsolete) part)
+        {
+            if (!AssetDatabase.IsValidFolder(part.Folder))
+            {
+                Debug.LogWarning($"[D-Dev] {part.Folder} not found, {part.Name} was not exported");
+                return;
+            }
+
+            var exportPath = LocalPackageDirectory + part.Name + PackageExtension;
+            AssetDatabase.ExportPackage(part.Folder, exportPath, ExportPackageOptions.Recurse);
+
+            var guids = AssetDatabase.FindAssets("", new[] { part.Folder });
+            if (part.RemoveObsolete)
+                File.WriteAllLines(LocalPackageDirectory + part.Name + GuidsExtension, guids);
+
+            Debug.Log($"[D-Dev] Exported {exportPath} ({guids.Length} assets)");
         }
 
         [MenuItem("Tools/D_Dev/Data/Open PersistentDataPath")]
