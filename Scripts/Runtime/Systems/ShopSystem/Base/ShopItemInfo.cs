@@ -133,6 +133,19 @@ namespace D_Dev.ShopSystem
             });
         }
 
+        public bool GrantPurchase()
+        {
+            if (!CanPurchase)
+            {
+                Log("grant skipped, item cannot be purchased");
+                return false;
+            }
+
+            CompletePurchase();
+            RaiseChanged();
+            return true;
+        }
+
         public virtual void Apply() {}
 
         public virtual string GetCurrentValueText() => string.Empty;
