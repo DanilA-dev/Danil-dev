@@ -339,8 +339,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee9021f5cdcc41b0b76935299453968e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dontDestroyOnLoad: 1
-  _createInstanceIfNotFound: 1
+  _dontDestroyOnLoad: 0
+  _createInstanceIfNotFound: 0
   _createMenusOnEnable: 0
   _overlayCanvas: {fileID: 3820115167156015393}
   _cameraCanvas: {fileID: 7325336165401828619}
