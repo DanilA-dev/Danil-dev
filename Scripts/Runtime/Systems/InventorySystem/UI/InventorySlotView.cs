@@ -13,7 +13,6 @@ namespace D_Dev.InventorySystem.UI
         [Title("Components")]
         [SerializeField, Required] private InventoryItemView _itemView;
         [SerializeField] private Button _button;
-        [SerializeField] private GameObject _selection;
 
         [PropertyOrder(100)]
         [FoldoutGroup("Events")]
@@ -50,8 +49,6 @@ namespace D_Dev.InventorySystem.UI
         {
             if (_button != null)
                 _button.onClick.AddListener(OnButtonClicked);
-
-            SetSelectionVisible(false);
         }
 
         private void OnDestroy()
@@ -92,7 +89,6 @@ namespace D_Dev.InventorySystem.UI
                 return;
 
             IsSelected = true;
-            SetSelectionVisible(true);
             OnSelectedEvent?.Invoke();
         }
 
@@ -102,7 +98,6 @@ namespace D_Dev.InventorySystem.UI
                 return;
 
             IsSelected = false;
-            SetSelectionVisible(false);
             OnDeselectedEvent?.Invoke();
         }
 
@@ -126,12 +121,6 @@ namespace D_Dev.InventorySystem.UI
                 OnFilled?.Invoke();
             else
                 OnEmptied?.Invoke();
-        }
-
-        private void SetSelectionVisible(bool isVisible)
-        {
-            if (_selection != null)
-                _selection.SetActive(isVisible);
         }
 
         #endregion
