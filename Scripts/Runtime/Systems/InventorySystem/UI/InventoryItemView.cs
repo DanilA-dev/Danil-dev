@@ -20,7 +20,6 @@ namespace D_Dev.InventorySystem.UI
         [SerializeField] private StringScriptableVariable _iconVariableId;
         [Title("Amount")]
         [SerializeField] private string _amountFormat = "x{0}";
-        [SerializeField] private bool _hideSingleAmount = true;
 
         #endregion
 
@@ -51,16 +50,13 @@ namespace D_Dev.InventorySystem.UI
             Item = default;
 
             if (_icon != null)
-            {
                 _icon.sprite = null;
-                _icon.enabled = false;
-            }
 
             if (_name != null)
                 _name.text = string.Empty;
 
             if (_amount != null)
-                _amount.gameObject.SetActive(false);
+                _amount.text = string.Empty;
         }
 
         #endregion
@@ -74,7 +70,6 @@ namespace D_Dev.InventorySystem.UI
 
             info.TryGetVariableValue(_iconVariableId, out Sprite icon);
             _icon.sprite = icon;
-            _icon.enabled = icon != null;
         }
 
         private void SetName(InventoryItemEntityInfo info)
@@ -93,11 +88,10 @@ namespace D_Dev.InventorySystem.UI
             if (_amount == null)
                 return;
 
-            var isShown = !_hideSingleAmount || amount > 1;
-            _amount.gameObject.SetActive(isShown);
-
-            if (isShown)
-                _amount.text = string.Format(_amountFormat, amount);
+            var isShown =  amount > 0;
+            _amount.text = isShown
+                ? string.Format(_amountFormat, amount)
+                : string.Empty;
         }
 
         #endregion
