@@ -325,6 +325,7 @@ namespace D_Dev.EntitySpawner
             obj.transform.position = _positionSettings.GetPosition() + _positionOffset;
             obj.transform.rotation = _rotationSettings.GetRotation();
             Physics.SyncTransforms();
+            BindEntityInfo(obj);
             obj.SetActive(forceInactive ? false : _setActiveOnStart);
 
             if (obj.TryGetComponent(out RuntimeEntityVariablesContainer runtimeEntityVariablesContainer))
@@ -352,6 +353,7 @@ namespace D_Dev.EntitySpawner
             obj.transform.position = _positionSettings.GetPosition() + _positionOffset;
             obj.transform.rotation = _rotationSettings.GetRotation();
             Physics.SyncTransforms();
+            BindEntityInfo(obj);
             obj.SetActive(_setActiveOnStart);
 
             if (obj.TryGetComponent(out RuntimeEntityVariablesContainer runtimeEntityVariablesContainer))
@@ -365,6 +367,14 @@ namespace D_Dev.EntitySpawner
             }
 
             return obj;
+        }
+
+        private void BindEntityInfo(GameObject obj)
+        {
+            if (!obj.TryGetComponent(out EntityInfoRouter router))
+                router = obj.AddComponent<EntityInfoRouter>();
+
+            router.Bind(_data.Value);
         }
 
         private void OnPoolableEntityDestroyed(PoolableObject poolableObject)

@@ -3,7 +3,9 @@ using Cysharp.Threading.Tasks;
 using D_Dev.Entity;
 using D_Dev.Entity.Extensions;
 using D_Dev.EntityPool;
+using D_Dev.EntityVariable.Types;
 using D_Dev.PolymorphicValueSystem;
+using D_Dev.ScriptableVariables;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -21,6 +23,10 @@ namespace D_Dev.PopupSystem
         [SerializeField] private bool _followTarget = true;
         [SerializeField] private Vector3 _offset;
         [SerializeField] private Vector3 _randomOffset;
+        [Title("Entity Popup")]
+        [SerializeField] private string _entityFormat = "+{0} {1}";
+        [SerializeField] private StringScriptableVariable _nameVariableId;
+        [SerializeField] private StringScriptableVariable _iconVariableId;
 
         #endregion
 
@@ -35,6 +41,21 @@ namespace D_Dev.PopupSystem
         public void Show(string text) => ShowAsync(new PopupData(text)).Forget();
 
         public void Show(PopupData data) => ShowAsync(data).Forget();
+
+        public void Show(EntityInfo info, int amount)
+        {
+            if (info == null)
+                return;
+
+            var entityName = _nameVariableId != null
+                ? info.GetVariable<StringEntityVariable>(_nameVariableId)?.Value?.Value
+                : info.name;
+            var icon = _iconVariableId != null
+                ? info.GetVariable<SpriteEntityVariable>(_iconVariableId)?.Value?.Value
+                : null;
+
+            Show(new PopupData(string.Format(_entityFormat, amount, entityName), icon));
+        }
 
         public async UniTask<PopupView> ShowAsync(PopupData data)
         {

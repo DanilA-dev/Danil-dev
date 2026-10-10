@@ -17,7 +17,7 @@ namespace D_Dev.InventorySystem
         public int Index { get; set; }
         public InventoryItem Data => _data;
         public bool IsEmpty => Data.IsEmpty;
-        public bool IsFull => !IsEmpty && Data.CurrentAmount >= Data.Info.MaxAmount;
+        public bool IsFull => !IsEmpty && Data.Info.IsStackLimited && Data.CurrentAmount >= Data.Info.MaxAmount;
 
         #endregion
 
@@ -37,7 +37,7 @@ namespace D_Dev.InventorySystem
                 return 0;
 
             var currentAmount = IsEmpty ? 0 : Data.CurrentAmount;
-            var addedAmount = Mathf.Min(amount, itemInfo.MaxAmount - currentAmount);
+            var addedAmount = itemInfo.IsStackLimited ? Mathf.Min(amount, itemInfo.MaxAmount - currentAmount) : amount;
             if (addedAmount <= 0)
                 return 0;
 
