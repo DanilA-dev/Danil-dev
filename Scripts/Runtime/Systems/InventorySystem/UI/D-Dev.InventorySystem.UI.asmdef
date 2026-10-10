@@ -1,16 +1,16 @@
 {
-    "name": "D-Dev.PopupSystem",
+    "name": "D-Dev.InventorySystem.UI",
     "rootNamespace": "",
     "references": [
-        "D-Dev.EntitySpawner",
+        "D-Dev.InventorySystem",
+        "D-Dev.InventorySystem.Extensions",
+        "D-Dev.PolymorphicValueSystem",
+        "D-Dev.Menu",
         "D-Dev.EntityInfo",
         "D-Dev.EntityInfo.Extensions",
-        "D-Dev.PolymorphicValueSystem",
-        "D-Dev.TweenAnimations",
         "D-Dev.ScriptableVariables",
         "Unity.TextMeshPro",
-        "UnityEngine.UI",
-        "UniTask"
+        "UnityEngine.UI"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

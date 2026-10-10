@@ -3,7 +3,6 @@ using Cysharp.Threading.Tasks;
 using D_Dev.Entity;
 using D_Dev.Entity.Extensions;
 using D_Dev.EntityPool;
-using D_Dev.EntityVariable.Types;
 using D_Dev.PolymorphicValueSystem;
 using D_Dev.ScriptableVariables;
 using Sirenix.OdinInspector;
@@ -47,12 +46,10 @@ namespace D_Dev.PopupSystem
             if (info == null)
                 return;
 
-            var entityName = _nameVariableId != null
-                ? info.GetVariable<StringEntityVariable>(_nameVariableId)?.Value?.Value
-                : info.name;
-            var icon = _iconVariableId != null
-                ? info.GetVariable<SpriteEntityVariable>(_iconVariableId)?.Value?.Value
-                : null;
+            if (!info.TryGetVariableValue(_nameVariableId, out string entityName))
+                entityName = info.name;
+
+            info.TryGetVariableValue(_iconVariableId, out Sprite icon);
 
             Show(new PopupData(string.Format(_entityFormat, amount, entityName), icon));
         }
