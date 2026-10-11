@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
+using D_Dev.Entity;
+using D_Dev.Entity.Extensions;
+using D_Dev.PolymorphicValueSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace D_Dev.InventorySystem.UI
 {
-    public class InventoryView : MonoBehaviour
+    public class InventorySlotsController : MonoBehaviour
     {
         #region Fields
 
@@ -15,16 +18,22 @@ namespace D_Dev.InventorySystem.UI
         [SerializeField, Required] private RectTransform _content;
         [Title("Selection")]
         [SerializeField] private bool _selectable = true;
+        [SerializeField, ShowIf(nameof(_selectable))] private bool _deselectOnRepeatClick = true;
+        [SerializeReference, ShowIf(nameof(_selectable))] private PolymorphicValue<EntityInfo> _lastSelectedItem = new EntityInfoScriptableVariableValue();
 
         [PropertyOrder(100)]
         [FoldoutGroup("Events")]
         public UnityEvent<InventorySlotView> OnSlotSelectedEvent;
+        [PropertyOrder(100)]
+        [FoldoutGroup("Events")]
+        public UnityEvent<InventorySlotView> OnSlotDeselectedEvent;
 
         private readonly List<InventorySlotView> _slots = new();
         private Inventory _inventory;
         private InventorySlotView _selectedSlot;
 
         public event Action<InventorySlotView> OnSlotSelected;
+        public event Action<InventorySlotView> OnSlotDeselected;
 
         #endregion
 
@@ -75,7 +84,7 @@ namespace D_Dev.InventorySystem.UI
 
         public void Unbind()
         {
-            Deselect();
+            ClearSelection();
 
             foreach (var slot in _slots)
                 slot.Unbind();
@@ -88,26 +97,46 @@ namespace D_Dev.InventorySystem.UI
             if (!_selectable || slot == null || slot == _selectedSlot)
                 return;
 
-            Deselect();
+            ClearSelection();
 
             _selectedSlot = slot;
             slot.Select();
+            SetLastSelectedItem(slot.IsEmpty ? null : slot.Item.Info);
             OnSlotSelected?.Invoke(slot);
             OnSlotSelectedEvent?.Invoke(slot);
         }
 
         public void Deselect()
         {
-            if (_selectedSlot == null)
+            var slot = ClearSelection();
+            if (slot == null)
                 return;
 
-            _selectedSlot.Deselect();
-            _selectedSlot = null;
+            SetLastSelectedItem(null);
+            OnSlotDeselected?.Invoke(slot);
+            OnSlotDeselectedEvent?.Invoke(slot);
         }
 
         #endregion
 
         #region Private
+
+        private InventorySlotView ClearSelection()
+        {
+            var slot = _selectedSlot;
+            if (slot == null)
+                return null;
+
+            slot.Deselect();
+            _selectedSlot = null;
+            return slot;
+        }
+
+        private void SetLastSelectedItem(EntityInfo info)
+        {
+            if (_lastSelectedItem != null)
+                _lastSelectedItem.Value = info;
+        }
 
         private void CreateMissingSlots(int count)
         {
@@ -123,7 +152,13 @@ namespace D_Dev.InventorySystem.UI
 
         #region Listeners
 
-        private void OnSlotClicked(InventorySlotView slot) => Select(slot);
+        private void OnSlotClicked(InventorySlotView slot)
+        {
+            if (_deselectOnRepeatClick && slot == _selectedSlot)
+                Deselect();
+            else
+                Select(slot);
+        }
 
         #endregion
     }

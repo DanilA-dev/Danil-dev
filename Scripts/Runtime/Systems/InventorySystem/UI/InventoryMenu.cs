@@ -12,7 +12,7 @@ namespace D_Dev.InventorySystem.UI
 
         [Title("Inventory")]
         [SerializeReference] private PolymorphicValue<Inventory> _inventory = new InventoryScriptableVariableValue();
-        [SerializeField, Required] private InventoryView _view;
+        [SerializeField, Required] private InventorySlotsController _slotsController;
 
         private Inventory _overrideInventory;
 
@@ -21,7 +21,7 @@ namespace D_Dev.InventorySystem.UI
         #region Properties
 
         public Inventory CurrentInventory => _overrideInventory != null ? _overrideInventory : _inventory?.Value;
-        public InventoryView View => _view;
+        public InventorySlotsController SlotsController => _slotsController;
 
         #endregion
 
@@ -40,7 +40,7 @@ namespace D_Dev.InventorySystem.UI
             if (_inventory != null)
                 _inventory.OnValueChanged -= OnInventoryChanged;
 
-            _view.Unbind();
+            _slotsController.Unbind();
         }
 
         #endregion
@@ -67,7 +67,7 @@ namespace D_Dev.InventorySystem.UI
 
         #region Private
 
-        private void Rebind() => _view.Bind(CurrentInventory);
+        private void Rebind() => _slotsController.Bind(CurrentInventory);
 
         #endregion
 
