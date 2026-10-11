@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f1f07bf404a424085feacfb8ac08ec5, type: 3}
   m_Name: MenuInfosContainer
   m_EditorClassIdentifier: 
-  _projectMenus: []
+  _projectMenus:
+  - {fileID: 11400000, guid: 18ed0e4300af6124ba13ddf622f695e8, type: 2}
+  - {fileID: 11400000, guid: 17b07ea4cdf60b54598f314ba285a410, type: 2}
