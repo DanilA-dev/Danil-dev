@@ -47,6 +47,18 @@ namespace D_Dev.InventorySystem.UI
 
         #region Monobehaviour
 
+        private void OnEnable()
+        {
+            if (_lastSelectedItem != null)
+                _lastSelectedItem.OnValueChanged += OnLastSelectedItemChanged;
+        }
+
+        private void OnDisable()
+        {
+            if (_lastSelectedItem != null)
+                _lastSelectedItem.OnValueChanged -= OnLastSelectedItemChanged;
+        }
+
         private void OnDestroy()
         {
             foreach (var slot in _slots)
@@ -97,29 +109,53 @@ namespace D_Dev.InventorySystem.UI
             if (!_selectable || slot == null || slot == _selectedSlot)
                 return;
 
-            ClearSelection();
-
-            _selectedSlot = slot;
-            slot.Select();
+            ApplySelection(slot);
             SetLastSelectedItem(slot.IsEmpty ? null : slot.Item.Info);
-            OnSlotSelected?.Invoke(slot);
-            OnSlotSelectedEvent?.Invoke(slot);
         }
 
         public void Deselect()
         {
-            var slot = ClearSelection();
-            if (slot == null)
+            if (!ApplyDeselection())
                 return;
 
             SetLastSelectedItem(null);
-            OnSlotDeselected?.Invoke(slot);
-            OnSlotDeselectedEvent?.Invoke(slot);
         }
 
         #endregion
 
         #region Private
+
+        private void ApplySelection(InventorySlotView slot)
+        {
+            ClearSelection();
+
+            _selectedSlot = slot;
+            slot.Select();
+            OnSlotSelected?.Invoke(slot);
+            OnSlotSelectedEvent?.Invoke(slot);
+        }
+
+        private bool ApplyDeselection()
+        {
+            var slot = ClearSelection();
+            if (slot == null)
+                return false;
+
+            OnSlotDeselected?.Invoke(slot);
+            OnSlotDeselectedEvent?.Invoke(slot);
+            return true;
+        }
+
+        private InventorySlotView FindSlot(EntityInfo info)
+        {
+            foreach (var slot in _slots)
+            {
+                if (slot.gameObject.activeSelf && !slot.IsEmpty && slot.Item.Info == info)
+                    return slot;
+            }
+
+            return null;
+        }
 
         private InventorySlotView ClearSelection()
         {
@@ -151,6 +187,21 @@ namespace D_Dev.InventorySystem.UI
         #endregion
 
         #region Listeners
+
+        private void OnLastSelectedItemChanged(EntityInfo info)
+        {
+            if (!_selectable)
+                return;
+
+            if (_selectedSlot != null && !_selectedSlot.IsEmpty && _selectedSlot.Item.Info == info)
+                return;
+
+            var slot = info != null ? FindSlot(info) : null;
+            if (slot != null)
+                ApplySelection(slot);
+            else
+                ApplyDeselection();
+        }
 
         private void OnSlotClicked(InventorySlotView slot)
         {
