@@ -8,6 +8,7 @@
         "D-Dev.PolymorphicValueSystem",
         "D-Dev.TweenAnimations",
         "D-Dev.ScriptableVariables",
+        "D-Dev.Extensions",
         "Unity.TextMeshPro",
         "UnityEngine.UI",
         "UniTask"

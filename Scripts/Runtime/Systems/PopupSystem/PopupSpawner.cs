@@ -1,8 +1,10 @@
 #if DOTWEEN
+using System.Globalization;
 using Cysharp.Threading.Tasks;
 using D_Dev.Entity;
 using D_Dev.Entity.Extensions;
 using D_Dev.EntityPool;
+using D_Dev.Extensions;
 using D_Dev.PolymorphicValueSystem;
 using D_Dev.ScriptableVariables;
 using Sirenix.OdinInspector;
@@ -26,6 +28,10 @@ namespace D_Dev.PopupSystem
         [SerializeField] private string _entityFormat = "+{0} {1}";
         [SerializeField] private StringScriptableVariable _nameVariableId;
         [SerializeField] private StringScriptableVariable _iconVariableId;
+        [Title("Amount Popup")]
+        [SerializeField] private string _amountFormat = "+{0}";
+        [SerializeField] private Sprite _amountIcon;
+        [SerializeField] private bool _shortAmount = true;
 
         #endregion
 
@@ -38,6 +44,24 @@ namespace D_Dev.PopupSystem
         #region Public
 
         public void Show(string text) => ShowAsync(new PopupData(text)).Forget();
+
+        public void ShowAmount(int amount) => ShowAmount((long)amount);
+
+        public void ShowAmount(long amount)
+        {
+            var amountText = _shortAmount ? amount.ToShortString() : amount.ToString();
+            ShowAmountText(amountText);
+        }
+
+        public void ShowAmount(float amount) => ShowAmount((double)amount);
+
+        public void ShowAmount(double amount)
+        {
+            var amountText = _shortAmount
+                ? amount.ToShortString()
+                : amount.ToString("0.##", CultureInfo.InvariantCulture);
+            ShowAmountText(amountText);
+        }
 
         public void Show(PopupData data) => ShowAsync(data).Forget();
 
@@ -77,6 +101,11 @@ namespace D_Dev.PopupSystem
         #endregion
 
         #region Private
+
+        private void ShowAmountText(string amountText)
+        {
+            Show(new PopupData(string.Format(_amountFormat, amountText), _amountIcon));
+        }
 
         private Vector3 GetRandomOffset()
         {
