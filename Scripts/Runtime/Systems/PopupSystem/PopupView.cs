@@ -36,18 +36,20 @@ namespace D_Dev.PopupSystem
 
         #region Public
 
-        public void Show(PopupData data, Vector3 position)
+        public void Show(PopupData data, Vector3 position, Vector3 eulerAngles = default)
         {
             _target = null;
             transform.position = position;
+            transform.eulerAngles = eulerAngles;
             Play(data);
         }
 
-        public void Show(PopupData data, Transform target, Vector3 offset)
+        public void Show(PopupData data, Transform target, Vector3 offset, Vector3 eulerAngles = default)
         {
             _target = target;
             _offset = offset;
             transform.position = target != null ? target.position + offset : offset;
+            transform.eulerAngles = eulerAngles;
             Play(data);
         }
 
@@ -76,14 +78,12 @@ namespace D_Dev.PopupSystem
             if (_text != null)
             {
                 var hasText = !string.IsNullOrEmpty(data.Text);
-                _text.gameObject.SetActive(hasText);
                 _text.text = data.Text;
             }
 
             if (_icon != null)
             {
                 var hasIcon = data.Icon != null;
-                _icon.gameObject.SetActive(hasIcon);
                 _icon.sprite = data.Icon;
             }
         }

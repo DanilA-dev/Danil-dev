@@ -23,6 +23,7 @@ namespace D_Dev.PopupSystem
         [SerializeField] private Transform _target;
         [SerializeField] private bool _followTarget = true;
         [SerializeField] private Vector3 _offset;
+        [SerializeField] private Vector3 _rotation;
         [SerializeField] private Vector3 _randomOffset;
         [Title("Entity Popup")]
         [SerializeField] private string _entityFormat = "+{0} {1}";
@@ -91,9 +92,9 @@ namespace D_Dev.PopupSystem
             var offset = _offset + GetRandomOffset();
 
             if (_followTarget)
-                view.Show(data, target, offset);
+                view.Show(data, target, offset, _rotation);
             else
-                view.Show(data, target.position + offset);
+                view.Show(data, target.position + offset, _rotation);
 
             return view;
         }
