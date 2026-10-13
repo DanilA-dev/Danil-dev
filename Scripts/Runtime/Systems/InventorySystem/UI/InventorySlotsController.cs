@@ -16,6 +16,7 @@ namespace D_Dev.InventorySystem.UI
         [Title("Slots")]
         [SerializeField, Required] private InventorySlotView _slotPrefab;
         [SerializeField, Required] private RectTransform _content;
+        [SerializeField] private bool _hideEmptySlots;
         [Title("Selection")]
         [SerializeField] private bool _selectable = true;
         [SerializeField, ShowIf(nameof(_selectable))] private bool _deselectOnRepeatClick = true;
@@ -27,6 +28,9 @@ namespace D_Dev.InventorySystem.UI
         [PropertyOrder(100)]
         [FoldoutGroup("Events")]
         public UnityEvent<InventorySlotView> OnSlotDeselectedEvent;
+        [PropertyOrder(100)]
+        [FoldoutGroup("Events")]
+        public UnityEvent<InventorySlotView> OnSlotClickedEvent;
 
         private readonly List<InventorySlotView> _slots = new();
         private Inventory _inventory;
@@ -34,6 +38,7 @@ namespace D_Dev.InventorySystem.UI
 
         public event Action<InventorySlotView> OnSlotSelected;
         public event Action<InventorySlotView> OnSlotDeselected;
+        public event Action<InventorySlotView> OnSlotClicked;
 
         #endregion
 
@@ -64,7 +69,7 @@ namespace D_Dev.InventorySystem.UI
             foreach (var slot in _slots)
             {
                 if (slot != null)
-                    slot.OnClicked -= OnSlotClicked;
+                    slot.OnClicked -= OnSlotViewClicked;
             }
         }
 
@@ -80,18 +85,10 @@ namespace D_Dev.InventorySystem.UI
             if (_inventory == null)
                 return;
 
-            var cellsCount = _inventory.Cells.Count;
-            CreateMissingSlots(cellsCount);
-
-            for (int i = 0; i < _slots.Count; i++)
-            {
-                var slot = _slots[i];
-                var isUsed = i < cellsCount;
-                slot.gameObject.SetActive(isUsed);
-
-                if (isUsed)
-                    slot.Bind(_inventory.Cells[i]);
-            }
+            _inventory.OnCellsChanged += OnInventoryCellsChanged;
+            _inventory.OnItemAdded += OnInventoryItemsChanged;
+            _inventory.OnItemRemoved += OnInventoryItemsChanged;
+            RefreshSlots();
         }
 
         public void Unbind()
@@ -100,6 +97,13 @@ namespace D_Dev.InventorySystem.UI
 
             foreach (var slot in _slots)
                 slot.Unbind();
+
+            if (_inventory != null)
+            {
+                _inventory.OnCellsChanged -= OnInventoryCellsChanged;
+                _inventory.OnItemAdded -= OnInventoryItemsChanged;
+                _inventory.OnItemRemoved -= OnInventoryItemsChanged;
+            }
 
             _inventory = null;
         }
@@ -124,6 +128,28 @@ namespace D_Dev.InventorySystem.UI
         #endregion
 
         #region Private
+
+        private void RefreshSlots()
+        {
+            var cellsCount = _inventory.Cells.Count;
+            CreateMissingSlots(cellsCount);
+
+            for (int i = 0; i < _slots.Count; i++)
+            {
+                var slot = _slots[i];
+                var isUsed = i < cellsCount;
+
+                if (isUsed && slot.Cell != _inventory.Cells[i])
+                    slot.Bind(_inventory.Cells[i]);
+                else if (!isUsed)
+                    slot.Unbind();
+
+                slot.gameObject.SetActive(isUsed && (!_hideEmptySlots || !slot.IsEmpty));
+            }
+
+            if (_selectedSlot != null && !_selectedSlot.gameObject.activeSelf)
+                ApplyDeselection();
+        }
 
         private void ApplySelection(InventorySlotView slot)
         {
@@ -179,7 +205,7 @@ namespace D_Dev.InventorySystem.UI
             for (int i = _slots.Count; i < count; i++)
             {
                 var slot = Instantiate(_slotPrefab, _content);
-                slot.OnClicked += OnSlotClicked;
+                slot.OnClicked += OnSlotViewClicked;
                 _slots.Add(slot);
             }
         }
@@ -187,6 +213,14 @@ namespace D_Dev.InventorySystem.UI
         #endregion
 
         #region Listeners
+
+        private void OnInventoryCellsChanged() => RefreshSlots();
+
+        private void OnInventoryItemsChanged(InventoryItemEntityInfo info, int amount)
+        {
+            if (_hideEmptySlots)
+                RefreshSlots();
+        }
 
         private void OnLastSelectedItemChanged(EntityInfo info)
         {
@@ -203,8 +237,11 @@ namespace D_Dev.InventorySystem.UI
                 ApplyDeselection();
         }
 
-        private void OnSlotClicked(InventorySlotView slot)
+        private void OnSlotViewClicked(InventorySlotView slot)
         {
+            OnSlotClicked?.Invoke(slot);
+            OnSlotClickedEvent?.Invoke(slot);
+
             if (_deselectOnRepeatClick && slot == _selectedSlot)
                 Deselect();
             else
