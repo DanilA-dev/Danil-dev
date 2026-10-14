@@ -1,5 +1,6 @@
 ﻿using D_Dev.CustomEventManager;
 using D_Dev.PolymorphicValueSystem;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace D_Dev.CurrencySystem.Extensions
@@ -17,9 +18,10 @@ namespace D_Dev.CurrencySystem.Extensions
 
         #region Public
 
+        [Button]
         public void Invoke()
         {
-            EventManager.Invoke(_eventName.Value,_from.Value, _to.Value, _amount);
+            EventManager.Invoke(_eventName.Value,_from.Value, _to.Value, _amount.Value);
         }
 
         #endregion
