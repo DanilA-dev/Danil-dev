@@ -11,7 +11,8 @@
         "D-Dev.Extensions",
         "Unity.TextMeshPro",
         "UnityEngine.UI",
-        "UniTask"
+        "UniTask",
+        "D-Dev.PositionRotationSettings"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -3,9 +3,8 @@ using System.Globalization;
 using Cysharp.Threading.Tasks;
 using D_Dev.Entity;
 using D_Dev.Entity.Extensions;
-using D_Dev.EntityPool;
+using D_Dev.EntitySpawner;
 using D_Dev.Extensions;
-using D_Dev.PolymorphicValueSystem;
 using D_Dev.ScriptableVariables;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -16,15 +15,8 @@ namespace D_Dev.PopupSystem
     {
         #region Fields
 
-        [Title("Pool")]
-        [SerializeField, Required] private PoolableDataList _pool;
-        [SerializeReference] private PolymorphicValue<EntityInfo> _popupInfo = new EntityInfoConstantValue();
-        [Title("Placement")]
-        [SerializeField] private Transform _target;
-        [SerializeField] private bool _followTarget = true;
-        [SerializeField] private Vector3 _offset;
-        [SerializeField] private Vector3 _rotation;
-        [SerializeField] private Vector3 _randomOffset;
+        [Title("Spawn Settings")]
+        [SerializeField] private EntitySpawnSettings _spawnSettings;
         [Title("Entity Popup")]
         [SerializeField] private string _entityFormat = "+{0} {1}";
         [SerializeField] private StringScriptableVariable _nameVariableId;
@@ -33,12 +25,6 @@ namespace D_Dev.PopupSystem
         [SerializeField] private string _amountFormat = "+{0}";
         [SerializeField] private Sprite _amountIcon;
         [SerializeField] private bool _shortAmount = true;
-
-        #endregion
-
-        #region Monobehaviour
-
-        private void Reset() => _target = transform;
 
         #endregion
 
@@ -81,20 +67,21 @@ namespace D_Dev.PopupSystem
 
         public async UniTask<PopupView> ShowAsync(PopupData data)
         {
-            if (_pool == null || _popupInfo?.Value == null)
+            if (_spawnSettings == null)
                 return null;
 
-            var view = await _pool.Get<PopupView>(_popupInfo.Value);
+            var go = await _spawnSettings.Get();
+            if (go == null)
+                return null;
+
+            var view = go.GetComponent<PopupView>();
             if (view == null)
                 return null;
 
-            var target = _target != null ? _target : transform;
-            var offset = _offset + GetRandomOffset();
+            var pos = _spawnSettings.PositionSettings.GetPosition();
+            var rot = _spawnSettings.RotationSettings.GetRotation();
 
-            if (_followTarget)
-                view.Show(data, target, offset, _rotation);
-            else
-                view.Show(data, target.position + offset, _rotation);
+            view.Show(data, pos, rot);
 
             return view;
         }
@@ -108,13 +95,6 @@ namespace D_Dev.PopupSystem
             Show(new PopupData(string.Format(_amountFormat, amountText), _amountIcon));
         }
 
-        private Vector3 GetRandomOffset()
-        {
-            return new Vector3(
-                Random.Range(-_randomOffset.x, _randomOffset.x),
-                Random.Range(-_randomOffset.y, _randomOffset.y),
-                Random.Range(-_randomOffset.z, _randomOffset.z));
-        }
 
         #endregion
     }

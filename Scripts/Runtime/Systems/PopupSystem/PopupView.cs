@@ -38,20 +38,11 @@ namespace D_Dev.PopupSystem
 
         #region Public
 
-        public void Show(PopupData data, Vector3 position, Vector3 eulerAngles = default)
+        public void Show(PopupData data, Vector3 position, Quaternion rot = default)
         {
             _target = null;
             transform.position = position;
-            transform.eulerAngles = eulerAngles;
-            Play(data);
-        }
-
-        public void Show(PopupData data, Transform target, Vector3 offset, Vector3 eulerAngles = default)
-        {
-            _target = target;
-            _offset = offset;
-            transform.position = target != null ? target.position + offset : offset;
-            transform.eulerAngles = eulerAngles;
+            transform.rotation = rot;
             Play(data);
         }
 
