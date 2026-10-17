@@ -356,7 +356,7 @@ namespace D_Dev.PrefabIconGenerator
 
                 Camera cam = pru.camera;
                 cam.clearFlags = CameraClearFlags.SolidColor;
-                cam.backgroundColor = _transparent ? new Color(0f, 0f, 0f, 0f) : _background;
+                cam.backgroundColor = Color.black;
                 cam.orthographic = _orthographic;
                 cam.fieldOfView = _fov;
 
@@ -381,9 +381,12 @@ namespace D_Dev.PrefabIconGenerator
                 pru.lights[1].intensity = _lightIntensity * 0.4f;
                 pru.lights[1].transform.rotation = rot * Quaternion.Euler(-20f, -150f, 0f);
 
-                pru.BeginStaticPreview(new Rect(0, 0, _size, _size));
-                pru.Render(true, false);
-                return pru.EndStaticPreview();
+                if (!_transparent)
+                    return RenderPass(pru, _background);
+
+                Texture2D onBlack = RenderPass(pru, Color.black);
+                Texture2D onWhite = RenderPass(pru, Color.white);
+                return ExtractAlpha(onBlack, onWhite);
             }
             finally
             {
@@ -391,6 +394,49 @@ namespace D_Dev.PrefabIconGenerator
                     DestroyImmediate(instance);
                 pru.Cleanup();
             }
+        }
+
+        private Texture2D RenderPass(PreviewRenderUtility pru, Color background)
+        {
+            pru.camera.backgroundColor = background;
+            pru.BeginStaticPreview(new Rect(0, 0, _size, _size));
+            pru.Render(true, false);
+            return pru.EndStaticPreview();
+        }
+
+        private static Texture2D ExtractAlpha(Texture2D onBlack, Texture2D onWhite)
+        {
+            Color32[] black = onBlack.GetPixels32();
+            Color32[] white = onWhite.GetPixels32();
+            var result = new Color32[black.Length];
+
+            for (int i = 0; i < black.Length; i++)
+            {
+                float diff = ((white[i].r - black[i].r)
+                              + (white[i].g - black[i].g)
+                              + (white[i].b - black[i].b)) / (3f * 255f);
+                float alpha = Mathf.Clamp01(1f - diff);
+
+                if (alpha < 0.003f)
+                {
+                    result[i] = new Color32(0, 0, 0, 0);
+                    continue;
+                }
+
+                result[i] = new Color32(
+                    (byte)Mathf.Clamp(black[i].r / alpha, 0f, 255f),
+                    (byte)Mathf.Clamp(black[i].g / alpha, 0f, 255f),
+                    (byte)Mathf.Clamp(black[i].b / alpha, 0f, 255f),
+                    (byte)Mathf.RoundToInt(alpha * 255f));
+            }
+
+            var tex = new Texture2D(onBlack.width, onBlack.height, TextureFormat.RGBA32, false);
+            tex.SetPixels32(result);
+            tex.Apply();
+
+            DestroyImmediate(onBlack);
+            DestroyImmediate(onWhite);
+            return tex;
         }
 
         private static bool TryGetBounds(GameObject go, out Bounds bounds)
