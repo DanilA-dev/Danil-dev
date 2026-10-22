@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using D_Dev.Entity;
 using D_Dev.Entity.Extensions;
+using D_Dev.InventorySystem.UI.Filters;
 using D_Dev.PolymorphicValueSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -17,6 +18,8 @@ namespace D_Dev.InventorySystem.UI
         [SerializeField, Required] private InventorySlotView _slotPrefab;
         [SerializeField, Required] private RectTransform _content;
         [SerializeField] private bool _hideEmptySlots;
+        [Title("Filter")]
+        [SerializeReference] private InventorySlotFilter _filter;
         [Title("Selection")]
         [SerializeField] private bool _selectable = true;
         [SerializeField, ShowIf(nameof(_selectable))] private bool _deselectOnRepeatClick = true;
@@ -144,11 +147,19 @@ namespace D_Dev.InventorySystem.UI
                 else if (!isUsed)
                     slot.Unbind();
 
-                slot.gameObject.SetActive(isUsed && (!_hideEmptySlots || !slot.IsEmpty));
+                slot.gameObject.SetActive(isUsed && IsSlotVisible(slot));
             }
 
             if (_selectedSlot != null && !_selectedSlot.gameObject.activeSelf)
                 ApplyDeselection();
+        }
+
+        private bool IsSlotVisible(InventorySlotView slot)
+        {
+            if (slot.IsEmpty)
+                return !_hideEmptySlots;
+
+            return _filter == null || _filter.IsValid(slot.Item.Info);
         }
 
         private void ApplySelection(InventorySlotView slot)
@@ -218,7 +229,7 @@ namespace D_Dev.InventorySystem.UI
 
         private void OnInventoryItemsChanged(InventoryItemEntityInfo info, int amount)
         {
-            if (_hideEmptySlots)
+            if (_hideEmptySlots || _filter != null)
                 RefreshSlots();
         }
 
