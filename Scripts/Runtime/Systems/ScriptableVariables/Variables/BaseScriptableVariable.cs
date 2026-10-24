@@ -34,7 +34,19 @@ namespace D_Dev.ScriptableVariables
         public bool ResetOnEnterRuntime => _resetOnEnterRuntime;
 
         #endregion
-        
+
+#if !UNITY_EDITOR
+        #region ScriptableObject
+
+        private void OnEnable()
+        {
+            if (_resetOnEnterRuntime)
+                _value = default;
+        }
+
+        #endregion
+#endif
+
         #region Virtual
         
         [Button]
