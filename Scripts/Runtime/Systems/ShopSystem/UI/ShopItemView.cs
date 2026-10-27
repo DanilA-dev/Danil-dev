@@ -11,6 +11,10 @@ namespace D_Dev.ShopSystem.UI
     {
         #region Fields
 
+        [SerializeField] private bool _manualInit;
+        [ShowIf(nameof(_manualInit))]
+        [SerializeField] private ShopItemInfo _manualInfo;
+        [Space]
         [Title("UI")]
         [SerializeField] private TMP_Text _nameText;
         [SerializeField] private TMP_Text _descriptionText;
@@ -52,6 +56,12 @@ namespace D_Dev.ShopSystem.UI
         {
             if (_selectButton != null)
                 _selectButton.onClick.AddListener(OnSelectClicked);
+        }
+
+        private void Start()
+        {
+            if (_manualInit && _info == null)
+                Init(_manualInfo);
         }
 
         private void OnDestroy()
