@@ -1,8 +1,9 @@
 {
-    "name": "D-Dev.TweenScrollSnapper",
+    "name": "D-Dev.FocusScroll",
     "rootNamespace": "",
     "references": [
-        "GUID:0c083109b251161418234030b436a9b6"
+        "GUID:0c083109b251161418234030b436a9b6",
+        "GUID:2bafac87e7f4b9b418d9448d219b01ab"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
