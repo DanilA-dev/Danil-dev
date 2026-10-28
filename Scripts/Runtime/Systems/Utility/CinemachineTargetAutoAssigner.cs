@@ -19,6 +19,7 @@ namespace D_Dev.Utility
         #region MonoBehaviour
 
         private void Awake() => _target.OnValueUpdate += SetTarget;
+        private void Start() => SetTarget(_target.Value);
         private void OnDestroy() => _target.OnValueUpdate -= SetTarget;
 
         #endregion
