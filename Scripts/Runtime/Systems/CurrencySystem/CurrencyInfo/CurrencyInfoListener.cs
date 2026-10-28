@@ -13,19 +13,19 @@ namespace D_Dev.CurrencySystem
         [SerializeReference] private PolymorphicValue<CurrencyInfo> _currencyInfo;
         
         [FoldoutGroup("Deposit Events")]
-        public UnityEvent<int> OnDepositSuccess;
+        public UnityEvent<long> OnDepositSuccess;
         [FoldoutGroup("Deposit Events")]
-        public UnityEvent<int> OnDepositFailed;
+        public UnityEvent<long> OnDepositFailed;
         
         [FoldoutGroup("Withdraw Events")]
-        public UnityEvent<int> OnWithdrawSuccess;
+        public UnityEvent<long> OnWithdrawSuccess;
         [FoldoutGroup("Withdraw Events")]
-        public UnityEvent<int> OnWithdrawFailed;
+        public UnityEvent<long> OnWithdrawFailed;
         
         [FoldoutGroup("Set Events")]
-        public UnityEvent<int> OnSetSuccess;
+        public UnityEvent<long> OnSetSuccess;
         [FoldoutGroup("Set Events")]
-        public UnityEvent<int> OnSetFailed;
+        public UnityEvent<long> OnSetFailed;
         
         #endregion
 
@@ -53,21 +53,21 @@ namespace D_Dev.CurrencySystem
             {
                 case Currency.CurrencyActionType.Deposit:
                     if (eventData.IsSuccess)
-                        OnDepositSuccess?.Invoke((int)value);
+                        OnDepositSuccess?.Invoke(value);
                     else
-                        OnDepositFailed?.Invoke((int)value);
+                        OnDepositFailed?.Invoke(value);
                     break;
                 case Currency.CurrencyActionType.Withdraw:
                     if (eventData.IsSuccess)
-                        OnWithdrawSuccess?.Invoke((int)value);
+                        OnWithdrawSuccess?.Invoke(value);
                     else
-                        OnWithdrawFailed?.Invoke((int)value);
+                        OnWithdrawFailed?.Invoke(value);
                     break;
                 case Currency.CurrencyActionType.Set:
                     if (eventData.IsSuccess)
-                        OnSetSuccess?.Invoke((int)value);
+                        OnSetSuccess?.Invoke(value);
                     else
-                        OnSetFailed?.Invoke((int)value);
+                        OnSetFailed?.Invoke(value);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

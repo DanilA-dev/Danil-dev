@@ -20,7 +20,7 @@ namespace D_Dev.ShopSystem.UI
             Unavailable = 2,
             Maxed = 3,
             Ready = 4,
-            CannotPay = 5,
+            NotEnoughCurrency = 5,
             Paying = 6
         }
 
@@ -40,32 +40,34 @@ namespace D_Dev.ShopSystem.UI
         [Title("UI")]
         [Tooltip("Child object hidden when the item has no matching price. Must not be this object.")]
         [SerializeField] private GameObject _content;
+        [SerializeField] private bool _hideSelf;
         [SerializeField] private Button _button;
         [SerializeField] private TMP_Text _priceText;
         [SerializeField] private Image _icon;
         [SerializeReference] private PolymorphicValue<string> _maxedText = new StringConstantValue();
         [SerializeReference] private PolymorphicValue<string> _freeText = new StringConstantValue();
 
-        [FoldoutGroup("Events")]
+        [FoldoutGroup("Click Result Events")]
         [SerializeField] private UnityEvent _onPurchased;
-        [FoldoutGroup("Events")]
+        [FoldoutGroup("Click Result Events")]
         [SerializeField] private UnityEvent _onPaymentFailed;
-        [FoldoutGroup("Events")]
+        [FoldoutGroup("State Events")]
         [SerializeField] private UnityEvent _onReady;
-        [FoldoutGroup("Events")]
-        [SerializeField] private UnityEvent _onCannotPay;
-        [FoldoutGroup("Events")]
+        [FoldoutGroup("State Events")]
+        [SerializeField] private UnityEvent _onNotEnoughCurrency;
+        [FoldoutGroup("State Events")]
         [SerializeField] private UnityEvent _onPaying;
-        [FoldoutGroup("Events")]
+        [FoldoutGroup("State Events")]
         [SerializeField] private UnityEvent _onMaxed;
-        [FoldoutGroup("Events")]
+        [FoldoutGroup("State Events")]
         [SerializeField] private UnityEvent _onUnavailable;
-        [FoldoutGroup("Events")]
+        [FoldoutGroup("State Events")]
         [SerializeField] private UnityEvent _onHidden;
 
         private BaseShopItemPrice _price;
         private ButtonState _state;
         private bool _isSubscribed;
+        private bool _isHidePending;
         private float _nextDynamicRefreshTime;
 
         public event Action<ShopItemInfo> OnPurchased;
@@ -89,6 +91,9 @@ namespace D_Dev.ShopSystem.UI
         {
             if (_button != null)
                 _button.onClick.AddListener(OnClicked);
+
+            if (_hideSelf)
+                Subscribe();
         }
 
         private void OnEnable()
@@ -96,19 +101,33 @@ namespace D_Dev.ShopSystem.UI
             _price = FindPrice();
             Subscribe();
             _state = ButtonState.None;
+            _isHidePending = false;
             Refresh();
         }
 
-        private void OnDisable() => Unsubscribe();
+        private void OnDisable()
+        {
+            if (!_hideSelf)
+                Unsubscribe();
+        }
 
         private void OnDestroy()
         {
             if (_button != null)
                 _button.onClick.RemoveListener(OnClicked);
+
+            Unsubscribe();
         }
 
         private void Update()
         {
+            if (_isHidePending)
+            {
+                _isHidePending = false;
+                gameObject.SetActive(false);
+                return;
+            }
+
             if (_price == null || !_price.IsDynamic || Time.unscaledTime < _nextDynamicRefreshTime)
                 return;
 
@@ -127,7 +146,7 @@ namespace D_Dev.ShopSystem.UI
             _price = FindPrice();
             _state = ButtonState.None;
 
-            if (isActiveAndEnabled)
+            if (_hideSelf || isActiveAndEnabled)
                 Subscribe();
 
             Refresh();
@@ -163,9 +182,14 @@ namespace D_Dev.ShopSystem.UI
         {
             var state = GetState();
 
-            var content = Content;
-            if (content != null && content != gameObject)
-                content.SetActive(state != ButtonState.Hidden);
+            if (_hideSelf)
+                SetSelfVisible(state != ButtonState.Hidden);
+            else
+            {
+                var content = Content;
+                if (content != null && content != gameObject)
+                    content.SetActive(state != ButtonState.Hidden);
+            }
 
             if (state != ButtonState.Hidden)
             {
@@ -180,7 +204,7 @@ namespace D_Dev.ShopSystem.UI
             }
 
             if (_button != null)
-                _button.interactable = state is ButtonState.Ready or ButtonState.CannotPay;
+                _button.interactable = state is ButtonState.Ready or ButtonState.NotEnoughCurrency;
 
             if (state == _state)
                 return;
@@ -206,7 +230,26 @@ namespace D_Dev.ShopSystem.UI
             if (_showOnlyAsFallback && CanPayWithOtherPrice())
                 return ButtonState.Hidden;
 
-            return _price.CanPay(_info) ? ButtonState.Ready : ButtonState.CannotPay;
+            return _price.CanPay(_info) ? ButtonState.Ready : ButtonState.NotEnoughCurrency;
+        }
+
+        private void SetSelfVisible(bool value)
+        {
+            if (value)
+            {
+                _isHidePending = false;
+                if (!gameObject.activeSelf)
+                    gameObject.SetActive(true);
+                return;
+            }
+
+            if (!gameObject.activeSelf)
+                return;
+
+            if (isActiveAndEnabled)
+                _isHidePending = true;
+            else
+                gameObject.SetActive(false);
         }
 
         private bool CanPayWithOtherPrice()
@@ -247,8 +290,8 @@ namespace D_Dev.ShopSystem.UI
                 case ButtonState.Ready:
                     _onReady?.Invoke();
                     break;
-                case ButtonState.CannotPay:
-                    _onCannotPay?.Invoke();
+                case ButtonState.NotEnoughCurrency:
+                    _onNotEnoughCurrency?.Invoke();
                     break;
                 case ButtonState.Paying:
                     _onPaying?.Invoke();

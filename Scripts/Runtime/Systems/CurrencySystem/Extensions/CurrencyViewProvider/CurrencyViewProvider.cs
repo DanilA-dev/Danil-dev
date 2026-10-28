@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 namespace D_Dev.CurrencySystem.Extensions
 {
-    public class CurrencyViewProvider : GenericValueViewProvider<int, IntTweenAnimation>
+    public class CurrencyViewProvider : GenericValueViewProvider<long, LongTweenAnimation>
     {
         #region Fields
 
@@ -20,23 +20,32 @@ namespace D_Dev.CurrencySystem.Extensions
         [SerializeField] private UnityEvent OnWithdrawSucsses;
         [FoldoutGroup("Events")]
         [SerializeField] private UnityEvent OnWithdrawFails;
-        
+
+        private bool _isStarted;
+
         #endregion
 
         #region Monobehaviour
 
         private void OnEnable()
         {
-            if (_currencyInfo != null && _currencyInfo.Currency != null)
-                _currencyInfo.Currency.OnCurrencyUpdate += OnCurrencyUpdate;
+            if (_currencyInfo == null || _currencyInfo.Currency == null)
+                return;
+
+            _currencyInfo.Currency.OnCurrencyUpdate += OnCurrencyUpdate;
+
+            if (_isStarted)
+                SetViewInstant(_currencyInfo.Currency.Value);
         }
 
         private void Start()
         {
+            _isStarted = true;
+
             if (_currencyInfo == null)
                 return;
 
-            UpdateView((int)_currencyInfo.Currency.Value);
+            UpdateView(_currencyInfo.Currency.Value);
         }
 
         private void OnDisable()
@@ -70,7 +79,7 @@ namespace D_Dev.CurrencySystem.Extensions
                     throw new ArgumentOutOfRangeException();
             }
             
-            UpdateView((int)value);
+            UpdateView(value);
         }
 
         #endregion
