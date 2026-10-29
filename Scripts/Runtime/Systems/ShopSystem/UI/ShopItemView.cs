@@ -86,6 +86,12 @@ namespace D_Dev.ShopSystem.UI
 
             _info.OnChanged += Refresh;
 
+            if (_info.DisplayName != null)
+                _info.DisplayName.OnValueChanged += OnDisplayNameChanged;
+
+            if (_info.Description != null)
+                _info.Description.OnValueChanged += OnDescriptionChanged;
+
             _nameText?.SetText(_info.DisplayName?.Value);
             _descriptionText?.SetText(_info.Description?.Value);
 
@@ -137,6 +143,13 @@ namespace D_Dev.ShopSystem.UI
                 return;
 
             _info.OnChanged -= Refresh;
+
+            if (_info.DisplayName != null)
+                _info.DisplayName.OnValueChanged -= OnDisplayNameChanged;
+
+            if (_info.Description != null)
+                _info.Description.OnValueChanged -= OnDescriptionChanged;
+
             OnDeinit(_info);
         }
 
@@ -153,6 +166,8 @@ namespace D_Dev.ShopSystem.UI
         #region Listeners
 
         private void OnSelectClicked() => OnSelected?.Invoke(this);
+        private void OnDisplayNameChanged(string value) => _nameText?.SetText(value);
+        private void OnDescriptionChanged(string value) => _descriptionText?.SetText(value);
 
         #endregion
     }
