@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: PlayerCameraRoot_Transform_Variable
   m_EditorClassIdentifier: 
   _value: {fileID: 0}
-  _resetOnEnterRuntime: 0
+  _resetOnEnterRuntime: 1

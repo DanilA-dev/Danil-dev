@@ -81,6 +81,10 @@ namespace D_Dev.PlayerStateController
 
         private void UpdateCameraRotation()
         {
+            var cameraRoot = _cameraRoot.Value;
+            if (cameraRoot == null)
+                return;
+
             if (_currentLookInput != Vector2.zero && _allowRotation.Value)
             {
                 float multiplier = _isLookFromPointer
@@ -93,7 +97,7 @@ namespace D_Dev.PlayerStateController
 
             _yaw = Mathf.Repeat(_yaw, 360f);
             _pitch = Mathf.Clamp(_pitch, _botAngle.Value, _topAngle.Value);
-            _cameraRoot.Value.rotation = Quaternion.Euler(_pitch, _yaw, 0.0f);
+            cameraRoot.rotation = Quaternion.Euler(_pitch, _yaw, 0.0f);
         }
 
         #endregion
