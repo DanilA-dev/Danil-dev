@@ -50,6 +50,21 @@ namespace D_Dev.ShopSystem
 
         public override void Apply() => ApplyLevel(Mathf.Clamp(Level, 0, MaxLevel));
 
+        public override bool TryGetSaveState(out int state)
+        {
+            state = Level;
+            return _level != null;
+        }
+
+        public override void LoadSaveState(int state)
+        {
+            if (_level == null)
+                return;
+
+            _level.Value = Mathf.Clamp(state, 0, MaxLevel);
+            Apply();
+        }
+
         #endregion
 
         #region Protected

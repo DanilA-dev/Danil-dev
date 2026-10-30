@@ -148,6 +148,14 @@ namespace D_Dev.ShopSystem
 
         public virtual void Apply() {}
 
+        public virtual bool TryGetSaveState(out int state)
+        {
+            state = 0;
+            return false;
+        }
+
+        public virtual void LoadSaveState(int state) {}
+
         public virtual string GetCurrentValueText() => string.Empty;
         public virtual string GetNextValueText() => string.Empty;
 

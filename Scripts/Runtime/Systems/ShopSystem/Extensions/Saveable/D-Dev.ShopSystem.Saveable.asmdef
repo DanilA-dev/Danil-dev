@@ -1,0 +1,17 @@
+{
+    "name": "D-Dev.ShopSystem.Saveable",
+    "rootNamespace": "",
+    "references": [
+        "D-Dev.ShopSystem",
+        "D-Dev.SaveSystem.SaveableData"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

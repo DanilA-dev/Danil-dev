@@ -44,6 +44,22 @@ namespace D_Dev.ShopSystem
 
         #endregion
 
+        #region Public
+
+        public override bool TryGetSaveState(out int state)
+        {
+            state = IsPurchased ? 1 : 0;
+            return _isPurchased != null;
+        }
+
+        public override void LoadSaveState(int state)
+        {
+            if (_isPurchased != null)
+                _isPurchased.Value = state != 0;
+        }
+
+        #endregion
+
         #region Protected
 
         protected override void OnPurchaseCompleted() => _isPurchased.Value = true;

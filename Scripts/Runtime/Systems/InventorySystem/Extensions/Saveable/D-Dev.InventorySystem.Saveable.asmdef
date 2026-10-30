@@ -1,0 +1,21 @@
+{
+    "name": "D-Dev.InventorySystem.Saveable",
+    "rootNamespace": "",
+    "references": [
+        "D-Dev.InventorySystem",
+        "D-Dev.InventorySystem.Extensions",
+        "D-Dev.EntityInfo",
+        "D-Dev.PolymorphicValueSystem",
+        "D-Dev.ScriptableVariables",
+        "D-Dev.SaveSystem.SaveableData"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,20 @@
+{
+    "name": "D-Dev.EntityInfo.Saveable",
+    "rootNamespace": "",
+    "references": [
+        "D-Dev.EntityInfo",
+        "D-Dev.EntityInfo.Extensions",
+        "D-Dev.PolymorphicValueSystem",
+        "D-Dev.ScriptableVariables",
+        "D-Dev.SaveSystem.SaveableData"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
